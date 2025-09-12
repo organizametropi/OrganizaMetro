@@ -1,0 +1,44 @@
+services:
+  # Development services
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "8090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: organiza_metro
+      POSTGRES_PASSWORD: "YJHw_8RvkuFatIEfYDtr8i10CHlK23R4"
+    volumes:
+      - organiza_metro_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "8091:6379"
+    command: redis-server --requirepass "ey3sbVnLwFE3JAhtTleEfey3IPrOQBGQ"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  # Test services
+  postgres_test:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "9090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: organiza_metro_test
+      POSTGRES_PASSWORD: "dEW5SfZ2sDFTkKNuaF5orPK9XumZ17QX"
+    volumes:
+      - organiza_metro_test_data:/var/lib/postgresql/data
+
+  redis_test:
+    image: redis:6.2.6
+    ports:
+      - "9091:6379"
+    command: redis-server --requirepass "W_S6qVR81bLq_z4uNO2cBxFYdDv-ByGK"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+volumes:
+  organiza_metro_data:
+  organiza_metro_test_data:
