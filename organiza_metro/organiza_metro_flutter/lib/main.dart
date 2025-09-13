@@ -1,16 +1,13 @@
-import 'package:organiza_metro_client/organiza_metro_client.dart';
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_flutter/src/widgets/acount_page.dart';
-import 'package:organiza_metro_flutter/src/widgets/sign_in_page.dart';
-import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
-import 'package:serverpod_flutter/serverpod_flutter.dart';
+import 'package:organiza_metro_flutter/src/widgets/screen_login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await InitializeServerpodClient();
-
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -52,10 +49,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: sessionManager.isSignedIn ? const AccountPage() : SignInPage(),
+      body: sessionManager.isSignedIn ? const AccountPage() : loginPage(),
     ));
   }
 }
