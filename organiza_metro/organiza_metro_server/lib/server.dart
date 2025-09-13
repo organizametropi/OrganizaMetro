@@ -6,13 +6,32 @@ import 'package:organiza_metro_server/src/web/routes/root.dart';
 import 'src/generated/protocol.dart';
 import 'src/generated/endpoints.dart';
 
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
+
 // This is the starting point of your Serverpod server. In most cases, you will
 // only need to make additions to this file if you add future calls,  are
 // configuring Relic (Serverpod's web-server), or need custom setup work.
 
 void run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
-  final pod = Serverpod(args, Protocol(), Endpoints());
+  final pod = Serverpod(
+    args,
+    Protocol(),
+    Endpoints(),
+    authenticationHandler: auth.authenticationHandler,
+  );
+
+  //Authentication config Email validation
+  auth.AuthConfig.set(auth.AuthConfig(
+    sendValidationEmail: (session, email, validationCode) async {
+      print(('validation code: $validationCode'));
+      return true;
+    },
+    sendPasswordResetEmail: (session, userInfo, validationCode) async {
+      print('Validation code: $validationCode');
+      return true;
+    },
+  ));
 
   // Setup a default page at the web root.
   pod.webServer.addRoute(RouteRoot(), '/');
