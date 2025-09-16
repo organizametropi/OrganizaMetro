@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:organiza_metro_flutter/src/widgets/acount_page.dart';
+import 'package:organiza_metro_flutter/src/screens/dashboard/acount_page.dart';
 import 'package:organiza_metro_flutter/src/widgets/email_field.dart';
 import 'package:organiza_metro_flutter/src/widgets/password_field.dart';
 import 'package:organiza_metro_flutter/src/widgets/entrar_button.dart';

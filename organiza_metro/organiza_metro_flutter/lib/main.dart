@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
-import 'package:organiza_metro_flutter/src/widgets/acount_page.dart';
+import 'package:organiza_metro_flutter/src/screens/dashboard/acount_page.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
-import 'package:organiza_metro_flutter/src/widgets/screen_home.dart';
-import 'package:organiza_metro_flutter/src/widgets/screen_login.dart';
+import 'package:organiza_metro_flutter/src/screens/dashboard/home_screen.dart';
+import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,15 +22,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: homePage(),
+      home: MyHomePage(),
     ));
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
-  final String title;
 
   @override
   MyHomePageState createState() => MyHomePageState();
@@ -51,7 +50,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
-      body: sessionManager.isSignedIn ? const AccountPage() : loginPage(),
+      body: sessionManager.isSignedIn ? const homePage() : loginPage(),
     ));
   }
 }

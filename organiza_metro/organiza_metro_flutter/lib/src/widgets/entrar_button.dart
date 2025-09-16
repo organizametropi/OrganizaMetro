@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:organiza_metro_flutter/src/widgets/acount_page.dart';
+import 'package:organiza_metro_flutter/src/screens/dashboard/acount_page.dart';
 import 'package:serverpod_auth_email_flutter/serverpod_auth_email_flutter.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
