@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_flutter/src/widgets/acount_page.dart';
+import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
+import 'package:organiza_metro_flutter/src/widgets/screen_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/screen_login.dart';
 
 void main() async {
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Login'),
+      home: homePage(),
     ));
   }
 }
