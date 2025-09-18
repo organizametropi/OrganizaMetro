@@ -36,7 +36,7 @@ class _homePage extends State<homePage> {
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Botão 1 - Estoque de Materiais",
+                              labelText: "Estoque de Materiais",
                               goToPage: (context) => const loginPage(),
                               color: Colors.blue,
                             ),
@@ -47,7 +47,7 @@ class _homePage extends State<homePage> {
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Botão 2 - Instrumentos Técnicos",
+                              labelText: "Instrumentos Técnicos",
                               goToPage: (context) => const loginPage(),
                               color: Colors.green,
                             ),
@@ -63,7 +63,7 @@ class _homePage extends State<homePage> {
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Botão 3 - Relatórios & Dashboards",
+                              labelText: "Relatórios & Dashboards",
                               goToPage: (context) => const loginPage(),
                               color: Colors.orange,
                               assetImage: 'lib/assets/images/dataChart.png'
@@ -75,7 +75,7 @@ class _homePage extends State<homePage> {
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Botão 4 - Configurações / Administração",
+                              labelText: "Configurações / Administração",
                               goToPage: (context) => const loginPage(),
                               color: Colors.red,
                             ),
@@ -93,7 +93,7 @@ class _homePage extends State<homePage> {
                       height: 160,
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
-                        labelText: "Botão 1 - Estoque de Materiais",
+                        labelText: "Estoque de Materiais",
                         goToPage: (context) => const loginPage(),
                         color: Colors.blue,
                       ),
@@ -102,7 +102,7 @@ class _homePage extends State<homePage> {
                       height: 160,
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
-                        labelText: "Botão 2 - Instrumentos Técnicos",
+                        labelText: "Instrumentos Técnicos",
                         goToPage: (context) => const loginPage(),
                         color: Colors.green,
                       ),
@@ -111,7 +111,7 @@ class _homePage extends State<homePage> {
                       height: 160,
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
-                        labelText: "Botão 3 - Relatórios & Dashboards",
+                        labelText: "Relatórios & Dashboards",
                         goToPage: (context) => const loginPage(),
                         color: Colors.orange,
                         assetImage: 'lib/assets/images/dataChart.png'
@@ -121,7 +121,7 @@ class _homePage extends State<homePage> {
                       height: 160,
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
-                        labelText: "Botão 4 - Configurações / Administração",
+                        labelText: "Configurações / Administração",
                         goToPage: (context) => const loginPage(),
                         color: Colors.red,
                       ),

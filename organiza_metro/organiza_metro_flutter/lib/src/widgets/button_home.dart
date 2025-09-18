@@ -4,8 +4,7 @@ class ButtonHomeTemplate extends StatefulWidget {
   final String labelText;
   final Widget Function(BuildContext) goToPage;
   final Color color;
-  final String?
-      assetImage; // caminho opcional de uma imagem local (ex: assets/img.png)
+  final String? assetImage;
 
   const ButtonHomeTemplate({
     super.key,
@@ -37,29 +36,39 @@ class _ButtonHomeTemplateState extends State<ButtonHomeTemplate> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          if (widget.assetImage != null) // só mostra se houver imagem
+          if (widget.assetImage != null)
             Padding(
               padding: const EdgeInsets.only(right: 25),
               child: Image.asset(
                 widget.assetImage!,
-                width: 28, // ajuste do tamanho
+                width: 28,
                 height: 28,
               ),
             ),
-          Text(
-            widget.labelText,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Helvetica',
-              fontSize: 19,
-              color: Colors.white,
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    widget.labelText,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Helvetica',
+                      fontSize: 19,
+                      color: Colors.white,
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ],
             ),
-          ),
-          const Spacer(), // empurra o ícone para a extrema direita
-          const Icon(
-            Icons.arrow_forward_rounded,
-            color: Colors.white,
-            size: 26,
           ),
         ],
       ),

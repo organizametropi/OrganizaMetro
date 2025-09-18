@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:organiza_metro_flutter/src/screens/dashboard/acount_page.dart';
+import 'package:organiza_metro_flutter/src/screens/dashboard/home_screen.dart';
 import 'package:serverpod_auth_email_flutter/serverpod_auth_email_flutter.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
@@ -38,7 +38,7 @@ class _GetStartedButtonState extends State<GetStartedButton> {
       } else {
         // Aqui você já pode navegar para a Home, por exemplo
         if (mounted) {
-          AccountPage();
+          homePage();
         }
       }
     } catch (e) {
