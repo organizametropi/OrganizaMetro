@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class products_table extends StatefulWidget {
 class _productsTableState extends State<products_table> {
   late List<DatatableHeader> _headers;
 
-  List<Int> _perPages = [10, 20, 50, 100];
+  List<int> _perPages = [10, 20, 50, 100];
   int _total = 100;
   int? _currentPerPage = 10;
   List<bool>? _expanded;
@@ -73,6 +72,18 @@ class _productsTableState extends State<products_table> {
       _sourceFiltered = _sourceOriginal;
       _total = _sourceFiltered.length;
       _source = _sourceFiltered.getRange(0, _currentPerPage!).toList();
+      setState(() => _isLoading = false);
+    });
+  }
+
+  _resetData({start = 0}) async {
+    setState(() => _isLoading = true);
+    var _expandedLen =
+        _total - start < _currentPerPage! ? _total - start : _currentPerPage;
+    Future.delayed(Duration(seconds: 0)).then((value) {
+      _expanded = List.generate(_expandedLen as int, (index) => false);
+      _source.clear();
+      _source = _sourceFiltered.getRange(start, start + _expandedLen).toList();
       setState(() => _isLoading = false);
     });
   }
@@ -195,10 +206,10 @@ class _productsTableState extends State<products_table> {
     return Scaffold(
       appBar: MyAppBar(),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
             Container(
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(0),
@@ -209,11 +220,195 @@ class _productsTableState extends State<products_table> {
                 elevation: 1,
                 shadowColor: Colors.black,
                 clipBehavior: Clip.none,
-                child: ResonsiveDatatable(),
+                child: ResponsiveDatatable(
+                  title: TextButton.icon(
+                      onPressed: () => {},
+                      icon: Icon(Icons.add),
+                      label: Text("new item")),
+                  reponseScreenSizes: [ScreenSize.xs],
+                  actions: [
+                    if (_isSearch)
+                      Expanded(
+                          child: TextField(
+                        decoration: InputDecoration(
+                            hintText:
+                                'Enter search term based on ${_searchKey!.replaceAll(RegExp('[\\W_]+'), ' ').toUpperCase()}',
+                            prefixIcon: IconButton(
+                                icon: Icon(Icons.cancel),
+                                onPressed: () {
+                                  setState(() {
+                                    _isSearch = false;
+                                  });
+                                  _initializeData();
+                                }),
+                            suffixIcon: IconButton(
+                                icon: Icon(Icons.search), onPressed: () {})),
+                        onSubmitted: (value) {
+                          _filterData(value);
+                        },
+                      )),
+                    if (!_isSearch)
+                      IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () {
+                            setState(() {
+                              _isSearch = true;
+                            });
+                          })
+                  ],
+                  headers: _headers,
+                  source: _source,
+                  selecteds: _selecteds,
+                  showSelect: _showSelected,
+                  autoHeight: false,
+                  dropContainer: (data) {
+                    if (int.tryParse(data['id'].toString())!.isEven) {
+                      return Text("is Even");
+                    }
+                    return _DropDownContainer(data: data);
+                  },
+                  onChangedRow: (value, header) {},
+                  onSubmittedRow: (value, header) {},
+                  onTabRow: (data) {},
+                  onSort: (value) {
+                    setState(() => _isLoading = true);
+
+                    setState(() {
+                      _sortColumn = value;
+                      _sortAscending = !_sortAscending;
+                      if (_sortAscending) {
+                        _sourceFiltered.sort((a, b) =>
+                            b["$_sortColumn"].compareTo(a["$_sortColumn"]));
+                      } else {
+                        _sourceFiltered.sort((a, b) =>
+                            a["$_sortColumn"].compareTo(b["$_sortColumn"]));
+                      }
+                      var _rangeTop = _currentPerPage! < _sourceFiltered.length
+                          ? _currentPage!
+                          : _sourceFiltered.length;
+                      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+                      _searchKey = value;
+
+                      _isLoading = false;
+                    });
+                  },
+                  expanded: _expanded,
+                  sortAscending: _sortAscending,
+                  sortColumn: _sortColumn,
+                  isLoading: _isLoading,
+                  onSelect: (value, item) {
+                    if (value!) {
+                      setState(() => _selecteds =
+                          _source.map((entry) => entry).toList().cast());
+                    } else {
+                      setState(() => _selecteds.clear());
+                    }
+                  },
+                  footers: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Text("Rows per page"),
+                    ),
+                    if (_perPages.isNotEmpty)
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: DropdownButton<int>(
+                          value: _currentPerPage,
+                          items: _perPages
+                              .map((e) => DropdownMenuItem<int>(
+                                    value: e,
+                                    child: Text("$e"),
+                                  ))
+                              .toList(),
+                          onChanged: (dynamic value) {
+                            setState(() {
+                              _currentPerPage = value;
+                              _currentPage = 1;
+                              _resetData();
+                            });
+                          },
+                          isExpanded: false,
+                        ),
+                      ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child:
+                          Text("$_currentPage - $_currentPerPage of $_total"),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        size: 16,
+                      ),
+                      onPressed: _currentPage == 1
+                          ? null
+                          : () {
+                              var _nextSet = _currentPage - _currentPerPage!;
+                              setState(() {
+                                _currentPage = _nextSet > 1 ? _nextSet : 1;
+                                _resetData(start: _currentPage - 1);
+                              });
+                            },
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_forward_ios, size: 16),
+                      onPressed: _currentPage + _currentPerPage! - 1 > _total
+                          ? null
+                          : () {
+                              var _nextSet = _currentPage + _currentPerPage!;
+
+                              setState(() {
+                                _currentPage = _nextSet < _total
+                                    ? _nextSet
+                                    : _total - _currentPerPage!;
+                                _resetData(start: _nextSet - 1);
+                              });
+                            },
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                    )
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
+            ),
+          ])),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _initializeData,
+        child: Icon(Icons.refresh_sharp),
+      ),
+    );
+  }
+}
+
+class _DropDownContainer extends StatelessWidget {
+  final Map<String, dynamic> data;
+  const _DropDownContainer({super.key, required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> _children = data.entries.map<Widget>((entry) {
+      Widget w = Row(
+        children: [
+          Text(entry.key.toString()),
+          Spacer(),
+          Text(entry.value.toString()),
+        ],
+      );
+      return w;
+    }).toList();
+
+    return Container(
+      /// height: 100,
+      child: Column(
+        /// children: [
+        ///   Expanded(
+        ///       child: Container(
+        ///     color: Colors.red,
+        ///     height: 50,
+        ///   )),
+
+        /// ],
+        children: _children,
       ),
     );
   }
