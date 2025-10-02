@@ -36,6 +36,7 @@ dependencies:
   serverpod_auth_shared_flutter: ^2.9.1
   animated_login: ^1.7.2
   responsive_table: ^0.2.0+2
+  fl_chart: ^1.1.0
 
 dev_dependencies:
   flutter_lints: '>=3.0.0 <7.0.0'

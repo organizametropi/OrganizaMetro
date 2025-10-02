@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:organiza_metro_flutter/src/screens/redirect/ferramenta_details.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_flutter/src/screens/dashboard/acount_page.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: products_table(),
+      home: ferramentaDetails(),
     ));
   }
 }
