@@ -134,21 +134,21 @@ class _retirarMaterialState extends State<retirarMaterialPage> {
                         width: 2,
                       ),
                     ),
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        RadioMenuButton(
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Radio(
                             value: _selectedValue,
                             groupValue: valoresRadioTest,
                             onChanged: (valoresRadioTest) {},
-                            child: Row(
-                              children: [
-                                Text(
-                                    'Balcão (retirada no centro de atendimento)',
-                                    softWrap: true,
-                                    overflow: TextOverflow.visible),
-                              ],
-                            ))
+                          ),
+                          title: Text(
+                            'Balcão (retirada no centro de atendimento)',
+                            softWrap: true,
+                          ),
+                        ),
                       ],
                     ),
                   ),

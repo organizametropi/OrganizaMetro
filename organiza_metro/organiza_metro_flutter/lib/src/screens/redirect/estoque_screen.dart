@@ -50,6 +50,7 @@ class _estoquePageState extends State<estoquePage> {
                         width: 180,
                         margin: EdgeInsets.all(8.0),
                         child: FloatingActionButton(
+                          heroTag: 'botão Materiais',
                           onPressed: () {
                             if (!initTable) {
                               _trocaTabela();
@@ -69,6 +70,7 @@ class _estoquePageState extends State<estoquePage> {
                         width: 180,
                         margin: EdgeInsets.all(8.0),
                         child: FloatingActionButton(
+                          heroTag: "Botão ferramentas",
                           onPressed: () {
                             if (initTable) {
                               _trocaTabela();
