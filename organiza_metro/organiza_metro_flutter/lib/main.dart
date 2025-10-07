@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:organiza_metro_flutter/src/screens/redirect/ferramenta_details.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
-import 'package:organiza_metro_flutter/src/screens/dashboard/acount_page.dart';
-import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
 import 'package:organiza_metro_flutter/src/screens/dashboard/home_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
-import 'package:organiza_metro_flutter/src/widgets/tables/products_table.dart';
+import 'package:intl/intl_standalone.dart'
+    if (dart.library.html) 'package:intl/intl_browser.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await InitializeServerpodClient();
-  WidgetsFlutterBinding.ensureInitialized();
+  await findSystemLocale();
+  await initializeDateFormatting('pt_BR');
+
   runApp(const MyApp());
 }
 
@@ -24,14 +26,23 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ferramentaDetails(),
+      supportedLocales: const [
+        Locale('pt', 'BR'),
+        Locale('en', 'US'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      locale: const Locale('pt', 'BR'),
+      home: homePage(),
     ));
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
-
 
   @override
   MyHomePageState createState() => MyHomePageState();

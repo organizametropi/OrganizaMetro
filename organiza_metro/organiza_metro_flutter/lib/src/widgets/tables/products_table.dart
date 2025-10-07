@@ -30,7 +30,7 @@ class _productsTableState extends State<products_table> {
   String? _sortColumn;
   bool _sortAscending = true;
   bool _isLoading = true;
-  bool _showSelected = true;
+  bool _showSelected = false;
   var random = new Random();
 
   //TEST DATABASE ENTERS HERE

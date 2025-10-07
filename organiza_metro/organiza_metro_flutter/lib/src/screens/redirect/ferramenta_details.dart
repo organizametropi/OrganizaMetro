@@ -16,48 +16,71 @@ class _ferramentaDetailsState extends State<ferramentaDetails> {
     return Scaffold(
         appBar: MyAppBar(),
         body: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center, // Alinha tudo à esquerda
-                    children: [
-                      Row(
-                        // Esta Row é usada para o ícone e o nome do cliente
-                        children: [
-                          CircleAvatar(
-                              // Imagem do cliente
-                              ),
-                          SizedBox(width: 8),
-                          Column(
-                            // Esta Column agrupa o nome e o email
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text("oioioioo"),
+                  ],
+                ),
+                SizedBox(
+                    child: Row(
+                  children: [
+                    Expanded(
+                      child: Card(
+                        child: Padding(
+                          padding: EdgeInsetsGeometry.only(top: 12),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('v varadhaghan',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              Text('balavardhaghan@gmail.com'),
+                              Text('Rebinboca da parafuseta'),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                children: [
+                                  Text('Rebinboca da parafuseto'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text('Rebinboca da parafuseto'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text('Rebinboca da parafuseto'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Row(
+                                children: [
+                                  Text('Rebinboca da parafuseto'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text('Rebinboca da parafuseto'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text('Rebinboca da parafuseto'),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              )
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                      SizedBox(height: 16),
-                      // Agora, os outros cards não precisam de Rows para cada linha
-                      Text('Contact Person',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('v varadhaghan'),
-                      Text('balavardhaghan@gmail.com'),
-                      Text('99148648689'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ));
+                    ),
+                  ],
+                )),
+              ],
+            )));
   }
 }

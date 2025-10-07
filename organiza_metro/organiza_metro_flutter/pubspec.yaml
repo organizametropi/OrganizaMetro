@@ -24,6 +24,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   serverpod_flutter: 2.9.1
   organiza_metro_client:
     path: ../organiza_metro_client
@@ -37,6 +39,8 @@ dependencies:
   animated_login: ^1.7.2
   responsive_table: ^0.2.0+2
   fl_chart: ^1.1.0
+  date_field: ^6.0.3+1
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_lints: '>=3.0.0 <7.0.0'
