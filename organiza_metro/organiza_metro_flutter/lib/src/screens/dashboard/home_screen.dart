@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/estoque_screen.dart';
+import 'package:organiza_metro_flutter/src/screens/redirect/historico_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/retirar_material_screen.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
@@ -86,7 +87,7 @@ class _homePage extends State<homePage> {
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
                               labelText: "Meu Histórico",
-                              goToPage: (context) => const loginPage(),
+                              goToPage: (context) => historicoPage(),
                               color: Color.fromRGBO(125, 85, 199, 1),
                             ),
                           ),
@@ -205,7 +206,7 @@ class _homePage extends State<homePage> {
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
                         labelText: "Meu Histórico",
-                        goToPage: (context) => const loginPage(),
+                        goToPage: (context) => historicoPage(),
                         color:Color.fromRGBO(125, 85, 199, 1),
                       ),
                     ), // A partir daqui apenas para admins
