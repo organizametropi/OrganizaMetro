@@ -3,17 +3,13 @@ import 'package:organiza_metro_flutter/src/screens/redirect/estoque_screen.dart'
 import 'package:organiza_metro_flutter/src/screens/redirect/historico_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/retirar_material_screen.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
+import 'package:organiza_metro_flutter/src/widgets/cards/notification_card.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
 import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
 
-class homePage extends StatefulWidget {
+class homePage extends StatelessWidget {
   const homePage({super.key});
 
-  @override
-  State<homePage> createState() => _homePage();
-}
-
-class _homePage extends State<homePage> {
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
@@ -103,7 +99,7 @@ class _homePage extends State<homePage> {
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
                                 labelText: "Relatórios",
-                                goToPage: (context) => const loginPage(),
+                                goToPage: (context) => notificationCard(),
                                 color: Color.fromRGBO(255,199,44,1),
                                 assetImage: 'lib/assets/images/dataChart.png'),
                           ),
