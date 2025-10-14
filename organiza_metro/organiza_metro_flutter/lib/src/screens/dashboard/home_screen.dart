@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/estoque_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/historico_screen.dart';
+import 'package:organiza_metro_flutter/src/screens/redirect/relatorios_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/retirar_material_screen.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/cards/notification_card.dart';
@@ -99,7 +100,7 @@ class homePage extends StatelessWidget {
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
                                 labelText: "Relatórios",
-                                goToPage: (context) => notificationCard(),
+                                goToPage: (context) => relatoriosPage(),
                                 color: Color.fromRGBO(255,199,44,1),
                                 assetImage: 'lib/assets/images/dataChart.png'),
                           ),
