@@ -37,14 +37,14 @@ Future<void> main(List<String> args) async {
   }
 
   // Cria registro na sua tabela customizada, linkando o mesmo id
-  final localUser = proto.UserInfo(
+  final localUser = proto.LocalUserInfo(
     userInfoId: serverpodUser!.id!,
     registro: '0001',
     telefone: '(11) 99999-0000',
     area: 'TI',
     isAdmin: true,
   );
-  await proto.UserInfo.db.insertRow(session, localUser);
+  await proto.LocalUserInfo.db.insertRow(session, localUser);
 
   print('✅ Usuário admin criado com sucesso!');
   print('Email: $email');

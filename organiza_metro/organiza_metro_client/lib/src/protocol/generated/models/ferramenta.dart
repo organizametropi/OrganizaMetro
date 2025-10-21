@@ -10,6 +10,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../../generated/models/unidade_medida.dart' as _i2;
+import '../../generated/models/base.dart' as _i3;
+import '../../generated/models/veiculo.dart' as _i4;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i5;
 
 abstract class Ferramenta implements _i1.SerializableModel {
   Ferramenta._({
@@ -20,12 +24,16 @@ abstract class Ferramenta implements _i1.SerializableModel {
     required this.emUso,
     required this.tipo,
     required this.status,
-    this.dataAquisicao,
+    required this.dataAquisicao,
     this.dataUltimaMovimentacao,
     required this.unidadeMedidaId,
-    this.baseId,
-    this.veiculoId,
-    this.empenhadoParaId,
+    this.unidadeMedida,
+    required this.baseId,
+    this.base,
+    required this.veiculoId,
+    this.veiculo,
+    required this.empenhadoParaId,
+    this.empenhadoPara,
   });
 
   factory Ferramenta({
@@ -36,12 +44,16 @@ abstract class Ferramenta implements _i1.SerializableModel {
     required bool emUso,
     required String tipo,
     required String status,
-    DateTime? dataAquisicao,
+    required DateTime dataAquisicao,
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
-    int? baseId,
-    int? veiculoId,
-    int? empenhadoParaId,
+    _i2.UnidadeMedida? unidadeMedida,
+    required int baseId,
+    _i3.Base? base,
+    required int veiculoId,
+    _i4.Veiculo? veiculo,
+    required int empenhadoParaId,
+    _i5.UserInfo? empenhadoPara,
   }) = _FerramentaImpl;
 
   factory Ferramenta.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -53,19 +65,33 @@ abstract class Ferramenta implements _i1.SerializableModel {
       emUso: jsonSerialization['emUso'] as bool,
       tipo: jsonSerialization['tipo'] as String,
       status: jsonSerialization['status'] as String,
-      dataAquisicao: jsonSerialization['dataAquisicao'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['dataAquisicao']),
+      dataAquisicao: _i1.DateTimeJsonExtension.fromJson(
+          jsonSerialization['dataAquisicao']),
       dataUltimaMovimentacao:
           jsonSerialization['dataUltimaMovimentacao'] == null
               ? null
               : _i1.DateTimeJsonExtension.fromJson(
                   jsonSerialization['dataUltimaMovimentacao']),
       unidadeMedidaId: jsonSerialization['unidadeMedidaId'] as int,
-      baseId: jsonSerialization['baseId'] as int?,
-      veiculoId: jsonSerialization['veiculoId'] as int?,
-      empenhadoParaId: jsonSerialization['empenhadoParaId'] as int?,
+      unidadeMedida: jsonSerialization['unidadeMedida'] == null
+          ? null
+          : _i2.UnidadeMedida.fromJson(
+              (jsonSerialization['unidadeMedida'] as Map<String, dynamic>)),
+      baseId: jsonSerialization['baseId'] as int,
+      base: jsonSerialization['base'] == null
+          ? null
+          : _i3.Base.fromJson(
+              (jsonSerialization['base'] as Map<String, dynamic>)),
+      veiculoId: jsonSerialization['veiculoId'] as int,
+      veiculo: jsonSerialization['veiculo'] == null
+          ? null
+          : _i4.Veiculo.fromJson(
+              (jsonSerialization['veiculo'] as Map<String, dynamic>)),
+      empenhadoParaId: jsonSerialization['empenhadoParaId'] as int,
+      empenhadoPara: jsonSerialization['empenhadoPara'] == null
+          ? null
+          : _i5.UserInfo.fromJson(
+              (jsonSerialization['empenhadoPara'] as Map<String, dynamic>)),
     );
   }
 
@@ -86,17 +112,25 @@ abstract class Ferramenta implements _i1.SerializableModel {
 
   String status;
 
-  DateTime? dataAquisicao;
+  DateTime dataAquisicao;
 
   DateTime? dataUltimaMovimentacao;
 
   int unidadeMedidaId;
 
-  int? baseId;
+  _i2.UnidadeMedida? unidadeMedida;
 
-  int? veiculoId;
+  int baseId;
 
-  int? empenhadoParaId;
+  _i3.Base? base;
+
+  int veiculoId;
+
+  _i4.Veiculo? veiculo;
+
+  int empenhadoParaId;
+
+  _i5.UserInfo? empenhadoPara;
 
   /// Returns a shallow copy of this [Ferramenta]
   /// with some or all fields replaced by the given arguments.
@@ -112,9 +146,13 @@ abstract class Ferramenta implements _i1.SerializableModel {
     DateTime? dataAquisicao,
     DateTime? dataUltimaMovimentacao,
     int? unidadeMedidaId,
+    _i2.UnidadeMedida? unidadeMedida,
     int? baseId,
+    _i3.Base? base,
     int? veiculoId,
+    _i4.Veiculo? veiculo,
     int? empenhadoParaId,
+    _i5.UserInfo? empenhadoPara,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -126,13 +164,17 @@ abstract class Ferramenta implements _i1.SerializableModel {
       'emUso': emUso,
       'tipo': tipo,
       'status': status,
-      if (dataAquisicao != null) 'dataAquisicao': dataAquisicao?.toJson(),
+      'dataAquisicao': dataAquisicao.toJson(),
       if (dataUltimaMovimentacao != null)
         'dataUltimaMovimentacao': dataUltimaMovimentacao?.toJson(),
       'unidadeMedidaId': unidadeMedidaId,
-      if (baseId != null) 'baseId': baseId,
-      if (veiculoId != null) 'veiculoId': veiculoId,
-      if (empenhadoParaId != null) 'empenhadoParaId': empenhadoParaId,
+      if (unidadeMedida != null) 'unidadeMedida': unidadeMedida?.toJson(),
+      'baseId': baseId,
+      if (base != null) 'base': base?.toJson(),
+      'veiculoId': veiculoId,
+      if (veiculo != null) 'veiculo': veiculo?.toJson(),
+      'empenhadoParaId': empenhadoParaId,
+      if (empenhadoPara != null) 'empenhadoPara': empenhadoPara?.toJson(),
     };
   }
 
@@ -153,12 +195,16 @@ class _FerramentaImpl extends Ferramenta {
     required bool emUso,
     required String tipo,
     required String status,
-    DateTime? dataAquisicao,
+    required DateTime dataAquisicao,
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
-    int? baseId,
-    int? veiculoId,
-    int? empenhadoParaId,
+    _i2.UnidadeMedida? unidadeMedida,
+    required int baseId,
+    _i3.Base? base,
+    required int veiculoId,
+    _i4.Veiculo? veiculo,
+    required int empenhadoParaId,
+    _i5.UserInfo? empenhadoPara,
   }) : super._(
           id: id,
           codigoSap: codigoSap,
@@ -170,9 +216,13 @@ class _FerramentaImpl extends Ferramenta {
           dataAquisicao: dataAquisicao,
           dataUltimaMovimentacao: dataUltimaMovimentacao,
           unidadeMedidaId: unidadeMedidaId,
+          unidadeMedida: unidadeMedida,
           baseId: baseId,
+          base: base,
           veiculoId: veiculoId,
+          veiculo: veiculo,
           empenhadoParaId: empenhadoParaId,
+          empenhadoPara: empenhadoPara,
         );
 
   /// Returns a shallow copy of this [Ferramenta]
@@ -187,12 +237,16 @@ class _FerramentaImpl extends Ferramenta {
     bool? emUso,
     String? tipo,
     String? status,
-    Object? dataAquisicao = _Undefined,
+    DateTime? dataAquisicao,
     Object? dataUltimaMovimentacao = _Undefined,
     int? unidadeMedidaId,
-    Object? baseId = _Undefined,
-    Object? veiculoId = _Undefined,
-    Object? empenhadoParaId = _Undefined,
+    Object? unidadeMedida = _Undefined,
+    int? baseId,
+    Object? base = _Undefined,
+    int? veiculoId,
+    Object? veiculo = _Undefined,
+    int? empenhadoParaId,
+    Object? empenhadoPara = _Undefined,
   }) {
     return Ferramenta(
       id: id is int? ? id : this.id,
@@ -202,16 +256,22 @@ class _FerramentaImpl extends Ferramenta {
       emUso: emUso ?? this.emUso,
       tipo: tipo ?? this.tipo,
       status: status ?? this.status,
-      dataAquisicao:
-          dataAquisicao is DateTime? ? dataAquisicao : this.dataAquisicao,
+      dataAquisicao: dataAquisicao ?? this.dataAquisicao,
       dataUltimaMovimentacao: dataUltimaMovimentacao is DateTime?
           ? dataUltimaMovimentacao
           : this.dataUltimaMovimentacao,
       unidadeMedidaId: unidadeMedidaId ?? this.unidadeMedidaId,
-      baseId: baseId is int? ? baseId : this.baseId,
-      veiculoId: veiculoId is int? ? veiculoId : this.veiculoId,
-      empenhadoParaId:
-          empenhadoParaId is int? ? empenhadoParaId : this.empenhadoParaId,
+      unidadeMedida: unidadeMedida is _i2.UnidadeMedida?
+          ? unidadeMedida
+          : this.unidadeMedida?.copyWith(),
+      baseId: baseId ?? this.baseId,
+      base: base is _i3.Base? ? base : this.base?.copyWith(),
+      veiculoId: veiculoId ?? this.veiculoId,
+      veiculo: veiculo is _i4.Veiculo? ? veiculo : this.veiculo?.copyWith(),
+      empenhadoParaId: empenhadoParaId ?? this.empenhadoParaId,
+      empenhadoPara: empenhadoPara is _i5.UserInfo?
+          ? empenhadoPara
+          : this.empenhadoPara?.copyWith(),
     );
   }
 }

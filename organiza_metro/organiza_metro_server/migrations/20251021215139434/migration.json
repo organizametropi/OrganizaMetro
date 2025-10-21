@@ -1,0 +1,606 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "ferramenta",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [
+          {
+            "columnName": "dataAquisicao",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "baseId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "veiculoId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "empenhadoParaId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "ferramenta_fk_3",
+            "columns": [
+              "empenhadoParaId"
+            ],
+            "referenceTable": "user_info",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "ferramenta_fk_3"
+        ],
+        "warnings": [
+          {
+            "type": "notNullAdded",
+            "message": "Column dataAquisicao of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "dataAquisicao"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column baseId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "baseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column veiculoId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "veiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column empenhadoParaId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "empenhadoParaId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column baseId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "material",
+            "columns": [
+              "baseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column veiculoId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "material",
+            "columns": [
+              "veiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column materialId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "materialId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column ferramentaId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "ferramentaId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column origemBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "origemBaseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column destinoBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "destinoBaseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column origemVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "origemVeiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column destinoVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "destinoVeiculoId"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "material",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [
+          {
+            "columnName": "quantidade",
+            "addNullable": true,
+            "removeNullable": false,
+            "changeDefault": false
+          },
+          {
+            "columnName": "baseId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "veiculoId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "notNullAdded",
+            "message": "Column dataAquisicao of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "dataAquisicao"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column baseId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "baseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column veiculoId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "veiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column empenhadoParaId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "empenhadoParaId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column baseId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "material",
+            "columns": [
+              "baseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column veiculoId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "material",
+            "columns": [
+              "veiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column materialId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "materialId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column ferramentaId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "ferramentaId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column origemBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "origemBaseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column destinoBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "destinoBaseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column origemVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "origemVeiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column destinoVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "destinoVeiculoId"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "movimentacao",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [
+          {
+            "columnName": "materialId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "ferramentaId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "quantidade",
+            "addNullable": true,
+            "removeNullable": false,
+            "changeDefault": false
+          },
+          {
+            "columnName": "origemBaseId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "destinoBaseId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "origemVeiculoId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "columnName": "destinoVeiculoId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "movimentacao_fk_0",
+            "columns": [
+              "usuarioId"
+            ],
+            "referenceTable": "user_info",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "movimentacao_fk_0"
+        ],
+        "warnings": [
+          {
+            "type": "notNullAdded",
+            "message": "Column dataAquisicao of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "dataAquisicao"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column baseId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "baseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column veiculoId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "veiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column empenhadoParaId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "ferramenta",
+            "columns": [
+              "empenhadoParaId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column baseId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "material",
+            "columns": [
+              "baseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column veiculoId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "material",
+            "columns": [
+              "veiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column materialId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "materialId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column ferramentaId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "ferramentaId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column origemBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "origemBaseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column destinoBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "destinoBaseId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column origemVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "origemVeiculoId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column destinoVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "destinoVeiculoId"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "notNullAdded",
+      "message": "Column dataAquisicao of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "ferramenta",
+      "columns": [
+        "dataAquisicao"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column baseId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "ferramenta",
+      "columns": [
+        "baseId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column veiculoId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "ferramenta",
+      "columns": [
+        "veiculoId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column empenhadoParaId of table ferramenta is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "ferramenta",
+      "columns": [
+        "empenhadoParaId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column baseId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "material",
+      "columns": [
+        "baseId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column veiculoId of table material is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "material",
+      "columns": [
+        "veiculoId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column materialId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "movimentacao",
+      "columns": [
+        "materialId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column ferramentaId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "movimentacao",
+      "columns": [
+        "ferramentaId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column origemBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "movimentacao",
+      "columns": [
+        "origemBaseId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column destinoBaseId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "movimentacao",
+      "columns": [
+        "destinoBaseId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column origemVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "movimentacao",
+      "columns": [
+        "origemVeiculoId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column destinoVeiculoId of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "movimentacao",
+      "columns": [
+        "destinoVeiculoId"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

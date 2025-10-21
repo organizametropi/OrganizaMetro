@@ -18,9 +18,7 @@ import 'package:organiza_metro_server/src/generated/generated/models/ferramenta.
     as _i4;
 import 'package:organiza_metro_server/src/generated/generated/models/material.dart'
     as _i5;
-import 'package:organiza_metro_server/src/generated/generated/models/requisicao_items.dart'
-    as _i6;
-import 'package:organiza_metro_server/src/generated/greeting.dart' as _i7;
+import 'package:organiza_metro_server/src/generated/greeting.dart' as _i6;
 import 'package:organiza_metro_server/src/generated/protocol.dart';
 import 'package:organiza_metro_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -113,8 +111,6 @@ class TestEndpoints {
 
   late final _MaterialEndpoint material;
 
-  late final _MovimentacaoEndpoint movimentacao;
-
   late final _GreetingEndpoint greeting;
 }
 
@@ -134,10 +130,6 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     material = _MaterialEndpoint(
-      endpoints,
-      serializationManager,
-    );
-    movimentacao = _MovimentacaoEndpoint(
       endpoints,
       serializationManager,
     );
@@ -287,56 +279,6 @@ class _MaterialEndpoint {
   }
 }
 
-class _MovimentacaoEndpoint {
-  _MovimentacaoEndpoint(
-    this._endpointDispatch,
-    this._serializationManager,
-  );
-
-  final _i2.EndpointDispatch _endpointDispatch;
-
-  final _i2.SerializationManager _serializationManager;
-
-  _i3.Future<bool> criarRequisicaoSaida(
-    _i1.TestSessionBuilder sessionBuilder, {
-    required List<_i6.RequisicaoItem> itens,
-    required String modalidadeEntrega,
-    String? observacao,
-    int? destinoBaseId,
-    int? destinoVeiculoId,
-  }) async {
-    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
-        endpoint: 'movimentacao',
-        method: 'criarRequisicaoSaida',
-      );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'movimentacao',
-          methodName: 'criarRequisicaoSaida',
-          parameters: _i1.testObjectToJson({
-            'itens': itens,
-            'modalidadeEntrega': modalidadeEntrega,
-            'observacao': observacao,
-            'destinoBaseId': destinoBaseId,
-            'destinoVeiculoId': destinoVeiculoId,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue = await (_localCallContext.method.call(
-          _localUniqueSession,
-          _localCallContext.arguments,
-        ) as _i3.Future<bool>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-}
-
 class _GreetingEndpoint {
   _GreetingEndpoint(
     this._endpointDispatch,
@@ -347,7 +289,7 @@ class _GreetingEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i7.Greeting> hello(
+  _i3.Future<_i6.Greeting> hello(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -368,7 +310,7 @@ class _GreetingEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Greeting>);
+        ) as _i3.Future<_i6.Greeting>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

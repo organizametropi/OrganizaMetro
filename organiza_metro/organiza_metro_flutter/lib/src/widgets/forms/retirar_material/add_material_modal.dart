@@ -70,7 +70,7 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
 
   @override
   Widget build(BuildContext context) {
-    print('Lista: $_source fim'); // ta puxando uma lista vazia e depois enche
+    print('header: $_headers'); // ta puxando uma lista vazia e depois enche
     return AlertDialog(
       title: const Text('Selecionar Materiais Disponíveis'),
       content: SizedBox(

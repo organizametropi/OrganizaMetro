@@ -8,14 +8,18 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../../generated/models/ferramenta.dart' as _i2;
 
 abstract class Calibracao
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Calibracao._({
     this.id,
     required this.ferramentaId,
+    this.ferramenta,
     required this.dataCalibracao,
     required this.validadeCalibracao,
     required this.status,
@@ -24,6 +28,7 @@ abstract class Calibracao
   factory Calibracao({
     int? id,
     required int ferramentaId,
+    _i2.Ferramenta? ferramenta,
     required DateTime dataCalibracao,
     required DateTime validadeCalibracao,
     required String status,
@@ -33,6 +38,10 @@ abstract class Calibracao
     return Calibracao(
       id: jsonSerialization['id'] as int?,
       ferramentaId: jsonSerialization['ferramentaId'] as int,
+      ferramenta: jsonSerialization['ferramenta'] == null
+          ? null
+          : _i2.Ferramenta.fromJson(
+              (jsonSerialization['ferramenta'] as Map<String, dynamic>)),
       dataCalibracao: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['dataCalibracao']),
       validadeCalibracao: _i1.DateTimeJsonExtension.fromJson(
@@ -50,6 +59,8 @@ abstract class Calibracao
 
   int ferramentaId;
 
+  _i2.Ferramenta? ferramenta;
+
   DateTime dataCalibracao;
 
   DateTime validadeCalibracao;
@@ -65,6 +76,7 @@ abstract class Calibracao
   Calibracao copyWith({
     int? id,
     int? ferramentaId,
+    _i2.Ferramenta? ferramenta,
     DateTime? dataCalibracao,
     DateTime? validadeCalibracao,
     String? status,
@@ -74,6 +86,7 @@ abstract class Calibracao
     return {
       if (id != null) 'id': id,
       'ferramentaId': ferramentaId,
+      if (ferramenta != null) 'ferramenta': ferramenta?.toJson(),
       'dataCalibracao': dataCalibracao.toJson(),
       'validadeCalibracao': validadeCalibracao.toJson(),
       'status': status,
@@ -85,14 +98,15 @@ abstract class Calibracao
     return {
       if (id != null) 'id': id,
       'ferramentaId': ferramentaId,
+      if (ferramenta != null) 'ferramenta': ferramenta?.toJsonForProtocol(),
       'dataCalibracao': dataCalibracao.toJson(),
       'validadeCalibracao': validadeCalibracao.toJson(),
       'status': status,
     };
   }
 
-  static CalibracaoInclude include() {
-    return CalibracaoInclude._();
+  static CalibracaoInclude include({_i2.FerramentaInclude? ferramenta}) {
+    return CalibracaoInclude._(ferramenta: ferramenta);
   }
 
   static CalibracaoIncludeList includeList({
@@ -127,12 +141,14 @@ class _CalibracaoImpl extends Calibracao {
   _CalibracaoImpl({
     int? id,
     required int ferramentaId,
+    _i2.Ferramenta? ferramenta,
     required DateTime dataCalibracao,
     required DateTime validadeCalibracao,
     required String status,
   }) : super._(
           id: id,
           ferramentaId: ferramentaId,
+          ferramenta: ferramenta,
           dataCalibracao: dataCalibracao,
           validadeCalibracao: validadeCalibracao,
           status: status,
@@ -145,6 +161,7 @@ class _CalibracaoImpl extends Calibracao {
   Calibracao copyWith({
     Object? id = _Undefined,
     int? ferramentaId,
+    Object? ferramenta = _Undefined,
     DateTime? dataCalibracao,
     DateTime? validadeCalibracao,
     String? status,
@@ -152,6 +169,9 @@ class _CalibracaoImpl extends Calibracao {
     return Calibracao(
       id: id is int? ? id : this.id,
       ferramentaId: ferramentaId ?? this.ferramentaId,
+      ferramenta: ferramenta is _i2.Ferramenta?
+          ? ferramenta
+          : this.ferramenta?.copyWith(),
       dataCalibracao: dataCalibracao ?? this.dataCalibracao,
       validadeCalibracao: validadeCalibracao ?? this.validadeCalibracao,
       status: status ?? this.status,
@@ -181,11 +201,26 @@ class CalibracaoTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt ferramentaId;
 
+  _i2.FerramentaTable? _ferramenta;
+
   late final _i1.ColumnDateTime dataCalibracao;
 
   late final _i1.ColumnDateTime validadeCalibracao;
 
   late final _i1.ColumnString status;
+
+  _i2.FerramentaTable get ferramenta {
+    if (_ferramenta != null) return _ferramenta!;
+    _ferramenta = _i1.createRelationTable(
+      relationFieldName: 'ferramenta',
+      field: Calibracao.t.ferramentaId,
+      foreignField: _i2.Ferramenta.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.FerramentaTable(tableRelation: foreignTableRelation),
+    );
+    return _ferramenta!;
+  }
 
   @override
   List<_i1.Column> get columns => [
@@ -195,13 +230,25 @@ class CalibracaoTable extends _i1.Table<int?> {
         validadeCalibracao,
         status,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'ferramenta') {
+      return ferramenta;
+    }
+    return null;
+  }
 }
 
 class CalibracaoInclude extends _i1.IncludeObject {
-  CalibracaoInclude._();
+  CalibracaoInclude._({_i2.FerramentaInclude? ferramenta}) {
+    _ferramenta = ferramenta;
+  }
+
+  _i2.FerramentaInclude? _ferramenta;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'ferramenta': _ferramenta};
 
   @override
   _i1.Table<int?> get table => Calibracao.t;
@@ -229,6 +276,8 @@ class CalibracaoIncludeList extends _i1.IncludeList {
 
 class CalibracaoRepository {
   const CalibracaoRepository._();
+
+  final attachRow = const CalibracaoAttachRowRepository._();
 
   /// Returns a list of [Calibracao]s matching the given query parameters.
   ///
@@ -261,6 +310,7 @@ class CalibracaoRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<CalibracaoTable>? orderByList,
     _i1.Transaction? transaction,
+    CalibracaoInclude? include,
   }) async {
     return session.db.find<Calibracao>(
       where: where?.call(Calibracao.t),
@@ -270,6 +320,7 @@ class CalibracaoRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -298,6 +349,7 @@ class CalibracaoRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<CalibracaoTable>? orderByList,
     _i1.Transaction? transaction,
+    CalibracaoInclude? include,
   }) async {
     return session.db.findFirstRow<Calibracao>(
       where: where?.call(Calibracao.t),
@@ -306,6 +358,7 @@ class CalibracaoRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -314,10 +367,12 @@ class CalibracaoRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    CalibracaoInclude? include,
   }) async {
     return session.db.findById<Calibracao>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -435,6 +490,33 @@ class CalibracaoRepository {
     return session.db.count<Calibracao>(
       where: where?.call(Calibracao.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class CalibracaoAttachRowRepository {
+  const CalibracaoAttachRowRepository._();
+
+  /// Creates a relation between the given [Calibracao] and [Ferramenta]
+  /// by setting the [Calibracao]'s foreign key `ferramentaId` to refer to the [Ferramenta].
+  Future<void> ferramenta(
+    _i1.Session session,
+    Calibracao calibracao,
+    _i2.Ferramenta ferramenta, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (calibracao.id == null) {
+      throw ArgumentError.notNull('calibracao.id');
+    }
+    if (ferramenta.id == null) {
+      throw ArgumentError.notNull('ferramenta.id');
+    }
+
+    var $calibracao = calibracao.copyWith(ferramentaId: ferramenta.id);
+    await session.db.updateRow<Calibracao>(
+      $calibracao,
+      columns: [Calibracao.t.ferramentaId],
       transaction: transaction,
     );
   }

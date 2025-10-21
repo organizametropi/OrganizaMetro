@@ -38,7 +38,7 @@ class _estoqueTableState extends State<estoque_table_material> {
         "codigoSap": m.codigoSap,
         "descricao": m.descricao,
         "quantidade": m.quantidade,
-        "unidadeMedidaId": m.unidadeMedidaId,
+        "unidadeMedidaId": m.unidadeMedida!.codigo,
       };
     }).toList();
   }

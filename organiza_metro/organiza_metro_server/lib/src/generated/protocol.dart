@@ -27,8 +27,6 @@ import 'package:organiza_metro_server/src/generated/generated/models/ferramenta.
     as _i15;
 import 'package:organiza_metro_server/src/generated/generated/models/material.dart'
     as _i16;
-import 'package:organiza_metro_server/src/generated/generated/models/requisicao_items.dart'
-    as _i17;
 export 'generated/models/base.dart';
 export 'generated/models/calibracao.dart';
 export 'generated/models/ferramenta.dart';
@@ -235,8 +233,8 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'dataAquisicao',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: true,
-          dartType: 'DateTime?',
+          isNullable: false,
+          dartType: 'DateTime',
         ),
         _i2.ColumnDefinition(
           name: 'dataUltimaMovimentacao',
@@ -253,20 +251,20 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'baseId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'veiculoId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'empenhadoParaId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
       ],
       foreignKeys: [
@@ -369,8 +367,8 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'quantidade',
           columnType: _i2.ColumnType.doublePrecision,
-          isNullable: false,
-          dartType: 'double',
+          isNullable: true,
+          dartType: 'double?',
         ),
         _i2.ColumnDefinition(
           name: 'estoqueMinimo',
@@ -399,14 +397,14 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'baseId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'veiculoId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
       ],
       foreignKeys: [
@@ -490,20 +488,20 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'materialId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'ferramentaId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'quantidade',
           columnType: _i2.ColumnType.doublePrecision,
-          isNullable: false,
-          dartType: 'double',
+          isNullable: true,
+          dartType: 'double?',
         ),
         _i2.ColumnDefinition(
           name: 'tipoMovimentacao',
@@ -538,26 +536,26 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'origemBaseId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'destinoBaseId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'origemVeiculoId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'destinoVeiculoId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          isNullable: false,
+          dartType: 'int',
         ),
       ],
       foreignKeys: [
@@ -751,7 +749,7 @@ class Protocol extends _i1.SerializationManagerServer {
     ),
     _i2.TableDefinition(
       name: 'user_info',
-      dartName: 'UserInfo',
+      dartName: 'LocalUserInfo',
       schema: 'public',
       module: 'organiza_metro',
       columns: [
@@ -931,8 +929,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i11.UnidadeMedida) {
       return _i11.UnidadeMedida.fromJson(data) as T;
     }
-    if (t == _i12.UserInfo) {
-      return _i12.UserInfo.fromJson(data) as T;
+    if (t == _i12.LocalUserInfo) {
+      return _i12.LocalUserInfo.fromJson(data) as T;
     }
     if (t == _i13.Veiculo) {
       return _i13.Veiculo.fromJson(data) as T;
@@ -964,8 +962,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i11.UnidadeMedida?>()) {
       return (data != null ? _i11.UnidadeMedida.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.UserInfo?>()) {
-      return (data != null ? _i12.UserInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i12.LocalUserInfo?>()) {
+      return (data != null ? _i12.LocalUserInfo.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i13.Veiculo?>()) {
       return (data != null ? _i13.Veiculo.fromJson(data) : null) as T;
@@ -980,11 +978,6 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<_i16.Material>) {
       return (data as List).map((e) => deserialize<_i16.Material>(e)).toList()
           as T;
-    }
-    if (t == List<_i17.RequisicaoItem>) {
-      return (data as List)
-          .map((e) => deserialize<_i17.RequisicaoItem>(e))
-          .toList() as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -1023,8 +1016,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i11.UnidadeMedida) {
       return 'UnidadeMedida';
     }
-    if (data is _i12.UserInfo) {
-      return 'UserInfo';
+    if (data is _i12.LocalUserInfo) {
+      return 'LocalUserInfo';
     }
     if (data is _i13.Veiculo) {
       return 'Veiculo';
@@ -1073,8 +1066,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'UnidadeMedida') {
       return deserialize<_i11.UnidadeMedida>(data['data']);
     }
-    if (dataClassName == 'UserInfo') {
-      return deserialize<_i12.UserInfo>(data['data']);
+    if (dataClassName == 'LocalUserInfo') {
+      return deserialize<_i12.LocalUserInfo>(data['data']);
     }
     if (dataClassName == 'Veiculo') {
       return deserialize<_i13.Veiculo>(data['data']);
@@ -1122,8 +1115,8 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i10.TipoMaterial.t;
       case _i11.UnidadeMedida:
         return _i11.UnidadeMedida.t;
-      case _i12.UserInfo:
-        return _i12.UserInfo.t;
+      case _i12.LocalUserInfo:
+        return _i12.LocalUserInfo.t;
       case _i13.Veiculo:
         return _i13.Veiculo.t;
     }

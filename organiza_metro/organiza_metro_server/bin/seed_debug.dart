@@ -40,7 +40,7 @@ Future<void> main(List<String> args) async {
   final List<int> veiculoIds = [];
 
   // -----------------------------------------------------------------------
-  // 1. INSERÇÃO DE USUÁRIOS (Tabela auth.EmailAuth e proto.UserInfo)
+  // 1. INSERÇÃO DE USUÁRIOS (Tabela auth.EmailAuth e proto.LocalUserInfo)
   // -----------------------------------------------------------------------
   print('-> Inserindo Usuários (Autenticação e Custom)');
 
@@ -58,14 +58,14 @@ Future<void> main(List<String> args) async {
           session, 'Funcionario $i', email, '12345678');
       authId = serverpodUser!.id!;
 
-      final localUser = proto.UserInfo(
+      final localUser = proto.LocalUserInfo(
         userInfoId: authId,
         registro: reg,
         telefone: '(11) 99999-00${i}0',
         area: 'Manutenção ${baseData[i - 1]['codigo']}',
         isAdmin: false,
       );
-      await proto.UserInfo.db.insertRow(session, localUser);
+      await proto.LocalUserInfo.db.insertRow(session, localUser);
       print(
           '✅ Usuário padrão criado: ${localUser.registro} (Auth ID: $authId)');
     } else {
@@ -300,7 +300,6 @@ Future<void> main(List<String> args) async {
   final List<int> baseValues = baseIds.values.toList();
   final List<int> veiculoValues = veiculoIds.toList();
 
-
   for (var i = 0; i < 15; i++) {
     final isConsumo = i % 3 == 0;
     final tipoNome = isConsumo ? 'Consumo' : 'Giro';
@@ -326,19 +325,33 @@ Future<void> main(List<String> args) async {
         : null;
 
     final quantidadeArrumada = _random.nextInt(90);
-   
+
+    var _baseId, _veiculoId; 
+
+    var _tipoid = await proto.TipoMaterial.db
+        .findFirstRow(session, where: (t) => t.id.equals(tipoId));
+    var _unidadeMedidaId = await proto.UnidadeMedida.db
+        .findFirstRow(session, where: (t) => t.id.equals(unidadeMedidaId));
+    if (baseId != null) {
+       _baseId = await proto.Base.db
+          .findFirstRow(session, where: (t) => t.id.equals(baseId));
+    }
+    if (veiculoId != null) {
+       _veiculoId = await proto.Base.db
+          .findFirstRow(session, where: (t) => t.id.equals(veiculoId));
+    }
 
     final material = proto.Material(
         codigoSap: isConsumo ? 10000000 + i : 15000000 + i,
         descricao: '$tipoNome Item- ${i + 1}',
-        tipoId: tipoId,
-        unidadeMedidaId: unidadeMedidaId,
-        quantidade: quantidadeArrumada.toDouble(),  
+        tipo: _tipoid,
+        unidadeMedida: _unidadeMedidaId,
+        quantidade: quantidadeArrumada.toDouble(),
         estoqueMinimo: 5.0,
         dataUltimaMovimentacao:
             DateTime.now().subtract(Duration(days: _random.nextInt(30))),
-        baseId: baseId,
-        veiculoId: veiculoId);
+        base: _baseId,
+        veiculo: _veiculoId);
 
     final existingMaterial = await proto.Material.db.findFirstRow(session,
         where: (t) => t.codigoSap.equals(material.codigoSap));
@@ -346,7 +359,6 @@ Future<void> main(List<String> args) async {
     if (existingMaterial == null) {
       await proto.Material.db.insertRow(session, material);
     }
-
   }
 
   print('15 Materiais de estoque inseridos! (se não existirem)');
@@ -356,6 +368,7 @@ Future<void> main(List<String> args) async {
   // -----------------------------------------------------------------------
   print('-> Inserindo Ferramentas (Patrimoniado e Manual)');
   final List<int> empenhadoParaAuthIds = usuarioIds.values.toList();
+ 
 
   for (var i = 0; i < 10; i++) {
     final isInstrumento = i % 2 == 0;
@@ -368,11 +381,26 @@ Future<void> main(List<String> args) async {
         ? veiculoValues[_random.nextInt(veiculoValues.length)]
         : null;
 
+     var _baseId, _veiculoId; 
+
+    if (baseId != null) {
+       _baseId = await proto.Base.db
+          .findFirstRow(session, where: (t) => t.id.equals(baseId));
+    }
+    if (veiculoId != null) {
+       _veiculoId = await proto.Base.db
+          .findFirstRow(session, where: (t) => t.id.equals(veiculoId));
+    }
+
     final unidadeIdFerramenta = unidadeMedidaIds['UN'];
+   
     if (unidadeIdFerramenta == null) {
       print('ERRO: Unidade de medida "UN" não encontrada para ferramentas.');
       continue;
     }
+
+    var _unidadeIdFerramenta = await proto.UnidadeMedida.db.findFirstRow(session, where: (t) => t.id.equals(unidadeIdFerramenta));
+    var _empenhadoParaId = await auth.UserInfo.db.findFirstRow(session, where: (t) => t.id.equals(empenhadoParaAuthIds[_random.nextInt(empenhadoParaAuthIds.length)]));
 
     final patrimonioCode = 'PAT${100 + i}';
     final existingFerramenta = await proto.Ferramenta.db.findFirstRow(session,
@@ -388,16 +416,16 @@ Future<void> main(List<String> args) async {
       codigoSap: isInstrumento ? 16000000 + i : 17000000 + i,
       descricao: '$tipoNome - Item ${i + 1}',
       patrimonio: patrimonioCode,
-      unidadeMedidaId: unidadeIdFerramenta,
+      unidadeMedida: _unidadeIdFerramenta,
 
-      empenhadoParaId:
-          empenhadoParaAuthIds[_random.nextInt(empenhadoParaAuthIds.length)],
+      empenhadoPara:
+          _empenhadoParaId,
       emUso: true,
       tipo: isInstrumento ? 'Instrumento' : 'Ferramenta',
       status: 'Empenhada',
 
-      baseId: baseId,
-      veiculoId: veiculoId,
+      base: _baseId,
+      veiculo: _veiculoId,
 
       dataAquisicao:
           DateTime(2023, _random.nextInt(12) + 1, _random.nextInt(28) + 1),
@@ -428,7 +456,7 @@ Future<void> main(List<String> args) async {
       final validade = dataCalib.add(const Duration(days: 365));
 
       final calibracao = proto.Calibracao(
-        ferramentaId: ferramenta!.id!, // 🚨 Agora sabemos que o ID existe!
+        ferramenta: ferramenta, // 🚨 Agora sabemos que o ID existe!
         dataCalibracao: dataCalib,
         validadeCalibracao: validade,
         status: validade.isBefore(DateTime.now()) ? 'Vencido' : 'Válido',

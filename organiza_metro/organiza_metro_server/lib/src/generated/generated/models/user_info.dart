@@ -11,9 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-abstract class UserInfo
+abstract class LocalUserInfo
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
-  UserInfo._({
+  LocalUserInfo._({
     this.id,
     required this.userInfoId,
     required this.registro,
@@ -22,17 +22,17 @@ abstract class UserInfo
     bool? isAdmin,
   }) : isAdmin = isAdmin ?? false;
 
-  factory UserInfo({
+  factory LocalUserInfo({
     int? id,
     required int userInfoId,
     required String registro,
     required String telefone,
     required String area,
     bool? isAdmin,
-  }) = _UserInfoImpl;
+  }) = _LocalUserInfoImpl;
 
-  factory UserInfo.fromJson(Map<String, dynamic> jsonSerialization) {
-    return UserInfo(
+  factory LocalUserInfo.fromJson(Map<String, dynamic> jsonSerialization) {
+    return LocalUserInfo(
       id: jsonSerialization['id'] as int?,
       userInfoId: jsonSerialization['userInfoId'] as int,
       registro: jsonSerialization['registro'] as String,
@@ -42,9 +42,9 @@ abstract class UserInfo
     );
   }
 
-  static final t = UserInfoTable();
+  static final t = LocalUserInfoTable();
 
-  static const db = UserInfoRepository._();
+  static const db = LocalUserInfoRepository._();
 
   @override
   int? id;
@@ -62,10 +62,10 @@ abstract class UserInfo
   @override
   _i1.Table<int?> get table => t;
 
-  /// Returns a shallow copy of this [UserInfo]
+  /// Returns a shallow copy of this [LocalUserInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  UserInfo copyWith({
+  LocalUserInfo copyWith({
     int? id,
     int? userInfoId,
     String? registro,
@@ -97,26 +97,26 @@ abstract class UserInfo
     };
   }
 
-  static UserInfoInclude include() {
-    return UserInfoInclude._();
+  static LocalUserInfoInclude include() {
+    return LocalUserInfoInclude._();
   }
 
-  static UserInfoIncludeList includeList({
-    _i1.WhereExpressionBuilder<UserInfoTable>? where,
+  static LocalUserInfoIncludeList includeList({
+    _i1.WhereExpressionBuilder<LocalUserInfoTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<UserInfoTable>? orderBy,
+    _i1.OrderByBuilder<LocalUserInfoTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<UserInfoTable>? orderByList,
-    UserInfoInclude? include,
+    _i1.OrderByListBuilder<LocalUserInfoTable>? orderByList,
+    LocalUserInfoInclude? include,
   }) {
-    return UserInfoIncludeList._(
+    return LocalUserInfoIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(UserInfo.t),
+      orderBy: orderBy?.call(LocalUserInfo.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(UserInfo.t),
+      orderByList: orderByList?.call(LocalUserInfo.t),
       include: include,
     );
   }
@@ -129,8 +129,8 @@ abstract class UserInfo
 
 class _Undefined {}
 
-class _UserInfoImpl extends UserInfo {
-  _UserInfoImpl({
+class _LocalUserInfoImpl extends LocalUserInfo {
+  _LocalUserInfoImpl({
     int? id,
     required int userInfoId,
     required String registro,
@@ -146,11 +146,11 @@ class _UserInfoImpl extends UserInfo {
           isAdmin: isAdmin,
         );
 
-  /// Returns a shallow copy of this [UserInfo]
+  /// Returns a shallow copy of this [LocalUserInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  UserInfo copyWith({
+  LocalUserInfo copyWith({
     Object? id = _Undefined,
     int? userInfoId,
     String? registro,
@@ -158,7 +158,7 @@ class _UserInfoImpl extends UserInfo {
     String? area,
     bool? isAdmin,
   }) {
-    return UserInfo(
+    return LocalUserInfo(
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       registro: registro ?? this.registro,
@@ -169,8 +169,8 @@ class _UserInfoImpl extends UserInfo {
   }
 }
 
-class UserInfoTable extends _i1.Table<int?> {
-  UserInfoTable({super.tableRelation}) : super(tableName: 'user_info') {
+class LocalUserInfoTable extends _i1.Table<int?> {
+  LocalUserInfoTable({super.tableRelation}) : super(tableName: 'user_info') {
     userInfoId = _i1.ColumnInt(
       'userInfoId',
       this,
@@ -215,19 +215,19 @@ class UserInfoTable extends _i1.Table<int?> {
       ];
 }
 
-class UserInfoInclude extends _i1.IncludeObject {
-  UserInfoInclude._();
+class LocalUserInfoInclude extends _i1.IncludeObject {
+  LocalUserInfoInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => UserInfo.t;
+  _i1.Table<int?> get table => LocalUserInfo.t;
 }
 
-class UserInfoIncludeList extends _i1.IncludeList {
-  UserInfoIncludeList._({
-    _i1.WhereExpressionBuilder<UserInfoTable>? where,
+class LocalUserInfoIncludeList extends _i1.IncludeList {
+  LocalUserInfoIncludeList._({
+    _i1.WhereExpressionBuilder<LocalUserInfoTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -235,20 +235,20 @@ class UserInfoIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(UserInfo.t);
+    super.where = where?.call(LocalUserInfo.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => UserInfo.t;
+  _i1.Table<int?> get table => LocalUserInfo.t;
 }
 
-class UserInfoRepository {
-  const UserInfoRepository._();
+class LocalUserInfoRepository {
+  const LocalUserInfoRepository._();
 
-  /// Returns a list of [UserInfo]s matching the given query parameters.
+  /// Returns a list of [LocalUserInfo]s matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -270,20 +270,20 @@ class UserInfoRepository {
   ///   limit: 100,
   /// );
   /// ```
-  Future<List<UserInfo>> find(
+  Future<List<LocalUserInfo>> find(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<UserInfoTable>? where,
+    _i1.WhereExpressionBuilder<LocalUserInfoTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<UserInfoTable>? orderBy,
+    _i1.OrderByBuilder<LocalUserInfoTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<UserInfoTable>? orderByList,
+    _i1.OrderByListBuilder<LocalUserInfoTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.find<UserInfo>(
-      where: where?.call(UserInfo.t),
-      orderBy: orderBy?.call(UserInfo.t),
-      orderByList: orderByList?.call(UserInfo.t),
+    return session.db.find<LocalUserInfo>(
+      where: where?.call(LocalUserInfo.t),
+      orderBy: orderBy?.call(LocalUserInfo.t),
+      orderByList: orderByList?.call(LocalUserInfo.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -291,7 +291,7 @@ class UserInfoRepository {
     );
   }
 
-  /// Returns the first matching [UserInfo] matching the given query parameters.
+  /// Returns the first matching [LocalUserInfo] matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -308,136 +308,136 @@ class UserInfoRepository {
   ///   orderBy: (t) => t.age,
   /// );
   /// ```
-  Future<UserInfo?> findFirstRow(
+  Future<LocalUserInfo?> findFirstRow(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<UserInfoTable>? where,
+    _i1.WhereExpressionBuilder<LocalUserInfoTable>? where,
     int? offset,
-    _i1.OrderByBuilder<UserInfoTable>? orderBy,
+    _i1.OrderByBuilder<LocalUserInfoTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<UserInfoTable>? orderByList,
+    _i1.OrderByListBuilder<LocalUserInfoTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findFirstRow<UserInfo>(
-      where: where?.call(UserInfo.t),
-      orderBy: orderBy?.call(UserInfo.t),
-      orderByList: orderByList?.call(UserInfo.t),
+    return session.db.findFirstRow<LocalUserInfo>(
+      where: where?.call(LocalUserInfo.t),
+      orderBy: orderBy?.call(LocalUserInfo.t),
+      orderByList: orderByList?.call(LocalUserInfo.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
     );
   }
 
-  /// Finds a single [UserInfo] by its [id] or null if no such row exists.
-  Future<UserInfo?> findById(
+  /// Finds a single [LocalUserInfo] by its [id] or null if no such row exists.
+  Future<LocalUserInfo?> findById(
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findById<UserInfo>(
+    return session.db.findById<LocalUserInfo>(
       id,
       transaction: transaction,
     );
   }
 
-  /// Inserts all [UserInfo]s in the list and returns the inserted rows.
+  /// Inserts all [LocalUserInfo]s in the list and returns the inserted rows.
   ///
-  /// The returned [UserInfo]s will have their `id` fields set.
+  /// The returned [LocalUserInfo]s will have their `id` fields set.
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
-  Future<List<UserInfo>> insert(
+  Future<List<LocalUserInfo>> insert(
     _i1.Session session,
-    List<UserInfo> rows, {
+    List<LocalUserInfo> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insert<UserInfo>(
+    return session.db.insert<LocalUserInfo>(
       rows,
       transaction: transaction,
     );
   }
 
-  /// Inserts a single [UserInfo] and returns the inserted row.
+  /// Inserts a single [LocalUserInfo] and returns the inserted row.
   ///
-  /// The returned [UserInfo] will have its `id` field set.
-  Future<UserInfo> insertRow(
+  /// The returned [LocalUserInfo] will have its `id` field set.
+  Future<LocalUserInfo> insertRow(
     _i1.Session session,
-    UserInfo row, {
+    LocalUserInfo row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<UserInfo>(
+    return session.db.insertRow<LocalUserInfo>(
       row,
       transaction: transaction,
     );
   }
 
-  /// Updates all [UserInfo]s in the list and returns the updated rows. If
+  /// Updates all [LocalUserInfo]s in the list and returns the updated rows. If
   /// [columns] is provided, only those columns will be updated. Defaults to
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
-  Future<List<UserInfo>> update(
+  Future<List<LocalUserInfo>> update(
     _i1.Session session,
-    List<UserInfo> rows, {
-    _i1.ColumnSelections<UserInfoTable>? columns,
+    List<LocalUserInfo> rows, {
+    _i1.ColumnSelections<LocalUserInfoTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<UserInfo>(
+    return session.db.update<LocalUserInfo>(
       rows,
-      columns: columns?.call(UserInfo.t),
+      columns: columns?.call(LocalUserInfo.t),
       transaction: transaction,
     );
   }
 
-  /// Updates a single [UserInfo]. The row needs to have its id set.
+  /// Updates a single [LocalUserInfo]. The row needs to have its id set.
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
-  Future<UserInfo> updateRow(
+  Future<LocalUserInfo> updateRow(
     _i1.Session session,
-    UserInfo row, {
-    _i1.ColumnSelections<UserInfoTable>? columns,
+    LocalUserInfo row, {
+    _i1.ColumnSelections<LocalUserInfoTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<UserInfo>(
+    return session.db.updateRow<LocalUserInfo>(
       row,
-      columns: columns?.call(UserInfo.t),
+      columns: columns?.call(LocalUserInfo.t),
       transaction: transaction,
     );
   }
 
-  /// Deletes all [UserInfo]s in the list and returns the deleted rows.
+  /// Deletes all [LocalUserInfo]s in the list and returns the deleted rows.
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
-  Future<List<UserInfo>> delete(
+  Future<List<LocalUserInfo>> delete(
     _i1.Session session,
-    List<UserInfo> rows, {
+    List<LocalUserInfo> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<UserInfo>(
+    return session.db.delete<LocalUserInfo>(
       rows,
       transaction: transaction,
     );
   }
 
-  /// Deletes a single [UserInfo].
-  Future<UserInfo> deleteRow(
+  /// Deletes a single [LocalUserInfo].
+  Future<LocalUserInfo> deleteRow(
     _i1.Session session,
-    UserInfo row, {
+    LocalUserInfo row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<UserInfo>(
+    return session.db.deleteRow<LocalUserInfo>(
       row,
       transaction: transaction,
     );
   }
 
   /// Deletes all rows matching the [where] expression.
-  Future<List<UserInfo>> deleteWhere(
+  Future<List<LocalUserInfo>> deleteWhere(
     _i1.Session session, {
-    required _i1.WhereExpressionBuilder<UserInfoTable> where,
+    required _i1.WhereExpressionBuilder<LocalUserInfoTable> where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<UserInfo>(
-      where: where(UserInfo.t),
+    return session.db.deleteWhere<LocalUserInfo>(
+      where: where(LocalUserInfo.t),
       transaction: transaction,
     );
   }
@@ -446,12 +446,12 @@ class UserInfoRepository {
   /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<UserInfoTable>? where,
+    _i1.WhereExpressionBuilder<LocalUserInfoTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<UserInfo>(
-      where: where?.call(UserInfo.t),
+    return session.db.count<LocalUserInfo>(
+      where: where?.call(LocalUserInfo.t),
       limit: limit,
       transaction: transaction,
     );

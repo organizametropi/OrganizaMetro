@@ -1,7 +1,7 @@
 class: Calibracao
 table: calibracao
 fields:
-  ferramentaId: int, relation(parent=ferramenta)
+  ferramenta: Ferramenta?, relation
     
   dataCalibracao: DateTime # Corrigido para camelCase
   validadeCalibracao: DateTime # Corrigido para camelCase

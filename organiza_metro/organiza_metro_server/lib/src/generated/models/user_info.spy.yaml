@@ -1,4 +1,4 @@
-class: UserInfo
+class: LocalUserInfo
 table: user_info
 fields:
   userInfoId: int, relation(parent=serverpod_user_info)

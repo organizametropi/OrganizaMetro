@@ -10,11 +10,13 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../../generated/models/ferramenta.dart' as _i2;
 
 abstract class Calibracao implements _i1.SerializableModel {
   Calibracao._({
     this.id,
     required this.ferramentaId,
+    this.ferramenta,
     required this.dataCalibracao,
     required this.validadeCalibracao,
     required this.status,
@@ -23,6 +25,7 @@ abstract class Calibracao implements _i1.SerializableModel {
   factory Calibracao({
     int? id,
     required int ferramentaId,
+    _i2.Ferramenta? ferramenta,
     required DateTime dataCalibracao,
     required DateTime validadeCalibracao,
     required String status,
@@ -32,6 +35,10 @@ abstract class Calibracao implements _i1.SerializableModel {
     return Calibracao(
       id: jsonSerialization['id'] as int?,
       ferramentaId: jsonSerialization['ferramentaId'] as int,
+      ferramenta: jsonSerialization['ferramenta'] == null
+          ? null
+          : _i2.Ferramenta.fromJson(
+              (jsonSerialization['ferramenta'] as Map<String, dynamic>)),
       dataCalibracao: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['dataCalibracao']),
       validadeCalibracao: _i1.DateTimeJsonExtension.fromJson(
@@ -47,6 +54,8 @@ abstract class Calibracao implements _i1.SerializableModel {
 
   int ferramentaId;
 
+  _i2.Ferramenta? ferramenta;
+
   DateTime dataCalibracao;
 
   DateTime validadeCalibracao;
@@ -59,6 +68,7 @@ abstract class Calibracao implements _i1.SerializableModel {
   Calibracao copyWith({
     int? id,
     int? ferramentaId,
+    _i2.Ferramenta? ferramenta,
     DateTime? dataCalibracao,
     DateTime? validadeCalibracao,
     String? status,
@@ -68,6 +78,7 @@ abstract class Calibracao implements _i1.SerializableModel {
     return {
       if (id != null) 'id': id,
       'ferramentaId': ferramentaId,
+      if (ferramenta != null) 'ferramenta': ferramenta?.toJson(),
       'dataCalibracao': dataCalibracao.toJson(),
       'validadeCalibracao': validadeCalibracao.toJson(),
       'status': status,
@@ -86,12 +97,14 @@ class _CalibracaoImpl extends Calibracao {
   _CalibracaoImpl({
     int? id,
     required int ferramentaId,
+    _i2.Ferramenta? ferramenta,
     required DateTime dataCalibracao,
     required DateTime validadeCalibracao,
     required String status,
   }) : super._(
           id: id,
           ferramentaId: ferramentaId,
+          ferramenta: ferramenta,
           dataCalibracao: dataCalibracao,
           validadeCalibracao: validadeCalibracao,
           status: status,
@@ -104,6 +117,7 @@ class _CalibracaoImpl extends Calibracao {
   Calibracao copyWith({
     Object? id = _Undefined,
     int? ferramentaId,
+    Object? ferramenta = _Undefined,
     DateTime? dataCalibracao,
     DateTime? validadeCalibracao,
     String? status,
@@ -111,6 +125,9 @@ class _CalibracaoImpl extends Calibracao {
     return Calibracao(
       id: id is int? ? id : this.id,
       ferramentaId: ferramentaId ?? this.ferramentaId,
+      ferramenta: ferramenta is _i2.Ferramenta?
+          ? ferramenta
+          : this.ferramenta?.copyWith(),
       dataCalibracao: dataCalibracao ?? this.dataCalibracao,
       validadeCalibracao: validadeCalibracao ?? this.validadeCalibracao,
       status: status ?? this.status,

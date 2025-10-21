@@ -3,14 +3,14 @@ table: material
 fields:
   codigoSap: int # Corrigido
   descricao: String
-  quantidade: double
+  quantidade: double?
   estoqueMinimo: double? # Corrigido
   dataUltimaMovimentacao: DateTime? # Corrigido
 
-  tipoId: int, relation(parent= tipo_material)
+  tipo: TipoMaterial?, relation
 
-  unidadeMedidaId: int, relation(parent= unidade_medida)
+  unidadeMedida: UnidadeMedida?, relation
   
-  baseId: int?, relation(parent= base)
+  base: Base?, relation
   
-  veiculoId: int?, relation(parent= veiculo)
+  veiculo: Veiculo?, relation

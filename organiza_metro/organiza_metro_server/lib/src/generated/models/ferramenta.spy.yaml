@@ -9,16 +9,16 @@ fields:
   emUso: bool # Corrigido
   tipo: String
   status: String
-  dataAquisicao: DateTime? # Corrigido
+  dataAquisicao: DateTime # Corrigido
   dataUltimaMovimentacao: DateTime? # Corrigido
 
-  unidadeMedidaId: int, relation(parent= unidade_medida)
+  unidadeMedida: UnidadeMedida?, relation
   
-  baseId: int?, relation(parent= base)
+  base: Base?, relation
   
-  veiculoId: int?, relation(parent= veiculo)
+  veiculo: Veiculo?, relation
   
-  empenhadoParaId: int?, relation(parent= serverpod_user_info)
+  empenhadoPara: module:auth:UserInfo?, relation
 indexes:
   ferramenta_patrimonio_idx:
     fields: patrimonio

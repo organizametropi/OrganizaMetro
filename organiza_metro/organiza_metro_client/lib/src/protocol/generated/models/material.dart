@@ -10,32 +10,44 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../../generated/models/tipo_material.dart' as _i2;
+import '../../generated/models/unidade_medida.dart' as _i3;
+import '../../generated/models/base.dart' as _i4;
+import '../../generated/models/veiculo.dart' as _i5;
 
 abstract class Material implements _i1.SerializableModel {
   Material._({
     this.id,
     required this.codigoSap,
     required this.descricao,
-    required this.quantidade,
+    this.quantidade,
     this.estoqueMinimo,
     this.dataUltimaMovimentacao,
     required this.tipoId,
+    this.tipo,
     required this.unidadeMedidaId,
-    this.baseId,
-    this.veiculoId,
+    this.unidadeMedida,
+    required this.baseId,
+    this.base,
+    required this.veiculoId,
+    this.veiculo,
   });
 
   factory Material({
     int? id,
     required int codigoSap,
     required String descricao,
-    required double quantidade,
+    double? quantidade,
     double? estoqueMinimo,
     DateTime? dataUltimaMovimentacao,
     required int tipoId,
+    _i2.TipoMaterial? tipo,
     required int unidadeMedidaId,
-    int? baseId,
-    int? veiculoId,
+    _i3.UnidadeMedida? unidadeMedida,
+    required int baseId,
+    _i4.Base? base,
+    required int veiculoId,
+    _i5.Veiculo? veiculo,
   }) = _MaterialImpl;
 
   factory Material.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -43,7 +55,7 @@ abstract class Material implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       codigoSap: jsonSerialization['codigoSap'] as int,
       descricao: jsonSerialization['descricao'] as String,
-      quantidade: (jsonSerialization['quantidade'] as num).toDouble(),
+      quantidade: (jsonSerialization['quantidade'] as num?)?.toDouble(),
       estoqueMinimo: (jsonSerialization['estoqueMinimo'] as num?)?.toDouble(),
       dataUltimaMovimentacao:
           jsonSerialization['dataUltimaMovimentacao'] == null
@@ -51,9 +63,25 @@ abstract class Material implements _i1.SerializableModel {
               : _i1.DateTimeJsonExtension.fromJson(
                   jsonSerialization['dataUltimaMovimentacao']),
       tipoId: jsonSerialization['tipoId'] as int,
+      tipo: jsonSerialization['tipo'] == null
+          ? null
+          : _i2.TipoMaterial.fromJson(
+              (jsonSerialization['tipo'] as Map<String, dynamic>)),
       unidadeMedidaId: jsonSerialization['unidadeMedidaId'] as int,
-      baseId: jsonSerialization['baseId'] as int?,
-      veiculoId: jsonSerialization['veiculoId'] as int?,
+      unidadeMedida: jsonSerialization['unidadeMedida'] == null
+          ? null
+          : _i3.UnidadeMedida.fromJson(
+              (jsonSerialization['unidadeMedida'] as Map<String, dynamic>)),
+      baseId: jsonSerialization['baseId'] as int,
+      base: jsonSerialization['base'] == null
+          ? null
+          : _i4.Base.fromJson(
+              (jsonSerialization['base'] as Map<String, dynamic>)),
+      veiculoId: jsonSerialization['veiculoId'] as int,
+      veiculo: jsonSerialization['veiculo'] == null
+          ? null
+          : _i5.Veiculo.fromJson(
+              (jsonSerialization['veiculo'] as Map<String, dynamic>)),
     );
   }
 
@@ -66,7 +94,7 @@ abstract class Material implements _i1.SerializableModel {
 
   String descricao;
 
-  double quantidade;
+  double? quantidade;
 
   double? estoqueMinimo;
 
@@ -74,11 +102,19 @@ abstract class Material implements _i1.SerializableModel {
 
   int tipoId;
 
+  _i2.TipoMaterial? tipo;
+
   int unidadeMedidaId;
 
-  int? baseId;
+  _i3.UnidadeMedida? unidadeMedida;
 
-  int? veiculoId;
+  int baseId;
+
+  _i4.Base? base;
+
+  int veiculoId;
+
+  _i5.Veiculo? veiculo;
 
   /// Returns a shallow copy of this [Material]
   /// with some or all fields replaced by the given arguments.
@@ -91,9 +127,13 @@ abstract class Material implements _i1.SerializableModel {
     double? estoqueMinimo,
     DateTime? dataUltimaMovimentacao,
     int? tipoId,
+    _i2.TipoMaterial? tipo,
     int? unidadeMedidaId,
+    _i3.UnidadeMedida? unidadeMedida,
     int? baseId,
+    _i4.Base? base,
     int? veiculoId,
+    _i5.Veiculo? veiculo,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -101,14 +141,18 @@ abstract class Material implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'codigoSap': codigoSap,
       'descricao': descricao,
-      'quantidade': quantidade,
+      if (quantidade != null) 'quantidade': quantidade,
       if (estoqueMinimo != null) 'estoqueMinimo': estoqueMinimo,
       if (dataUltimaMovimentacao != null)
         'dataUltimaMovimentacao': dataUltimaMovimentacao?.toJson(),
       'tipoId': tipoId,
+      if (tipo != null) 'tipo': tipo?.toJson(),
       'unidadeMedidaId': unidadeMedidaId,
-      if (baseId != null) 'baseId': baseId,
-      if (veiculoId != null) 'veiculoId': veiculoId,
+      if (unidadeMedida != null) 'unidadeMedida': unidadeMedida?.toJson(),
+      'baseId': baseId,
+      if (base != null) 'base': base?.toJson(),
+      'veiculoId': veiculoId,
+      if (veiculo != null) 'veiculo': veiculo?.toJson(),
     };
   }
 
@@ -125,13 +169,17 @@ class _MaterialImpl extends Material {
     int? id,
     required int codigoSap,
     required String descricao,
-    required double quantidade,
+    double? quantidade,
     double? estoqueMinimo,
     DateTime? dataUltimaMovimentacao,
     required int tipoId,
+    _i2.TipoMaterial? tipo,
     required int unidadeMedidaId,
-    int? baseId,
-    int? veiculoId,
+    _i3.UnidadeMedida? unidadeMedida,
+    required int baseId,
+    _i4.Base? base,
+    required int veiculoId,
+    _i5.Veiculo? veiculo,
   }) : super._(
           id: id,
           codigoSap: codigoSap,
@@ -140,9 +188,13 @@ class _MaterialImpl extends Material {
           estoqueMinimo: estoqueMinimo,
           dataUltimaMovimentacao: dataUltimaMovimentacao,
           tipoId: tipoId,
+          tipo: tipo,
           unidadeMedidaId: unidadeMedidaId,
+          unidadeMedida: unidadeMedida,
           baseId: baseId,
+          base: base,
           veiculoId: veiculoId,
+          veiculo: veiculo,
         );
 
   /// Returns a shallow copy of this [Material]
@@ -153,28 +205,38 @@ class _MaterialImpl extends Material {
     Object? id = _Undefined,
     int? codigoSap,
     String? descricao,
-    double? quantidade,
+    Object? quantidade = _Undefined,
     Object? estoqueMinimo = _Undefined,
     Object? dataUltimaMovimentacao = _Undefined,
     int? tipoId,
+    Object? tipo = _Undefined,
     int? unidadeMedidaId,
-    Object? baseId = _Undefined,
-    Object? veiculoId = _Undefined,
+    Object? unidadeMedida = _Undefined,
+    int? baseId,
+    Object? base = _Undefined,
+    int? veiculoId,
+    Object? veiculo = _Undefined,
   }) {
     return Material(
       id: id is int? ? id : this.id,
       codigoSap: codigoSap ?? this.codigoSap,
       descricao: descricao ?? this.descricao,
-      quantidade: quantidade ?? this.quantidade,
+      quantidade: quantidade is double? ? quantidade : this.quantidade,
       estoqueMinimo:
           estoqueMinimo is double? ? estoqueMinimo : this.estoqueMinimo,
       dataUltimaMovimentacao: dataUltimaMovimentacao is DateTime?
           ? dataUltimaMovimentacao
           : this.dataUltimaMovimentacao,
       tipoId: tipoId ?? this.tipoId,
+      tipo: tipo is _i2.TipoMaterial? ? tipo : this.tipo?.copyWith(),
       unidadeMedidaId: unidadeMedidaId ?? this.unidadeMedidaId,
-      baseId: baseId is int? ? baseId : this.baseId,
-      veiculoId: veiculoId is int? ? veiculoId : this.veiculoId,
+      unidadeMedida: unidadeMedida is _i3.UnidadeMedida?
+          ? unidadeMedida
+          : this.unidadeMedida?.copyWith(),
+      baseId: baseId ?? this.baseId,
+      base: base is _i4.Base? ? base : this.base?.copyWith(),
+      veiculoId: veiculoId ?? this.veiculoId,
+      veiculo: veiculo is _i5.Veiculo? ? veiculo : this.veiculo?.copyWith(),
     );
   }
 }

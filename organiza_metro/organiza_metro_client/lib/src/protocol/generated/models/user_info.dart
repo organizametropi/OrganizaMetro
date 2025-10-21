@@ -11,8 +11,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class UserInfo implements _i1.SerializableModel {
-  UserInfo._({
+abstract class LocalUserInfo implements _i1.SerializableModel {
+  LocalUserInfo._({
     this.id,
     required this.userInfoId,
     required this.registro,
@@ -21,17 +21,17 @@ abstract class UserInfo implements _i1.SerializableModel {
     bool? isAdmin,
   }) : isAdmin = isAdmin ?? false;
 
-  factory UserInfo({
+  factory LocalUserInfo({
     int? id,
     required int userInfoId,
     required String registro,
     required String telefone,
     required String area,
     bool? isAdmin,
-  }) = _UserInfoImpl;
+  }) = _LocalUserInfoImpl;
 
-  factory UserInfo.fromJson(Map<String, dynamic> jsonSerialization) {
-    return UserInfo(
+  factory LocalUserInfo.fromJson(Map<String, dynamic> jsonSerialization) {
+    return LocalUserInfo(
       id: jsonSerialization['id'] as int?,
       userInfoId: jsonSerialization['userInfoId'] as int,
       registro: jsonSerialization['registro'] as String,
@@ -56,10 +56,10 @@ abstract class UserInfo implements _i1.SerializableModel {
 
   bool isAdmin;
 
-  /// Returns a shallow copy of this [UserInfo]
+  /// Returns a shallow copy of this [LocalUserInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  UserInfo copyWith({
+  LocalUserInfo copyWith({
     int? id,
     int? userInfoId,
     String? registro,
@@ -87,8 +87,8 @@ abstract class UserInfo implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _UserInfoImpl extends UserInfo {
-  _UserInfoImpl({
+class _LocalUserInfoImpl extends LocalUserInfo {
+  _LocalUserInfoImpl({
     int? id,
     required int userInfoId,
     required String registro,
@@ -104,11 +104,11 @@ class _UserInfoImpl extends UserInfo {
           isAdmin: isAdmin,
         );
 
-  /// Returns a shallow copy of this [UserInfo]
+  /// Returns a shallow copy of this [LocalUserInfo]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  UserInfo copyWith({
+  LocalUserInfo copyWith({
     Object? id = _Undefined,
     int? userInfoId,
     String? registro,
@@ -116,7 +116,7 @@ class _UserInfoImpl extends UserInfo {
     String? area,
     bool? isAdmin,
   }) {
-    return UserInfo(
+    return LocalUserInfo(
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       registro: registro ?? this.registro,

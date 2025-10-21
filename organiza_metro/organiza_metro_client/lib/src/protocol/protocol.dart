@@ -25,9 +25,7 @@ import 'package:organiza_metro_client/src/protocol/generated/models/ferramenta.d
     as _i13;
 import 'package:organiza_metro_client/src/protocol/generated/models/material.dart'
     as _i14;
-import 'package:organiza_metro_client/src/protocol/generated/models/requisicao_items.dart'
-    as _i15;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i16;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i15;
 export 'generated/models/base.dart';
 export 'generated/models/calibracao.dart';
 export 'generated/models/ferramenta.dart';
@@ -78,8 +76,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i9.UnidadeMedida) {
       return _i9.UnidadeMedida.fromJson(data) as T;
     }
-    if (t == _i10.UserInfo) {
-      return _i10.UserInfo.fromJson(data) as T;
+    if (t == _i10.LocalUserInfo) {
+      return _i10.LocalUserInfo.fromJson(data) as T;
     }
     if (t == _i11.Veiculo) {
       return _i11.Veiculo.fromJson(data) as T;
@@ -111,8 +109,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i9.UnidadeMedida?>()) {
       return (data != null ? _i9.UnidadeMedida.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.UserInfo?>()) {
-      return (data != null ? _i10.UserInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.LocalUserInfo?>()) {
+      return (data != null ? _i10.LocalUserInfo.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i11.Veiculo?>()) {
       return (data != null ? _i11.Veiculo.fromJson(data) : null) as T;
@@ -128,13 +126,8 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<_i14.Material>(e)).toList()
           as T;
     }
-    if (t == List<_i15.RequisicaoItem>) {
-      return (data as List)
-          .map((e) => deserialize<_i15.RequisicaoItem>(e))
-          .toList() as T;
-    }
     try {
-      return _i16.Protocol().deserialize<T>(data, t);
+      return _i15.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -167,8 +160,8 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i9.UnidadeMedida) {
       return 'UnidadeMedida';
     }
-    if (data is _i10.UserInfo) {
-      return 'UserInfo';
+    if (data is _i10.LocalUserInfo) {
+      return 'LocalUserInfo';
     }
     if (data is _i11.Veiculo) {
       return 'Veiculo';
@@ -176,7 +169,7 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i12.Greeting) {
       return 'Greeting';
     }
-    className = _i16.Protocol().getClassNameForObject(data);
+    className = _i15.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -213,8 +206,8 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'UnidadeMedida') {
       return deserialize<_i9.UnidadeMedida>(data['data']);
     }
-    if (dataClassName == 'UserInfo') {
-      return deserialize<_i10.UserInfo>(data['data']);
+    if (dataClassName == 'LocalUserInfo') {
+      return deserialize<_i10.LocalUserInfo>(data['data']);
     }
     if (dataClassName == 'Veiculo') {
       return deserialize<_i11.Veiculo>(data['data']);
@@ -224,7 +217,7 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i16.Protocol().deserializeByClassName(data);
+      return _i15.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
