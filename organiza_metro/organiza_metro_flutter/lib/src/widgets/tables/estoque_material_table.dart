@@ -31,7 +31,6 @@ class _estoqueTableState extends State<estoque_table_material> {
   bool _isLoading = true;
   bool _showSelected = false;
 
-
   List<Map<String, dynamic>> _convertMateriasToMap(List<Material> materiais) {
     return materiais.map((m) {
       return {
@@ -51,17 +50,17 @@ class _estoqueTableState extends State<estoque_table_material> {
   _mockPullData() async {
     setState(() => _isLoading = true);
     try {
-      final List<Material> materiais = await client.material.getEstoque(); 
+      final List<Material> materiais = await client.material.getEstoque();
 
       _sourceOriginal.clear();
       _sourceOriginal.addAll(_convertMateriasToMap(materiais));
 
       _sourceFiltered = _sourceOriginal;
+      _total = _sourceFiltered.length;
 
       var _rangeTop = _currentPerPage! < _sourceFiltered.length
-          ? _currentPage!
+          ? _sourceFiltered.length - (_sourceFiltered.length - _currentPerPage!)
           : _sourceFiltered.length;
-
       _expanded = List.generate(_rangeTop, (index) => false);
       _source = _sourceFiltered.getRange(0, _rangeTop).toList();
     } catch (e) {
@@ -113,12 +112,31 @@ class _estoqueTableState extends State<estoque_table_material> {
     super.initState();
 
     //setHeaders
-  _headers = [
-      DatatableHeader(text: "ID", value: "id", show: true, sortable: true), // Adicionado sortable
-      DatatableHeader(text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true, flex: 1),
-      DatatableHeader(text: "DESCRIÇÃO", value: "descricao", show: true, flex: 2, sortable: true),
-      DatatableHeader(text: "QTD", value: "quantidade", show: true, sortable: true),
-      DatatableHeader(text: "UNIDADE", value: "unidadeMedidaId", show: true, sortable: false),
+    _headers = [
+      DatatableHeader(
+          text: "ID",
+          value: "id",
+          show: true,
+          sortable: true), // Adicionado sortable
+      DatatableHeader(
+          text: "CÓDIGO SAP",
+          value: "codigoSap",
+          show: true,
+          sortable: true,
+          flex: 1),
+      DatatableHeader(
+          text: "DESCRIÇÃO",
+          value: "descricao",
+          show: true,
+          flex: 2,
+          sortable: true),
+      DatatableHeader(
+          text: "QTD", value: "quantidade", show: true, sortable: true),
+      DatatableHeader(
+          text: "UNIDADE",
+          value: "unidadeMedidaId",
+          show: true,
+          sortable: false),
     ];
 
     _initializeData();

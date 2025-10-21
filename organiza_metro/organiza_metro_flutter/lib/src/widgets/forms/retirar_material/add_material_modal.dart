@@ -4,7 +4,6 @@ import 'package:responsive_table/responsive_table.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
-
 class AddMaterialModal extends StatefulWidget {
   final Function(List<Map<String, dynamic>>) onMaterialsSelected;
 
@@ -31,9 +30,16 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
 
   void _setHeaders() {
     _headers = [
-      DatatableHeader(text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true),
-      DatatableHeader(text: "DESCRIÇÃO", value: "descricao", show: true, flex: 2, sortable: true),
-      DatatableHeader(text: "QTD", value: "quantidade", show: true, sortable: true),
+      DatatableHeader(
+          text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true),
+      DatatableHeader(
+          text: "DESCRIÇÃO",
+          value: "descricao",
+          show: true,
+          flex: 2,
+          sortable: true),
+      DatatableHeader(
+          text: "QTD", value: "quantidade", show: true, sortable: true),
     ];
   }
 
@@ -41,20 +47,19 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
     setState(() => _isLoading = true);
     try {
       // 🚨 CHAMADA AO SERVERPOD (usando o cliente global)
-      final List<Material> materials = await client.material.getEstoque(); 
-      
+      final List<Material> materials = await client.material.getEstoque();
+
       // Converte objetos Serverpod para o formato Map
-      _source = materials.map((m) => {
-        "id": m.id,
-        "codigoSap": m.codigoSap,
-        "descricao": m.descricao,
-        "quantidade": m.quantidade,
-      }).toList();
+      _source = materials
+          .map((m) => {
+                "id": m.id,
+                "codigoSap": m.codigoSap,
+                "descricao": m.descricao,
+                "quantidade": m.quantidade,
+              })
+          .toList();
 
       _total = _source.length;
-
-      print(_source);
-
     } catch (e) {
       // Adicione um feedback visual para o usuário em caso de erro real
       print("Erro ao carregar materiais para o modal: $e");
@@ -65,21 +70,20 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
 
   @override
   Widget build(BuildContext context) {
+    print('Lista: $_source fim'); // ta puxando uma lista vazia e depois enche
     return AlertDialog(
       title: const Text('Selecionar Materiais Disponíveis'),
       content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.7, 
+        width: MediaQuery.of(context).size.width * 0.7,
         height: MediaQuery.of(context).size.height * 0.7,
         child: Column(
           children: [
-              SizedBox(
-                height: 300,
-                width: 300,
-                child: ResponsiveDatatable(
+            Expanded(
+              child: ResponsiveDatatable(
                   headers: _headers,
                   source: _source,
                   selecteds: _selecteds,
-                  showSelect: true, 
+                  showSelect: true,
                   isLoading: _isLoading,
                   onSelect: (value, item) {
                     setState(() {
@@ -88,16 +92,15 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
                       } else if (value!) {
                         _selecteds.add(item);
                       } else {
-                        _selecteds.removeWhere((map) => map["id"] == item["id"]);
+                        _selecteds
+                            .removeWhere((map) => map["id"] == item["id"]);
                       }
                     });
                   },
                   footers: [
                     Text('Total de ${_total} materiais.'),
-                  ]
-                ),
-              ),
-            
+                  ]),
+            ),
           ],
         ),
       ),
@@ -112,7 +115,8 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
               ? null
               : () => widget.onMaterialsSelected(_selecteds),
           style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-          child: Text('Adicionar (${_selecteds.length})', style: const TextStyle(color: Colors.white)),
+          child: Text('Adicionar (${_selecteds.length})',
+              style: const TextStyle(color: Colors.white)),
         ),
       ],
     );

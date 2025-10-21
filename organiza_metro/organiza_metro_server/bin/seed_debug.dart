@@ -295,9 +295,61 @@ Future<void> main(List<String> args) async {
   // 5. INSERÇÃO DE MATERIAIS
   // -----------------------------------------------------------------------
 
+  print('-> Inserindo Materiais');
+
   final List<int> baseValues = baseIds.values.toList();
   final List<int> veiculoValues = veiculoIds.toList();
 
+
+  for (var i = 0; i < 15; i++) {
+    final isConsumo = i % 3 == 0;
+    final tipoNome = isConsumo ? 'Consumo' : 'Giro';
+
+    final tipoId = tipoMaterialIds[tipoNome];
+    final unidadeKey = unidades.keys.toList()[i % unidades.length];
+    final unidadeMedidaId = unidadeMedidaIds[unidadeKey];
+
+    if (tipoId == null) {
+      print('Erro: Tipo de material "$tipoNome" não encontrado no mapa');
+      continue;
+    }
+    if (unidadeMedidaId == null) {
+      print('Erro: Unidade de medida "$unidadeKey" não encontrado no mapa');
+      continue;
+    }
+
+    final bool estaEmVeiculo = _random.nextDouble() < 0.2;
+    final int? baseId =
+        estaEmVeiculo ? null : baseValues[_random.nextInt(baseValues.length)];
+    final int? veiculoId = estaEmVeiculo
+        ? veiculoValues[_random.nextInt(veiculoValues.length)]
+        : null;
+
+    final quantidadeArrumada = _random.nextInt(90);
+   
+
+    final material = proto.Material(
+        codigoSap: isConsumo ? 10000000 + i : 15000000 + i,
+        descricao: '$tipoNome Item- ${i + 1}',
+        tipoId: tipoId,
+        unidadeMedidaId: unidadeMedidaId,
+        quantidade: quantidadeArrumada.toDouble(),  
+        estoqueMinimo: 5.0,
+        dataUltimaMovimentacao:
+            DateTime.now().subtract(Duration(days: _random.nextInt(30))),
+        baseId: baseId,
+        veiculoId: veiculoId);
+
+    final existingMaterial = await proto.Material.db.findFirstRow(session,
+        where: (t) => t.codigoSap.equals(material.codigoSap));
+
+    if (existingMaterial == null) {
+      await proto.Material.db.insertRow(session, material);
+    }
+
+  }
+
+  print('15 Materiais de estoque inseridos! (se não existirem)');
 
   // -----------------------------------------------------------------------
   // 6. INSERÇÃO DE FERRAMENTAS E CALIBRAÇÕES

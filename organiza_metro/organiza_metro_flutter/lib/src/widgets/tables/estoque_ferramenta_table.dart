@@ -10,7 +10,7 @@ class estoque_table_ferramenta extends StatefulWidget {
   _estoqueTableState createState() => _estoqueTableState();
 }
 
-class _estoqueTableState extends State<estoque_table_ferramenta > {
+class _estoqueTableState extends State<estoque_table_ferramenta> {
   late List<DatatableHeader> _headers;
 
   List<int> _perPages = [10, 20, 50, 100];
@@ -31,8 +31,8 @@ class _estoqueTableState extends State<estoque_table_ferramenta > {
   bool _isLoading = true;
   bool _showSelected = false;
 
-
-  List<Map<String, dynamic>> _convertFerramentasToMap(List<Ferramenta> materiais) {
+  List<Map<String, dynamic>> _convertFerramentasToMap(
+      List<Ferramenta> materiais) {
     return materiais.map((m) {
       return {
         "id": m.id,
@@ -52,15 +52,16 @@ class _estoqueTableState extends State<estoque_table_ferramenta > {
   _mockPullData() async {
     setState(() => _isLoading = true);
     try {
-      final List<Ferramenta> materiais = await client.ferramenta.getEstoque(); 
+      final List<Ferramenta> materiais = await client.ferramenta.getEstoque();
 
       _sourceOriginal.clear();
       _sourceOriginal.addAll(_convertFerramentasToMap(materiais));
 
       _sourceFiltered = _sourceOriginal;
+      _total = _sourceFiltered.length;
 
       var _rangeTop = _currentPerPage! < _sourceFiltered.length
-          ? _currentPage!
+          ? _sourceFiltered.length - (_sourceFiltered.length - _currentPerPage!)
           : _sourceFiltered.length;
 
       _expanded = List.generate(_rangeTop, (index) => false);
@@ -114,13 +115,29 @@ class _estoqueTableState extends State<estoque_table_ferramenta > {
     super.initState();
 
     //setHeaders
-  _headers = [
-      DatatableHeader(text: "ID", value: "id", show: true, sortable: true), // Adicionado sortable
-      DatatableHeader(text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true, flex: 1),
-      DatatableHeader(text: "DESCRIÇÃO", value: "descricao", show: true, flex: 2, sortable: true),
-      DatatableHeader(text: "Em uso", value: "emUso", show: true, sortable: false),
+    _headers = [
+      DatatableHeader(
+          text: "ID",
+          value: "id",
+          show: true,
+          sortable: true), // Adicionado sortable
+      DatatableHeader(
+          text: "CÓDIGO SAP",
+          value: "codigoSap",
+          show: true,
+          sortable: true,
+          flex: 1),
+      DatatableHeader(
+          text: "DESCRIÇÃO",
+          value: "descricao",
+          show: true,
+          flex: 2,
+          sortable: true),
+      DatatableHeader(
+          text: "Em uso", value: "emUso", show: true, sortable: false),
       DatatableHeader(text: "Tipo", value: "tipo", show: true, sortable: false),
-      DatatableHeader(text: "Status", value: "status", show: true, sortable: false),
+      DatatableHeader(
+          text: "Status", value: "status", show: true, sortable: false),
     ];
 
     _initializeData();
