@@ -1,0 +1,61 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "movimentacao",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "dataDevolucao",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "modalidadeEntrega",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [
+          {
+            "columnName": "quantidade",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "notNullAdded",
+            "message": "Column quantidade of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "movimentacao",
+            "columns": [
+              "quantidade"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "notNullAdded",
+      "message": "Column quantidade of table movimentacao is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "movimentacao",
+      "columns": [
+        "quantidade"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

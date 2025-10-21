@@ -1,0 +1,23 @@
+class: Movimentacao
+table: movimentacao
+fields:
+  usuarioId: int, relation(parent=serverpod_user_info)
+    
+  materialId: int?, relation(parent= material)
+    
+  ferramentaId: int?, relation(parent= ferramenta)
+  
+  quantidade: double
+  tipoMovimentacao: String 
+  dataMovimentacao: DateTime 
+  dataDevolucao: DateTime? # Para ferramentas
+  modalidadeEntrega: String?
+  observacao: String?
+
+  origemBaseId: int?, relation(parent= base)
+    
+  destinoBaseId: int?, relation(parent= base)
+    
+  origemVeiculoId: int?, relation(parent= veiculo)
+    
+  destinoVeiculoId: int?, relation(parent= veiculo)

@@ -1,2 +1,11 @@
+authUtils:
+  - isAdmin:
+  - getUserName:
+ferramenta:
+  - getEstoque:
+material:
+  - getEstoque:
+movimentacao:
+  - criarRequisicaoSaida:
 greeting:
   - hello:

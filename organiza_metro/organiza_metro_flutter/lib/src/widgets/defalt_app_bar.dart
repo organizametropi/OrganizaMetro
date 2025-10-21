@@ -23,13 +23,13 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
             icon: Image.asset(
               "lib/assets/images/logocfundo.png",
-              width: 75.0,
-              height: 56.0,
+              width: 500.0,
+              height: 500.0,
             ),
           )),
       shadowColor: Colors.black,
       title: const Text(
-        'Organiza Metrô',
+        'Organiza Metrô 📦',
         style: TextStyle(
           fontFamily: 'Helvetica',
           fontSize: 24,

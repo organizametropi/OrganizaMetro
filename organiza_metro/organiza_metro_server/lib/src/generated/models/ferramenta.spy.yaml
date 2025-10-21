@@ -1,0 +1,25 @@
+class: Ferramenta
+table: ferramenta
+fields:
+  codigoSap: int # Corrigido
+  descricao: String
+  
+  patrimonio: String?
+  
+  emUso: bool # Corrigido
+  tipo: String
+  status: String
+  dataAquisicao: DateTime? # Corrigido
+  dataUltimaMovimentacao: DateTime? # Corrigido
+
+  unidadeMedidaId: int, relation(parent= unidade_medida)
+  
+  baseId: int?, relation(parent= base)
+  
+  veiculoId: int?, relation(parent= veiculo)
+  
+  empenhadoParaId: int?, relation(parent= serverpod_user_info)
+indexes:
+  ferramenta_patrimonio_idx:
+    fields: patrimonio
+    unique: true

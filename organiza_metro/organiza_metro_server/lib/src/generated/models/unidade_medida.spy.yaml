@@ -1,0 +1,5 @@
+class: UnidadeMedida
+table: unidade_medida
+fields:
+  codigo: String
+  descricao: String

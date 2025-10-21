@@ -1,0 +1,8 @@
+class: Calibracao
+table: calibracao
+fields:
+  ferramentaId: int, relation(parent=ferramenta)
+    
+  dataCalibracao: DateTime # Corrigido para camelCase
+  validadeCalibracao: DateTime # Corrigido para camelCase
+  status: String
