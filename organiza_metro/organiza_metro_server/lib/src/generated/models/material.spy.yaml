@@ -1,0 +1,16 @@
+class: Material
+table: material
+fields:
+  codigoSap: int # Corrigido
+  descricao: String
+  quantidade: double
+  estoqueMinimo: double? # Corrigido
+  dataUltimaMovimentacao: DateTime? # Corrigido
+
+  tipoId: int, relation(parent= tipo_material)
+
+  unidadeMedidaId: int, relation(parent= unidade_medida)
+  
+  baseId: int?, relation(parent= base)
+  
+  veiculoId: int?, relation(parent= veiculo)

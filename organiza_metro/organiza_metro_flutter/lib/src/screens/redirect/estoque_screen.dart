@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
-import 'package:organiza_metro_flutter/src/widgets/tables/estoque_table.dart';
+import 'package:organiza_metro_flutter/src/widgets/tables/estoque_ferramenta_table.dart';
+import 'package:organiza_metro_flutter/src/widgets/tables/estoque_material_table.dart';
 
 class estoquePage extends StatefulWidget {
   estoquePage({super.key});
@@ -91,8 +92,8 @@ class _estoquePageState extends State<estoquePage> {
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 5)),
                 child: initTable
-                    ? estoque_table()
-                    : Text('mudei'),
+                    ? estoque_table_material()
+                    : estoque_table_ferramenta(),
               )
             ],
           ),

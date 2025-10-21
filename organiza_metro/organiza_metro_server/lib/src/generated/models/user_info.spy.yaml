@@ -1,0 +1,11 @@
+class: UserInfo
+table: user_info
+fields:
+  userInfoId: int, relation(parent=serverpod_user_info)
+  registro: String
+  telefone: String
+  area: String
+  isAdmin: bool, default=false
+indexes:
+  user_info_fk_idx: 
+    fields: userInfoId

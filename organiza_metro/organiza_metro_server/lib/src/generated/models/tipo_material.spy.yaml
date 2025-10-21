@@ -1,0 +1,7 @@
+class: TipoMaterial
+table: tipo_material
+fields:
+  nome: String
+  faixaInicial: int
+  faixaFinal: int
+  descricao: String

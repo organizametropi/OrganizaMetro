@@ -1,17 +1,16 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
+import 'package:flutter/material.dart' hide Material;
 import 'package:responsive_table/responsive_table.dart';
+import 'package:organiza_metro_client/organiza_metro_client.dart';
+import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
-class estoque_table extends StatefulWidget {
-  estoque_table({super.key});
+class estoque_table_material extends StatefulWidget {
+  estoque_table_material({super.key});
 
   @override
   _estoqueTableState createState() => _estoqueTableState();
 }
 
-class _estoqueTableState extends State<estoque_table> {
+class _estoqueTableState extends State<estoque_table_material> {
   late List<DatatableHeader> _headers;
 
   List<int> _perPages = [10, 20, 50, 100];
@@ -31,31 +30,18 @@ class _estoqueTableState extends State<estoque_table> {
   bool _sortAscending = true;
   bool _isLoading = true;
   bool _showSelected = false;
-  var random = new Random();
 
-  //TEST - DATABASE ENTERS HERE
-  List<Map<String, dynamic>> _generateData({int n = 100}) {
-    final List source = List.filled(n, Random.secure());
-    List<Map<String, dynamic>> temps = [];
-    var i = 1;
-    print(i);
-    // ignore: unused_local_variable
-    for (var data in source) {
-      temps.add({
-        "id": i,
-        "sku": "$i\000$i",
-        "name": "Product $i",
-        "category": "Category-$i",
-        "price": i * 10.00,
-        "cost": "20.00",
-        "margin": "${i}0.20",
-        "in_stock": "${i}0",
-        "alert": "5",
-        "received": [i + 20, 150]
-      });
-      i++;
-    }
-    return temps;
+
+  List<Map<String, dynamic>> _convertMateriasToMap(List<Material> materiais) {
+    return materiais.map((m) {
+      return {
+        "id": m.id,
+        "codigoSap": m.codigoSap,
+        "descricao": m.descricao,
+        "quantidade": m.quantidade,
+        "unidadeMedidaId": m.unidadeMedidaId,
+      };
+    }).toList();
   }
 
   _initializeData() async {
@@ -63,17 +49,26 @@ class _estoqueTableState extends State<estoque_table> {
   }
 
   _mockPullData() async {
-    _expanded = List.generate(_currentPerPage!, (index) => false);
-
     setState(() => _isLoading = true);
-    Future.delayed(Duration(seconds: 3)).then((value) {
+    try {
+      final List<Material> materiais = await client.material.getEstoque(); 
+
       _sourceOriginal.clear();
-      _sourceOriginal.addAll(_generateData(n: random.nextInt(1000)));
+      _sourceOriginal.addAll(_convertMateriasToMap(materiais));
+
       _sourceFiltered = _sourceOriginal;
-      _total = _sourceFiltered.length;
-      _source = _sourceFiltered.getRange(0, _currentPerPage!).toList();
+
+      var _rangeTop = _currentPerPage! < _sourceFiltered.length
+          ? _currentPage!
+          : _sourceFiltered.length;
+
+      _expanded = List.generate(_rangeTop, (index) => false);
+      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+    } catch (e) {
+      print("Erro ao buscar os dados no estoque: $e");
+    } finally {
       setState(() => _isLoading = false);
-    });
+    }
   }
 
   _resetData({start = 0}) async {
@@ -118,79 +113,12 @@ class _estoqueTableState extends State<estoque_table> {
     super.initState();
 
     //setHeaders
-    _headers = [
-      DatatableHeader(
-          text: "ID",
-          value: "id",
-          show: true,
-          sortable: false,
-          textAlign: TextAlign.center),
-      DatatableHeader(
-          text: "Name",
-          value: "name",
-          show: true,
-          flex: 2,
-          sortable: false,
-          editable: true,
-          textAlign: TextAlign.left),
-      DatatableHeader(
-          text: "SKU",
-          value: "sku",
-          show: true,
-          sortable: false,
-          textAlign: TextAlign.center),
-      DatatableHeader(
-          text: "Category",
-          value: "category",
-          show: true,
-          sortable: false,
-          textAlign: TextAlign.left),
-      DatatableHeader(
-          text: "Price",
-          value: "price",
-          show: true,
-          sortable: false,
-          textAlign: TextAlign.left),
-      DatatableHeader(
-          text: "Margin",
-          value: "margin",
-          show: true,
-          sortable: false,
-          textAlign: TextAlign.left),
-      DatatableHeader(
-          text: "In Stock",
-          value: "in_stock",
-          show: true,
-          sortable: false,
-          textAlign: TextAlign.left),
-      DatatableHeader(
-          text: "Alert",
-          value: "alert",
-          show: true,
-          sortable: false,
-          textAlign: TextAlign.left),
-      DatatableHeader(
-          text: "Received",
-          value: "received",
-          show: true,
-          sortable: false,
-          sourceBuilder: (value, row) {
-            List list = List.from(value);
-            return Container(
-              child: Column(
-                children: [
-                  Container(
-                    width: 85,
-                    child: LinearProgressIndicator(
-                      value: list.first / list.last,
-                    ),
-                  ),
-                  Text("${list.first} of ${list.last}")
-                ],
-              ),
-            );
-          },
-          textAlign: TextAlign.center),
+  _headers = [
+      DatatableHeader(text: "ID", value: "id", show: true, sortable: true), // Adicionado sortable
+      DatatableHeader(text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true, flex: 1),
+      DatatableHeader(text: "DESCRIÇÃO", value: "descricao", show: true, flex: 2, sortable: true),
+      DatatableHeader(text: "QTD", value: "quantidade", show: true, sortable: true),
+      DatatableHeader(text: "UNIDADE", value: "unidadeMedidaId", show: true, sortable: false),
     ];
 
     _initializeData();

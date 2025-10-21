@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       locale: const Locale('pt', 'BR'),
-      home: homePage(),
+      home: MyHomePage(),
     ));
   }
 }
@@ -54,6 +54,7 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     sessionManager.addListener(() {
+      print('🔄 Estado de login mudou: ${sessionManager.isSignedIn}');
       setState(
         () {},
       );

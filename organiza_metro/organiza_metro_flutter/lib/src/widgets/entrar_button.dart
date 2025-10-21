@@ -4,8 +4,8 @@ import 'package:serverpod_auth_email_flutter/serverpod_auth_email_flutter.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
 class GetStartedButton extends StatefulWidget {
- final TextEditingController emailController;
-final TextEditingController passwordController;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
 
   const GetStartedButton({
     super.key,
@@ -20,7 +20,7 @@ final TextEditingController passwordController;
 class _GetStartedButtonState extends State<GetStartedButton> {
   bool _loading = false;
   String? _error;
-  double elementsOpacity = 1; 
+  double elementsOpacity = 1;
 
   Future<void> _signIn() async {
     setState(() {
@@ -30,15 +30,16 @@ class _GetStartedButtonState extends State<GetStartedButton> {
 
     try {
       final emailauth = EmailAuthController(client.modules.auth);
-      final session = await emailauth.signIn(widget.emailController.text
-      , widget.passwordController.text); 
+      final session = await emailauth.signIn(
+          widget.emailController.text, widget.passwordController.text);
 
       if (session == null) {
         setState(() => _error = "Falha ao autenticar");
       } else {
         // Aqui você já pode navegar para a Home, por exemplo
         if (mounted) {
-          homePage();
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const homePage()));
         }
       }
     } catch (e) {

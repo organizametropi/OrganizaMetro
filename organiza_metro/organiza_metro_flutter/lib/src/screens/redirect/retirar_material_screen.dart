@@ -1,267 +1,124 @@
+import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/justificativa_section.dart';
+import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/materiais_container.dart';
+import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/modalidade_entrega_section.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:organiza_metro_flutter/src/controllers/retirar_material_controller.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
-import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material_form2.dart';
+import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/add_material_modal.dart';
+import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/retirar_material_form2.dart';
 
-enum valoresRadioTest { teste }
+class retirarMaterialPage extends StatelessWidget {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-class retirarMaterialPage extends StatefulWidget {
-  retirarMaterialPage({super.key});
+  // Função para abrir o modal
+  void _showAddMaterialModal(BuildContext context) {
+    // Acessa o controlador sem ouvir as mudanças (read)
+    final controller = context.read<RetirarMaterialController>();
 
-  @override
-  _retirarMaterialState createState() => _retirarMaterialState();
-}
-
-class _retirarMaterialState extends State<retirarMaterialPage> {
-  String? _selectedValue;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AddMaterialModal(
+          onMaterialsSelected: (selectedMaterials) {
+            // Chama a função do controller
+            controller.addMaterials(selectedMaterials);
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: Text(
+    // 🚨 Injete o controlador na árvore para que os sub-widgets possam acessá-lo
+    return ChangeNotifierProvider(
+      create: (_) => RetirarMaterialController(),
+      child: Consumer<RetirarMaterialController>(
+        builder: (context, controller, child) {
+          // Passamos o context para o submitRequest
+          void _validateAndSubmit() {
+            if (_formKey.currentState!.validate()) {
+              controller
+                  .submitRequest(context); // Passa o contexto para o SnackBar
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content:
+                        Text('Por favor, preencha os campos obrigatórios.')),
+              );
+            }
+          }
+
+          return Scaffold(
+            appBar: const MyAppBar(),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
                       'Requisição de material 📤',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 40.0),
+
+                    // --- ÁREA DE MATERIAIS SELECIONADOS ---
+                    MaterialsContainer(
+                      materials: controller.materialsToAdd,
+                      onAddTap: () => _showAddMaterialModal(context),
+                      onClearTap: controller.clearMaterials,
+                    ),
+
+                    const SizedBox(height: 20.0),
+
+                    // --- FORMULÁRIO DE DADOS GERAIS ---
+                    // O retirarMaterialForm2 agora recebe o controller ou usa o Provider internamente
+                    retirarMaterialForm2(
+                      controller: controller,
+                      formKey: _formKey,
+                    ),
+
+                    const SizedBox(height: 35.0),
+
+                    // --- MODALIDADE DE ENTREGA ---
+                    ModalidadeEntregaSection(controller: controller),
+
+                    const SizedBox(height: 35.0),
+
+                    // --- JUSTIFICATIVA ---
+                    JustificativaSection(controller: controller),
+
+                    const SizedBox(height: 40.0),
+
+                    // --- BOTÃO DE ENVIO FINAL ---
+                    ElevatedButton(
+                        // Desabilita se não tiver itens, modalidade ou se estiver enviando
+                        onPressed: (controller.materialsToAdd.isNotEmpty &&
+                                controller.formData.modalidadeEntrega != null &&
+                                !controller.isSubmitting)
+                            ? _validateAndSubmit
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(vertical: 15)),
+                        child: controller.isSubmitting
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text('FINALIZAR REQUISIÇÃO',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold))),
+                  ],
+                ),
               ),
-              SizedBox(height: 40.0),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    constraints: BoxConstraints(minHeight: 300.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text('nenhum item selecionado')],
-                    ),
-                  ),
-                  Positioned(
-                    top: -20,
-                    left: -8,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Materiais da requisição: ',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Flexible(
-                    child: Container(
-                      width: 180,
-                      margin: EdgeInsets.all(8.0),
-                      child: TextButton.icon(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStatePropertyAll(Colors.green)),
-                        label: Text(
-                          'Adicionar material',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 4),
-                  Flexible(
-                    child: Container(
-                      width: 180,
-                      margin: EdgeInsets.all(8.0),
-                      child: TextButton.icon(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStatePropertyAll(Colors.red)),
-                        label: Text(
-                          'Limpar materias',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              retirarMaterialForm2(),
-              SizedBox(
-                height: 35,
-              ),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Radio(
-                            value: _selectedValue,
-                            groupValue: valoresRadioTest,
-                            onChanged: (valoresRadioTest) {},
-                          ),
-                          title: Text(
-                            'Balcão (retirada no centro de atendimento)',
-                            softWrap: true,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: -20,
-                    left: -8,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Modalidade de Entrega: ',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 35),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            // controller: _controller,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            minLines: 5,
-                            maxLength: 2000,
-                            decoration: const InputDecoration(
-                              labelText: 'Descrição detalhada',
-                              hintText: 'Digite aqui a sua descrição...',
-                              border: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.blue, width: 2.0)),
-                              alignLabelWithHint:
-                                  true, // Alinha o rótulo ao topo
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: -20,
-                    left: -8,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Justificativa:',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 35,
-              ),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 2,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 200,
-                        )
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: -20,
-                    left: -8,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Dados do Solicitante:',
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

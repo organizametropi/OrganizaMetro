@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
-import 'package:organiza_metro_flutter/src/widgets/tables/estoque_table.dart';
+import 'package:organiza_metro_flutter/src/widgets/tables/estoque_material_table.dart';
 
 class relatoriosPage extends StatefulWidget {
   relatoriosPage({super.key});
@@ -118,7 +118,7 @@ class _relatoriosPageState extends State<relatoriosPage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(width: 900, child: estoque_table()),
+                        Container(width: 900, child: estoque_table_material()),
                       ],
                     ),
                   ),

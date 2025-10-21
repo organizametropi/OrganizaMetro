@@ -1,0 +1,7 @@
+class: Veiculo
+table: veiculo
+fields:
+  codigo: String
+  descricao: String?
+  
+  baseId: int, relation(parent= base)

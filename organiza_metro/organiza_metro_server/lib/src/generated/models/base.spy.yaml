@@ -1,0 +1,9 @@
+class: Base
+table: base
+fields:
+  codigo: String
+  nome: String
+  endereco: String?
+  
+  responsavelId: int?, relation(parent=serverpod_user_info)
+   
