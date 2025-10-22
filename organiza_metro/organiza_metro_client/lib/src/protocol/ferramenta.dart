@@ -10,9 +10,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../generated/models/unidade_medida.dart' as _i2;
-import '../../generated/models/base.dart' as _i3;
-import '../../generated/models/veiculo.dart' as _i4;
+import 'unidade_medida.dart' as _i2;
+import 'base.dart' as _i3;
+import 'veiculo.dart' as _i4;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i5;
 
 abstract class Ferramenta implements _i1.SerializableModel {
@@ -28,9 +28,9 @@ abstract class Ferramenta implements _i1.SerializableModel {
     this.dataUltimaMovimentacao,
     required this.unidadeMedidaId,
     this.unidadeMedida,
-    required this.baseId,
+    this.baseId,
     this.base,
-    required this.veiculoId,
+    this.veiculoId,
     this.veiculo,
     required this.empenhadoParaId,
     this.empenhadoPara,
@@ -48,9 +48,9 @@ abstract class Ferramenta implements _i1.SerializableModel {
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
     _i2.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i3.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i4.Veiculo? veiculo,
     required int empenhadoParaId,
     _i5.UserInfo? empenhadoPara,
@@ -77,12 +77,12 @@ abstract class Ferramenta implements _i1.SerializableModel {
           ? null
           : _i2.UnidadeMedida.fromJson(
               (jsonSerialization['unidadeMedida'] as Map<String, dynamic>)),
-      baseId: jsonSerialization['baseId'] as int,
+      baseId: jsonSerialization['baseId'] as int?,
       base: jsonSerialization['base'] == null
           ? null
           : _i3.Base.fromJson(
               (jsonSerialization['base'] as Map<String, dynamic>)),
-      veiculoId: jsonSerialization['veiculoId'] as int,
+      veiculoId: jsonSerialization['veiculoId'] as int?,
       veiculo: jsonSerialization['veiculo'] == null
           ? null
           : _i4.Veiculo.fromJson(
@@ -120,11 +120,11 @@ abstract class Ferramenta implements _i1.SerializableModel {
 
   _i2.UnidadeMedida? unidadeMedida;
 
-  int baseId;
+  int? baseId;
 
   _i3.Base? base;
 
-  int veiculoId;
+  int? veiculoId;
 
   _i4.Veiculo? veiculo;
 
@@ -169,9 +169,9 @@ abstract class Ferramenta implements _i1.SerializableModel {
         'dataUltimaMovimentacao': dataUltimaMovimentacao?.toJson(),
       'unidadeMedidaId': unidadeMedidaId,
       if (unidadeMedida != null) 'unidadeMedida': unidadeMedida?.toJson(),
-      'baseId': baseId,
+      if (baseId != null) 'baseId': baseId,
       if (base != null) 'base': base?.toJson(),
-      'veiculoId': veiculoId,
+      if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJson(),
       'empenhadoParaId': empenhadoParaId,
       if (empenhadoPara != null) 'empenhadoPara': empenhadoPara?.toJson(),
@@ -199,9 +199,9 @@ class _FerramentaImpl extends Ferramenta {
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
     _i2.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i3.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i4.Veiculo? veiculo,
     required int empenhadoParaId,
     _i5.UserInfo? empenhadoPara,
@@ -241,9 +241,9 @@ class _FerramentaImpl extends Ferramenta {
     Object? dataUltimaMovimentacao = _Undefined,
     int? unidadeMedidaId,
     Object? unidadeMedida = _Undefined,
-    int? baseId,
+    Object? baseId = _Undefined,
     Object? base = _Undefined,
-    int? veiculoId,
+    Object? veiculoId = _Undefined,
     Object? veiculo = _Undefined,
     int? empenhadoParaId,
     Object? empenhadoPara = _Undefined,
@@ -264,9 +264,9 @@ class _FerramentaImpl extends Ferramenta {
       unidadeMedida: unidadeMedida is _i2.UnidadeMedida?
           ? unidadeMedida
           : this.unidadeMedida?.copyWith(),
-      baseId: baseId ?? this.baseId,
+      baseId: baseId is int? ? baseId : this.baseId,
       base: base is _i3.Base? ? base : this.base?.copyWith(),
-      veiculoId: veiculoId ?? this.veiculoId,
+      veiculoId: veiculoId is int? ? veiculoId : this.veiculoId,
       veiculo: veiculo is _i4.Veiculo? ? veiculo : this.veiculo?.copyWith(),
       empenhadoParaId: empenhadoParaId ?? this.empenhadoParaId,
       empenhadoPara: empenhadoPara is _i5.UserInfo?

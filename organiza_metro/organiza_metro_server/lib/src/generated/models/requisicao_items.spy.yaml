@@ -1,5 +1,0 @@
-class: RequisicaoItem
-fields:
-  materialId: int?   # ID do Material (se for material)
-  ferramentaId: int? # ID da Ferramenta (se for ferramenta)
-  quantidade: double # Quantidade a ser retirada (para material ou 1.0 para ferramenta)

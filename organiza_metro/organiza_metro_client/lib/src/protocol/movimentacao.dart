@@ -11,19 +11,19 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i2;
-import '../../generated/models/material.dart' as _i3;
-import '../../generated/models/ferramenta.dart' as _i4;
-import '../../generated/models/base.dart' as _i5;
-import '../../generated/models/veiculo.dart' as _i6;
+import 'material.dart' as _i3;
+import 'ferramenta.dart' as _i4;
+import 'base.dart' as _i5;
+import 'veiculo.dart' as _i6;
 
 abstract class Movimentacao implements _i1.SerializableModel {
   Movimentacao._({
     this.id,
     required this.usuarioId,
     this.usuario,
-    required this.materialId,
+    this.materialId,
     this.material,
-    required this.ferramentaId,
+    this.ferramentaId,
     this.ferramenta,
     this.quantidade,
     required this.tipoMovimentacao,
@@ -31,13 +31,13 @@ abstract class Movimentacao implements _i1.SerializableModel {
     this.dataDevolucao,
     this.modalidadeEntrega,
     this.observacao,
-    required this.origemBaseId,
+    this.origemBaseId,
     this.origemBase,
-    required this.destinoBaseId,
+    this.destinoBaseId,
     this.destinoBase,
-    required this.origemVeiculoId,
+    this.origemVeiculoId,
     this.origemVeiculo,
-    required this.destinoVeiculoId,
+    this.destinoVeiculoId,
     this.destinoVeiculo,
   });
 
@@ -45,9 +45,9 @@ abstract class Movimentacao implements _i1.SerializableModel {
     int? id,
     required int usuarioId,
     _i2.UserInfo? usuario,
-    required int materialId,
+    int? materialId,
     _i3.Material? material,
-    required int ferramentaId,
+    int? ferramentaId,
     _i4.Ferramenta? ferramenta,
     double? quantidade,
     required String tipoMovimentacao,
@@ -55,13 +55,13 @@ abstract class Movimentacao implements _i1.SerializableModel {
     DateTime? dataDevolucao,
     String? modalidadeEntrega,
     String? observacao,
-    required int origemBaseId,
+    int? origemBaseId,
     _i5.Base? origemBase,
-    required int destinoBaseId,
+    int? destinoBaseId,
     _i5.Base? destinoBase,
-    required int origemVeiculoId,
+    int? origemVeiculoId,
     _i6.Veiculo? origemVeiculo,
-    required int destinoVeiculoId,
+    int? destinoVeiculoId,
     _i6.Veiculo? destinoVeiculo,
   }) = _MovimentacaoImpl;
 
@@ -73,12 +73,12 @@ abstract class Movimentacao implements _i1.SerializableModel {
           ? null
           : _i2.UserInfo.fromJson(
               (jsonSerialization['usuario'] as Map<String, dynamic>)),
-      materialId: jsonSerialization['materialId'] as int,
+      materialId: jsonSerialization['materialId'] as int?,
       material: jsonSerialization['material'] == null
           ? null
           : _i3.Material.fromJson(
               (jsonSerialization['material'] as Map<String, dynamic>)),
-      ferramentaId: jsonSerialization['ferramentaId'] as int,
+      ferramentaId: jsonSerialization['ferramentaId'] as int?,
       ferramenta: jsonSerialization['ferramenta'] == null
           ? null
           : _i4.Ferramenta.fromJson(
@@ -93,22 +93,22 @@ abstract class Movimentacao implements _i1.SerializableModel {
               jsonSerialization['dataDevolucao']),
       modalidadeEntrega: jsonSerialization['modalidadeEntrega'] as String?,
       observacao: jsonSerialization['observacao'] as String?,
-      origemBaseId: jsonSerialization['origemBaseId'] as int,
+      origemBaseId: jsonSerialization['origemBaseId'] as int?,
       origemBase: jsonSerialization['origemBase'] == null
           ? null
           : _i5.Base.fromJson(
               (jsonSerialization['origemBase'] as Map<String, dynamic>)),
-      destinoBaseId: jsonSerialization['destinoBaseId'] as int,
+      destinoBaseId: jsonSerialization['destinoBaseId'] as int?,
       destinoBase: jsonSerialization['destinoBase'] == null
           ? null
           : _i5.Base.fromJson(
               (jsonSerialization['destinoBase'] as Map<String, dynamic>)),
-      origemVeiculoId: jsonSerialization['origemVeiculoId'] as int,
+      origemVeiculoId: jsonSerialization['origemVeiculoId'] as int?,
       origemVeiculo: jsonSerialization['origemVeiculo'] == null
           ? null
           : _i6.Veiculo.fromJson(
               (jsonSerialization['origemVeiculo'] as Map<String, dynamic>)),
-      destinoVeiculoId: jsonSerialization['destinoVeiculoId'] as int,
+      destinoVeiculoId: jsonSerialization['destinoVeiculoId'] as int?,
       destinoVeiculo: jsonSerialization['destinoVeiculo'] == null
           ? null
           : _i6.Veiculo.fromJson(
@@ -125,11 +125,11 @@ abstract class Movimentacao implements _i1.SerializableModel {
 
   _i2.UserInfo? usuario;
 
-  int materialId;
+  int? materialId;
 
   _i3.Material? material;
 
-  int ferramentaId;
+  int? ferramentaId;
 
   _i4.Ferramenta? ferramenta;
 
@@ -145,19 +145,19 @@ abstract class Movimentacao implements _i1.SerializableModel {
 
   String? observacao;
 
-  int origemBaseId;
+  int? origemBaseId;
 
   _i5.Base? origemBase;
 
-  int destinoBaseId;
+  int? destinoBaseId;
 
   _i5.Base? destinoBase;
 
-  int origemVeiculoId;
+  int? origemVeiculoId;
 
   _i6.Veiculo? origemVeiculo;
 
-  int destinoVeiculoId;
+  int? destinoVeiculoId;
 
   _i6.Veiculo? destinoVeiculo;
 
@@ -193,9 +193,9 @@ abstract class Movimentacao implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'usuarioId': usuarioId,
       if (usuario != null) 'usuario': usuario?.toJson(),
-      'materialId': materialId,
+      if (materialId != null) 'materialId': materialId,
       if (material != null) 'material': material?.toJson(),
-      'ferramentaId': ferramentaId,
+      if (ferramentaId != null) 'ferramentaId': ferramentaId,
       if (ferramenta != null) 'ferramenta': ferramenta?.toJson(),
       if (quantidade != null) 'quantidade': quantidade,
       'tipoMovimentacao': tipoMovimentacao,
@@ -203,13 +203,13 @@ abstract class Movimentacao implements _i1.SerializableModel {
       if (dataDevolucao != null) 'dataDevolucao': dataDevolucao?.toJson(),
       if (modalidadeEntrega != null) 'modalidadeEntrega': modalidadeEntrega,
       if (observacao != null) 'observacao': observacao,
-      'origemBaseId': origemBaseId,
+      if (origemBaseId != null) 'origemBaseId': origemBaseId,
       if (origemBase != null) 'origemBase': origemBase?.toJson(),
-      'destinoBaseId': destinoBaseId,
+      if (destinoBaseId != null) 'destinoBaseId': destinoBaseId,
       if (destinoBase != null) 'destinoBase': destinoBase?.toJson(),
-      'origemVeiculoId': origemVeiculoId,
+      if (origemVeiculoId != null) 'origemVeiculoId': origemVeiculoId,
       if (origemVeiculo != null) 'origemVeiculo': origemVeiculo?.toJson(),
-      'destinoVeiculoId': destinoVeiculoId,
+      if (destinoVeiculoId != null) 'destinoVeiculoId': destinoVeiculoId,
       if (destinoVeiculo != null) 'destinoVeiculo': destinoVeiculo?.toJson(),
     };
   }
@@ -227,9 +227,9 @@ class _MovimentacaoImpl extends Movimentacao {
     int? id,
     required int usuarioId,
     _i2.UserInfo? usuario,
-    required int materialId,
+    int? materialId,
     _i3.Material? material,
-    required int ferramentaId,
+    int? ferramentaId,
     _i4.Ferramenta? ferramenta,
     double? quantidade,
     required String tipoMovimentacao,
@@ -237,13 +237,13 @@ class _MovimentacaoImpl extends Movimentacao {
     DateTime? dataDevolucao,
     String? modalidadeEntrega,
     String? observacao,
-    required int origemBaseId,
+    int? origemBaseId,
     _i5.Base? origemBase,
-    required int destinoBaseId,
+    int? destinoBaseId,
     _i5.Base? destinoBase,
-    required int origemVeiculoId,
+    int? origemVeiculoId,
     _i6.Veiculo? origemVeiculo,
-    required int destinoVeiculoId,
+    int? destinoVeiculoId,
     _i6.Veiculo? destinoVeiculo,
   }) : super._(
           id: id,
@@ -277,9 +277,9 @@ class _MovimentacaoImpl extends Movimentacao {
     Object? id = _Undefined,
     int? usuarioId,
     Object? usuario = _Undefined,
-    int? materialId,
+    Object? materialId = _Undefined,
     Object? material = _Undefined,
-    int? ferramentaId,
+    Object? ferramentaId = _Undefined,
     Object? ferramenta = _Undefined,
     Object? quantidade = _Undefined,
     String? tipoMovimentacao,
@@ -287,23 +287,23 @@ class _MovimentacaoImpl extends Movimentacao {
     Object? dataDevolucao = _Undefined,
     Object? modalidadeEntrega = _Undefined,
     Object? observacao = _Undefined,
-    int? origemBaseId,
+    Object? origemBaseId = _Undefined,
     Object? origemBase = _Undefined,
-    int? destinoBaseId,
+    Object? destinoBaseId = _Undefined,
     Object? destinoBase = _Undefined,
-    int? origemVeiculoId,
+    Object? origemVeiculoId = _Undefined,
     Object? origemVeiculo = _Undefined,
-    int? destinoVeiculoId,
+    Object? destinoVeiculoId = _Undefined,
     Object? destinoVeiculo = _Undefined,
   }) {
     return Movimentacao(
       id: id is int? ? id : this.id,
       usuarioId: usuarioId ?? this.usuarioId,
       usuario: usuario is _i2.UserInfo? ? usuario : this.usuario?.copyWith(),
-      materialId: materialId ?? this.materialId,
+      materialId: materialId is int? ? materialId : this.materialId,
       material:
           material is _i3.Material? ? material : this.material?.copyWith(),
-      ferramentaId: ferramentaId ?? this.ferramentaId,
+      ferramentaId: ferramentaId is int? ? ferramentaId : this.ferramentaId,
       ferramenta: ferramenta is _i4.Ferramenta?
           ? ferramenta
           : this.ferramenta?.copyWith(),
@@ -316,17 +316,19 @@ class _MovimentacaoImpl extends Movimentacao {
           ? modalidadeEntrega
           : this.modalidadeEntrega,
       observacao: observacao is String? ? observacao : this.observacao,
-      origemBaseId: origemBaseId ?? this.origemBaseId,
+      origemBaseId: origemBaseId is int? ? origemBaseId : this.origemBaseId,
       origemBase:
           origemBase is _i5.Base? ? origemBase : this.origemBase?.copyWith(),
-      destinoBaseId: destinoBaseId ?? this.destinoBaseId,
+      destinoBaseId: destinoBaseId is int? ? destinoBaseId : this.destinoBaseId,
       destinoBase:
           destinoBase is _i5.Base? ? destinoBase : this.destinoBase?.copyWith(),
-      origemVeiculoId: origemVeiculoId ?? this.origemVeiculoId,
+      origemVeiculoId:
+          origemVeiculoId is int? ? origemVeiculoId : this.origemVeiculoId,
       origemVeiculo: origemVeiculo is _i6.Veiculo?
           ? origemVeiculo
           : this.origemVeiculo?.copyWith(),
-      destinoVeiculoId: destinoVeiculoId ?? this.destinoVeiculoId,
+      destinoVeiculoId:
+          destinoVeiculoId is int? ? destinoVeiculoId : this.destinoVeiculoId,
       destinoVeiculo: destinoVeiculo is _i6.Veiculo?
           ? destinoVeiculo
           : this.destinoVeiculo?.copyWith(),

@@ -10,10 +10,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../generated/models/tipo_material.dart' as _i2;
-import '../../generated/models/unidade_medida.dart' as _i3;
-import '../../generated/models/base.dart' as _i4;
-import '../../generated/models/veiculo.dart' as _i5;
+import 'tipo_material.dart' as _i2;
+import 'unidade_medida.dart' as _i3;
+import 'base.dart' as _i4;
+import 'veiculo.dart' as _i5;
 
 abstract class Material implements _i1.SerializableModel {
   Material._({
@@ -27,9 +27,9 @@ abstract class Material implements _i1.SerializableModel {
     this.tipo,
     required this.unidadeMedidaId,
     this.unidadeMedida,
-    required this.baseId,
+    this.baseId,
     this.base,
-    required this.veiculoId,
+    this.veiculoId,
     this.veiculo,
   });
 
@@ -44,9 +44,9 @@ abstract class Material implements _i1.SerializableModel {
     _i2.TipoMaterial? tipo,
     required int unidadeMedidaId,
     _i3.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i4.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i5.Veiculo? veiculo,
   }) = _MaterialImpl;
 
@@ -72,12 +72,12 @@ abstract class Material implements _i1.SerializableModel {
           ? null
           : _i3.UnidadeMedida.fromJson(
               (jsonSerialization['unidadeMedida'] as Map<String, dynamic>)),
-      baseId: jsonSerialization['baseId'] as int,
+      baseId: jsonSerialization['baseId'] as int?,
       base: jsonSerialization['base'] == null
           ? null
           : _i4.Base.fromJson(
               (jsonSerialization['base'] as Map<String, dynamic>)),
-      veiculoId: jsonSerialization['veiculoId'] as int,
+      veiculoId: jsonSerialization['veiculoId'] as int?,
       veiculo: jsonSerialization['veiculo'] == null
           ? null
           : _i5.Veiculo.fromJson(
@@ -108,11 +108,11 @@ abstract class Material implements _i1.SerializableModel {
 
   _i3.UnidadeMedida? unidadeMedida;
 
-  int baseId;
+  int? baseId;
 
   _i4.Base? base;
 
-  int veiculoId;
+  int? veiculoId;
 
   _i5.Veiculo? veiculo;
 
@@ -149,9 +149,9 @@ abstract class Material implements _i1.SerializableModel {
       if (tipo != null) 'tipo': tipo?.toJson(),
       'unidadeMedidaId': unidadeMedidaId,
       if (unidadeMedida != null) 'unidadeMedida': unidadeMedida?.toJson(),
-      'baseId': baseId,
+      if (baseId != null) 'baseId': baseId,
       if (base != null) 'base': base?.toJson(),
-      'veiculoId': veiculoId,
+      if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJson(),
     };
   }
@@ -176,9 +176,9 @@ class _MaterialImpl extends Material {
     _i2.TipoMaterial? tipo,
     required int unidadeMedidaId,
     _i3.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i4.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i5.Veiculo? veiculo,
   }) : super._(
           id: id,
@@ -212,9 +212,9 @@ class _MaterialImpl extends Material {
     Object? tipo = _Undefined,
     int? unidadeMedidaId,
     Object? unidadeMedida = _Undefined,
-    int? baseId,
+    Object? baseId = _Undefined,
     Object? base = _Undefined,
-    int? veiculoId,
+    Object? veiculoId = _Undefined,
     Object? veiculo = _Undefined,
   }) {
     return Material(
@@ -233,9 +233,9 @@ class _MaterialImpl extends Material {
       unidadeMedida: unidadeMedida is _i3.UnidadeMedida?
           ? unidadeMedida
           : this.unidadeMedida?.copyWith(),
-      baseId: baseId ?? this.baseId,
+      baseId: baseId is int? ? baseId : this.baseId,
       base: base is _i4.Base? ? base : this.base?.copyWith(),
-      veiculoId: veiculoId ?? this.veiculoId,
+      veiculoId: veiculoId is int? ? veiculoId : this.veiculoId,
       veiculo: veiculo is _i5.Veiculo? ? veiculo : this.veiculo?.copyWith(),
     );
   }

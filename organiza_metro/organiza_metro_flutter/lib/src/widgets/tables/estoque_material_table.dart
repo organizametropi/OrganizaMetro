@@ -38,7 +38,7 @@ class _estoqueTableState extends State<estoque_table_material> {
         "codigoSap": m.codigoSap,
         "descricao": m.descricao,
         "quantidade": m.quantidade,
-        "unidadeMedidaId": m.unidadeMedida!.codigo,
+        "unidadeMedida": m.unidadeMedida?.codigo,
       };
     }).toList();
   }
@@ -134,7 +134,7 @@ class _estoqueTableState extends State<estoque_table_material> {
           text: "QTD", value: "quantidade", show: true, sortable: true),
       DatatableHeader(
           text: "UNIDADE",
-          value: "unidadeMedidaId",
+          value: "unidadeMedida",
           show: true,
           sortable: false),
     ];

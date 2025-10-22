@@ -12,10 +12,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../../generated/models/tipo_material.dart' as _i2;
-import '../../generated/models/unidade_medida.dart' as _i3;
-import '../../generated/models/base.dart' as _i4;
-import '../../generated/models/veiculo.dart' as _i5;
+import 'tipo_material.dart' as _i2;
+import 'unidade_medida.dart' as _i3;
+import 'base.dart' as _i4;
+import 'veiculo.dart' as _i5;
 
 abstract class Material
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -30,9 +30,9 @@ abstract class Material
     this.tipo,
     required this.unidadeMedidaId,
     this.unidadeMedida,
-    required this.baseId,
+    this.baseId,
     this.base,
-    required this.veiculoId,
+    this.veiculoId,
     this.veiculo,
   });
 
@@ -47,9 +47,9 @@ abstract class Material
     _i2.TipoMaterial? tipo,
     required int unidadeMedidaId,
     _i3.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i4.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i5.Veiculo? veiculo,
   }) = _MaterialImpl;
 
@@ -75,12 +75,12 @@ abstract class Material
           ? null
           : _i3.UnidadeMedida.fromJson(
               (jsonSerialization['unidadeMedida'] as Map<String, dynamic>)),
-      baseId: jsonSerialization['baseId'] as int,
+      baseId: jsonSerialization['baseId'] as int?,
       base: jsonSerialization['base'] == null
           ? null
           : _i4.Base.fromJson(
               (jsonSerialization['base'] as Map<String, dynamic>)),
-      veiculoId: jsonSerialization['veiculoId'] as int,
+      veiculoId: jsonSerialization['veiculoId'] as int?,
       veiculo: jsonSerialization['veiculo'] == null
           ? null
           : _i5.Veiculo.fromJson(
@@ -113,11 +113,11 @@ abstract class Material
 
   _i3.UnidadeMedida? unidadeMedida;
 
-  int baseId;
+  int? baseId;
 
   _i4.Base? base;
 
-  int veiculoId;
+  int? veiculoId;
 
   _i5.Veiculo? veiculo;
 
@@ -157,9 +157,9 @@ abstract class Material
       if (tipo != null) 'tipo': tipo?.toJson(),
       'unidadeMedidaId': unidadeMedidaId,
       if (unidadeMedida != null) 'unidadeMedida': unidadeMedida?.toJson(),
-      'baseId': baseId,
+      if (baseId != null) 'baseId': baseId,
       if (base != null) 'base': base?.toJson(),
-      'veiculoId': veiculoId,
+      if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJson(),
     };
   }
@@ -179,9 +179,9 @@ abstract class Material
       'unidadeMedidaId': unidadeMedidaId,
       if (unidadeMedida != null)
         'unidadeMedida': unidadeMedida?.toJsonForProtocol(),
-      'baseId': baseId,
+      if (baseId != null) 'baseId': baseId,
       if (base != null) 'base': base?.toJsonForProtocol(),
-      'veiculoId': veiculoId,
+      if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJsonForProtocol(),
     };
   }
@@ -240,9 +240,9 @@ class _MaterialImpl extends Material {
     _i2.TipoMaterial? tipo,
     required int unidadeMedidaId,
     _i3.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i4.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i5.Veiculo? veiculo,
   }) : super._(
           id: id,
@@ -276,9 +276,9 @@ class _MaterialImpl extends Material {
     Object? tipo = _Undefined,
     int? unidadeMedidaId,
     Object? unidadeMedida = _Undefined,
-    int? baseId,
+    Object? baseId = _Undefined,
     Object? base = _Undefined,
-    int? veiculoId,
+    Object? veiculoId = _Undefined,
     Object? veiculo = _Undefined,
   }) {
     return Material(
@@ -297,9 +297,9 @@ class _MaterialImpl extends Material {
       unidadeMedida: unidadeMedida is _i3.UnidadeMedida?
           ? unidadeMedida
           : this.unidadeMedida?.copyWith(),
-      baseId: baseId ?? this.baseId,
+      baseId: baseId is int? ? baseId : this.baseId,
       base: base is _i4.Base? ? base : this.base?.copyWith(),
-      veiculoId: veiculoId ?? this.veiculoId,
+      veiculoId: veiculoId is int? ? veiculoId : this.veiculoId,
       veiculo: veiculo is _i5.Veiculo? ? veiculo : this.veiculo?.copyWith(),
     );
   }
@@ -512,6 +512,8 @@ class MaterialRepository {
   const MaterialRepository._();
 
   final attachRow = const MaterialAttachRowRepository._();
+
+  final detachRow = const MaterialDetachRowRepository._();
 
   /// Returns a list of [Material]s matching the given query parameters.
   ///
@@ -817,6 +819,54 @@ class MaterialAttachRowRepository {
     }
 
     var $material = material.copyWith(veiculoId: veiculo.id);
+    await session.db.updateRow<Material>(
+      $material,
+      columns: [Material.t.veiculoId],
+      transaction: transaction,
+    );
+  }
+}
+
+class MaterialDetachRowRepository {
+  const MaterialDetachRowRepository._();
+
+  /// Detaches the relation between this [Material] and the [Base] set in `base`
+  /// by setting the [Material]'s foreign key `baseId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> base(
+    _i1.Session session,
+    Material material, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (material.id == null) {
+      throw ArgumentError.notNull('material.id');
+    }
+
+    var $material = material.copyWith(baseId: null);
+    await session.db.updateRow<Material>(
+      $material,
+      columns: [Material.t.baseId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [Material] and the [Veiculo] set in `veiculo`
+  /// by setting the [Material]'s foreign key `veiculoId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> veiculo(
+    _i1.Session session,
+    Material material, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (material.id == null) {
+      throw ArgumentError.notNull('material.id');
+    }
+
+    var $material = material.copyWith(veiculoId: null);
     await session.db.updateRow<Material>(
       $material,
       columns: [Material.t.veiculoId],

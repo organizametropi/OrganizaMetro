@@ -3,9 +3,9 @@ table: movimentacao
 fields:
   usuario: module:auth:UserInfo?, relation
     
-  material: Material?, relation
+  material: Material?, relation(optional)
     
-  ferramenta: Ferramenta?, relation
+  ferramenta: Ferramenta?, relation(optional)
   
   quantidade: double?
   tipoMovimentacao: String 
@@ -14,10 +14,10 @@ fields:
   modalidadeEntrega: String?
   observacao: String?
 
-  origemBase: Base?, relation
+  origemBase: Base?, relation(optional)
     
-  destinoBase: Base?, relation
+  destinoBase: Base?, relation(optional)
     
-  origemVeiculo: Veiculo?, relation
+  origemVeiculo: Veiculo?, relation(optional)
     
-  destinoVeiculo: Veiculo?, relation
+  destinoVeiculo: Veiculo?, relation(optional)

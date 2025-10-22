@@ -326,31 +326,37 @@ Future<void> main(List<String> args) async {
 
     final quantidadeArrumada = _random.nextInt(90);
 
-    var _baseId, _veiculoId; 
+    var _baseId, _veiculoId;
 
     var _tipoid = await proto.TipoMaterial.db
         .findFirstRow(session, where: (t) => t.id.equals(tipoId));
     var _unidadeMedidaId = await proto.UnidadeMedida.db
         .findFirstRow(session, where: (t) => t.id.equals(unidadeMedidaId));
     if (baseId != null) {
-       _baseId = await proto.Base.db
+      _baseId = await proto.Base.db
           .findFirstRow(session, where: (t) => t.id.equals(baseId));
+      print('Base id: ${_baseId.id}');
     }
     if (veiculoId != null) {
-       _veiculoId = await proto.Base.db
+      _veiculoId = await proto.Veiculo.db
           .findFirstRow(session, where: (t) => t.id.equals(veiculoId));
+      print('Veiculo id: ${_veiculoId.id} ');
     }
 
     final material = proto.Material(
         codigoSap: isConsumo ? 10000000 + i : 15000000 + i,
         descricao: '$tipoNome Item- ${i + 1}',
+        tipoId: _tipoid!.id!,
         tipo: _tipoid,
+        unidadeMedidaId: _unidadeMedidaId!.id!,
         unidadeMedida: _unidadeMedidaId,
         quantidade: quantidadeArrumada.toDouble(),
         estoqueMinimo: 5.0,
         dataUltimaMovimentacao:
             DateTime.now().subtract(Duration(days: _random.nextInt(30))),
+        baseId: _baseId?.id,
         base: _baseId,
+        veiculoId: _veiculoId?.id,
         veiculo: _veiculoId);
 
     final existingMaterial = await proto.Material.db.findFirstRow(session,
@@ -368,7 +374,6 @@ Future<void> main(List<String> args) async {
   // -----------------------------------------------------------------------
   print('-> Inserindo Ferramentas (Patrimoniado e Manual)');
   final List<int> empenhadoParaAuthIds = usuarioIds.values.toList();
- 
 
   for (var i = 0; i < 10; i++) {
     final isInstrumento = i % 2 == 0;
@@ -381,26 +386,31 @@ Future<void> main(List<String> args) async {
         ? veiculoValues[_random.nextInt(veiculoValues.length)]
         : null;
 
-     var _baseId, _veiculoId; 
+    var _baseId, _veiculoId;
 
     if (baseId != null) {
-       _baseId = await proto.Base.db
+      _baseId = await proto.Base.db
           .findFirstRow(session, where: (t) => t.id.equals(baseId));
+      print('Base id: ${_baseId.id}');
     }
     if (veiculoId != null) {
-       _veiculoId = await proto.Base.db
+      _veiculoId = await proto.Veiculo.db
           .findFirstRow(session, where: (t) => t.id.equals(veiculoId));
+      print('Veiculo id: ${_veiculoId.id} ');
     }
 
     final unidadeIdFerramenta = unidadeMedidaIds['UN'];
-   
+
     if (unidadeIdFerramenta == null) {
       print('ERRO: Unidade de medida "UN" não encontrada para ferramentas.');
       continue;
     }
 
-    var _unidadeIdFerramenta = await proto.UnidadeMedida.db.findFirstRow(session, where: (t) => t.id.equals(unidadeIdFerramenta));
-    var _empenhadoParaId = await auth.UserInfo.db.findFirstRow(session, where: (t) => t.id.equals(empenhadoParaAuthIds[_random.nextInt(empenhadoParaAuthIds.length)]));
+    var _unidadeIdFerramenta = await proto.UnidadeMedida.db
+        .findFirstRow(session, where: (t) => t.id.equals(unidadeIdFerramenta));
+    var _empenhadoParaId = await auth.UserInfo.db.findFirstRow(session,
+        where: (t) => t.id.equals(empenhadoParaAuthIds[
+            _random.nextInt(empenhadoParaAuthIds.length)]));
 
     final patrimonioCode = 'PAT${100 + i}';
     final existingFerramenta = await proto.Ferramenta.db.findFirstRow(session,
@@ -417,14 +427,17 @@ Future<void> main(List<String> args) async {
       descricao: '$tipoNome - Item ${i + 1}',
       patrimonio: patrimonioCode,
       unidadeMedida: _unidadeIdFerramenta,
+      unidadeMedidaId: _unidadeIdFerramenta!.id!,
 
-      empenhadoPara:
-          _empenhadoParaId,
+      empenhadoParaId: _empenhadoParaId!.id!,
+      empenhadoPara: _empenhadoParaId,
       emUso: true,
       tipo: isInstrumento ? 'Instrumento' : 'Ferramenta',
       status: 'Empenhada',
 
+      baseId: _baseId?.id,
       base: _baseId,
+      veiculoId: _veiculoId?.id,
       veiculo: _veiculoId,
 
       dataAquisicao:
@@ -456,7 +469,8 @@ Future<void> main(List<String> args) async {
       final validade = dataCalib.add(const Duration(days: 365));
 
       final calibracao = proto.Calibracao(
-        ferramenta: ferramenta, // 🚨 Agora sabemos que o ID existe!
+        ferramenta: ferramenta,
+        ferramentaId: ferramenta.id!,
         dataCalibracao: dataCalib,
         validadeCalibracao: validade,
         status: validade.isBefore(DateTime.now()) ? 'Vencido' : 'Válido',

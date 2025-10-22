@@ -11,13 +11,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:organiza_metro_client/src/protocol/generated/models/ferramenta.dart'
-    as _i3;
-import 'package:organiza_metro_client/src/protocol/generated/models/material.dart'
-    as _i4;
-import 'package:organiza_metro_client/src/protocol/greeting.dart' as _i5;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i6;
-import 'protocol.dart' as _i7;
+import 'package:organiza_metro_client/src/protocol/ferramenta.dart' as _i3;
+import 'package:organiza_metro_client/src/protocol/material.dart' as _i4;
+import 'package:organiza_metro_client/src/protocol/requisicao_items.dart'
+    as _i5;
+import 'package:organiza_metro_client/src/protocol/greeting.dart' as _i6;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i7;
+import 'protocol.dart' as _i8;
 
 /// Endpoint para utilidades de autenticação e permissão
 /// {@category Endpoint}
@@ -70,6 +70,37 @@ class EndpointMaterial extends _i1.EndpointRef {
       );
 }
 
+/// Endpoint responsável por criar e gerenciar Movimentações.
+/// {@category Endpoint}
+class EndpointMovimentacao extends _i1.EndpointRef {
+  EndpointMovimentacao(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'movimentacao';
+
+  /// Cria uma requisição de saída de itens (Materiais e/ou Ferramentas).
+  ///
+  /// A operação é executada dentro de uma transação atômica.
+  _i2.Future<bool> criarRequisicaoSaida({
+    required List<_i5.RequisicaoItem> itens,
+    required String modalidadeEntrega,
+    String? observacao,
+    int? destinoBaseId,
+    int? destinoVeiculoId,
+  }) =>
+      caller.callServerEndpoint<bool>(
+        'movimentacao',
+        'criarRequisicaoSaida',
+        {
+          'itens': itens,
+          'modalidadeEntrega': modalidadeEntrega,
+          'observacao': observacao,
+          'destinoBaseId': destinoBaseId,
+          'destinoVeiculoId': destinoVeiculoId,
+        },
+      );
+}
+
 /// This is an example endpoint that returns a greeting message through
 /// its [hello] method.
 /// {@category Endpoint}
@@ -80,8 +111,8 @@ class EndpointGreeting extends _i1.EndpointRef {
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _i2.Future<_i5.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i5.Greeting>(
+  _i2.Future<_i6.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i6.Greeting>(
         'greeting',
         'hello',
         {'name': name},
@@ -90,10 +121,10 @@ class EndpointGreeting extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i6.Caller(client);
+    auth = _i7.Caller(client);
   }
 
-  late final _i6.Caller auth;
+  late final _i7.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -112,7 +143,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i7.Protocol(),
+          _i8.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -125,6 +156,7 @@ class Client extends _i1.ServerpodClientShared {
     authUtils = EndpointAuthUtils(this);
     ferramenta = EndpointFerramenta(this);
     material = EndpointMaterial(this);
+    movimentacao = EndpointMovimentacao(this);
     greeting = EndpointGreeting(this);
     modules = Modules(this);
   }
@@ -135,6 +167,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointMaterial material;
 
+  late final EndpointMovimentacao movimentacao;
+
   late final EndpointGreeting greeting;
 
   late final Modules modules;
@@ -144,6 +178,7 @@ class Client extends _i1.ServerpodClientShared {
         'authUtils': authUtils,
         'ferramenta': ferramenta,
         'material': material,
+        'movimentacao': movimentacao,
         'greeting': greeting,
       };
 

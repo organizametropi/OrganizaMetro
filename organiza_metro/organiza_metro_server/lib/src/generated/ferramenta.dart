@@ -12,9 +12,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../../generated/models/unidade_medida.dart' as _i2;
-import '../../generated/models/base.dart' as _i3;
-import '../../generated/models/veiculo.dart' as _i4;
+import 'unidade_medida.dart' as _i2;
+import 'base.dart' as _i3;
+import 'veiculo.dart' as _i4;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i5;
 
 abstract class Ferramenta
@@ -31,9 +31,9 @@ abstract class Ferramenta
     this.dataUltimaMovimentacao,
     required this.unidadeMedidaId,
     this.unidadeMedida,
-    required this.baseId,
+    this.baseId,
     this.base,
-    required this.veiculoId,
+    this.veiculoId,
     this.veiculo,
     required this.empenhadoParaId,
     this.empenhadoPara,
@@ -51,9 +51,9 @@ abstract class Ferramenta
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
     _i2.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i3.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i4.Veiculo? veiculo,
     required int empenhadoParaId,
     _i5.UserInfo? empenhadoPara,
@@ -80,12 +80,12 @@ abstract class Ferramenta
           ? null
           : _i2.UnidadeMedida.fromJson(
               (jsonSerialization['unidadeMedida'] as Map<String, dynamic>)),
-      baseId: jsonSerialization['baseId'] as int,
+      baseId: jsonSerialization['baseId'] as int?,
       base: jsonSerialization['base'] == null
           ? null
           : _i3.Base.fromJson(
               (jsonSerialization['base'] as Map<String, dynamic>)),
-      veiculoId: jsonSerialization['veiculoId'] as int,
+      veiculoId: jsonSerialization['veiculoId'] as int?,
       veiculo: jsonSerialization['veiculo'] == null
           ? null
           : _i4.Veiculo.fromJson(
@@ -125,11 +125,11 @@ abstract class Ferramenta
 
   _i2.UnidadeMedida? unidadeMedida;
 
-  int baseId;
+  int? baseId;
 
   _i3.Base? base;
 
-  int veiculoId;
+  int? veiculoId;
 
   _i4.Veiculo? veiculo;
 
@@ -177,9 +177,9 @@ abstract class Ferramenta
         'dataUltimaMovimentacao': dataUltimaMovimentacao?.toJson(),
       'unidadeMedidaId': unidadeMedidaId,
       if (unidadeMedida != null) 'unidadeMedida': unidadeMedida?.toJson(),
-      'baseId': baseId,
+      if (baseId != null) 'baseId': baseId,
       if (base != null) 'base': base?.toJson(),
-      'veiculoId': veiculoId,
+      if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJson(),
       'empenhadoParaId': empenhadoParaId,
       if (empenhadoPara != null) 'empenhadoPara': empenhadoPara?.toJson(),
@@ -202,9 +202,9 @@ abstract class Ferramenta
       'unidadeMedidaId': unidadeMedidaId,
       if (unidadeMedida != null)
         'unidadeMedida': unidadeMedida?.toJsonForProtocol(),
-      'baseId': baseId,
+      if (baseId != null) 'baseId': baseId,
       if (base != null) 'base': base?.toJsonForProtocol(),
-      'veiculoId': veiculoId,
+      if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJsonForProtocol(),
       'empenhadoParaId': empenhadoParaId,
       if (empenhadoPara != null)
@@ -267,9 +267,9 @@ class _FerramentaImpl extends Ferramenta {
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
     _i2.UnidadeMedida? unidadeMedida,
-    required int baseId,
+    int? baseId,
     _i3.Base? base,
-    required int veiculoId,
+    int? veiculoId,
     _i4.Veiculo? veiculo,
     required int empenhadoParaId,
     _i5.UserInfo? empenhadoPara,
@@ -309,9 +309,9 @@ class _FerramentaImpl extends Ferramenta {
     Object? dataUltimaMovimentacao = _Undefined,
     int? unidadeMedidaId,
     Object? unidadeMedida = _Undefined,
-    int? baseId,
+    Object? baseId = _Undefined,
     Object? base = _Undefined,
-    int? veiculoId,
+    Object? veiculoId = _Undefined,
     Object? veiculo = _Undefined,
     int? empenhadoParaId,
     Object? empenhadoPara = _Undefined,
@@ -332,9 +332,9 @@ class _FerramentaImpl extends Ferramenta {
       unidadeMedida: unidadeMedida is _i2.UnidadeMedida?
           ? unidadeMedida
           : this.unidadeMedida?.copyWith(),
-      baseId: baseId ?? this.baseId,
+      baseId: baseId is int? ? baseId : this.baseId,
       base: base is _i3.Base? ? base : this.base?.copyWith(),
-      veiculoId: veiculoId ?? this.veiculoId,
+      veiculoId: veiculoId is int? ? veiculoId : this.veiculoId,
       veiculo: veiculo is _i4.Veiculo? ? veiculo : this.veiculo?.copyWith(),
       empenhadoParaId: empenhadoParaId ?? this.empenhadoParaId,
       empenhadoPara: empenhadoPara is _i5.UserInfo?
@@ -572,6 +572,8 @@ class FerramentaRepository {
   const FerramentaRepository._();
 
   final attachRow = const FerramentaAttachRowRepository._();
+
+  final detachRow = const FerramentaDetachRowRepository._();
 
   /// Returns a list of [Ferramenta]s matching the given query parameters.
   ///
@@ -880,6 +882,54 @@ class FerramentaAttachRowRepository {
     await session.db.updateRow<Ferramenta>(
       $ferramenta,
       columns: [Ferramenta.t.empenhadoParaId],
+      transaction: transaction,
+    );
+  }
+}
+
+class FerramentaDetachRowRepository {
+  const FerramentaDetachRowRepository._();
+
+  /// Detaches the relation between this [Ferramenta] and the [Base] set in `base`
+  /// by setting the [Ferramenta]'s foreign key `baseId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> base(
+    _i1.Session session,
+    Ferramenta ferramenta, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ferramenta.id == null) {
+      throw ArgumentError.notNull('ferramenta.id');
+    }
+
+    var $ferramenta = ferramenta.copyWith(baseId: null);
+    await session.db.updateRow<Ferramenta>(
+      $ferramenta,
+      columns: [Ferramenta.t.baseId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [Ferramenta] and the [Veiculo] set in `veiculo`
+  /// by setting the [Ferramenta]'s foreign key `veiculoId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> veiculo(
+    _i1.Session session,
+    Ferramenta ferramenta, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ferramenta.id == null) {
+      throw ArgumentError.notNull('ferramenta.id');
+    }
+
+    var $ferramenta = ferramenta.copyWith(veiculoId: null);
+    await session.db.updateRow<Ferramenta>(
+      $ferramenta,
+      columns: [Ferramenta.t.veiculoId],
       transaction: transaction,
     );
   }

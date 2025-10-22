@@ -14,12 +14,13 @@ fields:
 
   unidadeMedida: UnidadeMedida?, relation
   
-  base: Base?, relation
+  base: Base?, relation(optional)
   
-  veiculo: Veiculo?, relation
+  veiculo: Veiculo?, relation(optional)
   
   empenhadoPara: module:auth:UserInfo?, relation
 indexes:
   ferramenta_patrimonio_idx:
     fields: patrimonio
     unique: true
+

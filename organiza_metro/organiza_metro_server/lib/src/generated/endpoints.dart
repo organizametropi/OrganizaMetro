@@ -13,8 +13,11 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/auth_utils_endpoint.dart' as _i2;
 import '../endpoints/ferramenta_endpoint.dart' as _i3;
 import '../endpoints/material_endpoint.dart' as _i4;
-import '../greeting_endpoint.dart' as _i5;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i6;
+import '../endpoints/movimentacao_endpoint.dart' as _i5;
+import '../greeting_endpoint.dart' as _i6;
+import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
+    as _i7;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i8;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -38,7 +41,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'material',
           null,
         ),
-      'greeting': _i5.GreetingEndpoint()
+      'movimentacao': _i5.MovimentacaoEndpoint()
+        ..initialize(
+          server,
+          'movimentacao',
+          null,
+        ),
+      'greeting': _i6.GreetingEndpoint()
         ..initialize(
           server,
           'greeting',
@@ -103,6 +112,55 @@ class Endpoints extends _i1.EndpointDispatch {
         )
       },
     );
+    connectors['movimentacao'] = _i1.EndpointConnector(
+      name: 'movimentacao',
+      endpoint: endpoints['movimentacao']!,
+      methodConnectors: {
+        'criarRequisicaoSaida': _i1.MethodConnector(
+          name: 'criarRequisicaoSaida',
+          params: {
+            'itens': _i1.ParameterDescription(
+              name: 'itens',
+              type: _i1.getType<List<_i7.RequisicaoItem>>(),
+              nullable: false,
+            ),
+            'modalidadeEntrega': _i1.ParameterDescription(
+              name: 'modalidadeEntrega',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'observacao': _i1.ParameterDescription(
+              name: 'observacao',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'destinoBaseId': _i1.ParameterDescription(
+              name: 'destinoBaseId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+            'destinoVeiculoId': _i1.ParameterDescription(
+              name: 'destinoVeiculoId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['movimentacao'] as _i5.MovimentacaoEndpoint)
+                  .criarRequisicaoSaida(
+            session,
+            itens: params['itens'],
+            modalidadeEntrega: params['modalidadeEntrega'],
+            observacao: params['observacao'],
+            destinoBaseId: params['destinoBaseId'],
+            destinoVeiculoId: params['destinoVeiculoId'],
+          ),
+        )
+      },
+    );
     connectors['greeting'] = _i1.EndpointConnector(
       name: 'greeting',
       endpoint: endpoints['greeting']!,
@@ -120,13 +178,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['greeting'] as _i5.GreetingEndpoint).hello(
+              (endpoints['greeting'] as _i6.GreetingEndpoint).hello(
             session,
             params['name'],
           ),
         )
       },
     );
-    modules['serverpod_auth'] = _i6.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i8.Endpoints()..initializeEndpoints(server);
   }
 }

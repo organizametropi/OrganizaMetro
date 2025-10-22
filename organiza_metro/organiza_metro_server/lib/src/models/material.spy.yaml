@@ -11,6 +11,6 @@ fields:
 
   unidadeMedida: UnidadeMedida?, relation
   
-  base: Base?, relation
+  base: Base?, relation(optional)
   
-  veiculo: Veiculo?, relation
+  veiculo: Veiculo?, relation(optional)
