@@ -8,14 +8,27 @@ import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/add_material_modal.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/retirar_material_form2.dart';
 
-class retirarMaterialPage extends StatelessWidget {
+class retirarMaterialPage extends StatefulWidget {
+  @override
+  State<retirarMaterialPage> createState() => _RetirarMaterialPageState();
+}
+
+class _RetirarMaterialPageState extends State<retirarMaterialPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late RetirarMaterialController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = RetirarMaterialController();
+  }
 
   // Função para abrir o modal
   void _showAddMaterialModal(BuildContext context) {
-    // Acessa o controlador sem ouvir as mudanças (read)
-    final controller = context.read<RetirarMaterialController>();
-
+    final controller = Provider.of<RetirarMaterialController>(
+      context,
+      listen: false,
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -33,8 +46,8 @@ class retirarMaterialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 🚨 Injete o controlador na árvore para que os sub-widgets possam acessá-lo
-    return ChangeNotifierProvider(
-      create: (_) => RetirarMaterialController(),
+    return ChangeNotifierProvider.value(
+      value: controller,
       child: Consumer<RetirarMaterialController>(
         builder: (context, controller, child) {
           // Passamos o context para o submitRequest

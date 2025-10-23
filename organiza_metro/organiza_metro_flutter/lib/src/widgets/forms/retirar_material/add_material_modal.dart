@@ -21,17 +21,60 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
   bool _isLoading = true;
   int _total = 0;
 
+  List<Map<String, dynamic>> _convertMateriasToMap(List<Material> materiais) {
+    return materiais.map((m) {
+      return {
+        "id": m.id,
+        "codigoSap": m.codigoSap,
+        "descricao": m.descricao,
+        "quantidade": m.quantidade,
+        "unidadeMedida": m.unidadeMedida?.codigo,
+      };
+    }).toList();
+  }
+
+  _initializeData() async {
+    _mockPullData();
+  }
+
+  _mockPullData() async {
+    setState(() => _isLoading = true);
+    try {
+      final List<Material> materiais = await client.material.getEstoque();
+      print("Materiais recebidos: ${materiais.length}");
+
+      _source.clear();
+      _source.addAll(_convertMateriasToMap(materiais));
+
+      _total = _source.length;
+
+      _source = _source.getRange(0, _total).toList();
+
+      print("Lista materias: $_source");
+    } catch (e) {
+      print("Erro ao buscar os dados no estoque: $e");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _setHeaders();
-    _loadAvailableMaterials();
-  }
 
-  void _setHeaders() {
+    //setHeaders
     _headers = [
       DatatableHeader(
-          text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true),
+          text: "ID",
+          value: "id",
+          show: true,
+          sortable: true), // Adicionado sortable
+      DatatableHeader(
+          text: "CÓDIGO SAP",
+          value: "codigoSap",
+          show: true,
+          sortable: true,
+          flex: 1),
       DatatableHeader(
           text: "DESCRIÇÃO",
           value: "descricao",
@@ -40,37 +83,15 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
           sortable: true),
       DatatableHeader(
           text: "QTD", value: "quantidade", show: true, sortable: true),
+      DatatableHeader(
+          text: "UNIDADE", value: "unidadeMedida", show: true, sortable: false),
     ];
+
+    _initializeData();
   }
-
-  Future<void> _loadAvailableMaterials() async {
-    setState(() => _isLoading = true);
-    try {
-      // 🚨 CHAMADA AO SERVERPOD (usando o cliente global)
-      final List<Material> materials = await client.material.getEstoque();
-
-      // Converte objetos Serverpod para o formato Map
-      _source = materials
-          .map((m) => {
-                "id": m.id,
-                "codigoSap": m.codigoSap,
-                "descricao": m.descricao,
-                "quantidade": m.quantidade,
-              })
-          .toList();
-
-      _total = _source.length;
-    } catch (e) {
-      // Adicione um feedback visual para o usuário em caso de erro real
-      print("Erro ao carregar materiais para o modal: $e");
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
+//  !!!!!!!!!!!!!!!!! O On sort parce ser essencial !!!!!!!!!!!!!!!!!!!!!!
   @override
   Widget build(BuildContext context) {
-    print('header: $_headers'); // ta puxando uma lista vazia e depois enche
     return AlertDialog(
       title: const Text('Selecionar Materiais Disponíveis'),
       content: SizedBox(
@@ -79,27 +100,48 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
         child: Column(
           children: [
             Expanded(
-              child: ResponsiveDatatable(
-                  headers: _headers,
-                  source: _source,
-                  selecteds: _selecteds,
-                  showSelect: true,
-                  isLoading: _isLoading,
-                  onSelect: (value, item) {
-                    setState(() {
-                      if (item == null) {
-                        _selecteds = value! ? List.from(_source) : [];
-                      } else if (value!) {
-                        _selecteds.add(item);
-                      } else {
-                        _selecteds
-                            .removeWhere((map) => map["id"] == item["id"]);
-                      }
-                    });
-                  },
-                  footers: [
-                    Text('Total de ${_total} materiais.'),
-                  ]),
+              child: _source.isEmpty
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : SingleChildScrollView(
+                      child: ResponsiveDatatable(
+                          source: [
+                            {
+                              "id": 1,
+                              "codigoSap": "10000000",
+                              "descricao": "Teste Item",
+                              "quantidade": 10,
+                              "unidadeMedida": "UN",
+                            },
+                            {
+                              "id": 2,
+                              "codigoSap": "10000001",
+                              "descricao": "Teste Item 2",
+                              "quantidade": 20,
+                              "unidadeMedida": "CJ",
+                            }
+                          ],
+                          selecteds: _selecteds,
+                          showSelect: true,
+                          isLoading: _isLoading,
+                          autoHeight: false,
+                          onSelect: (value, item) {
+                            setState(() {
+                              if (item == null) {
+                                _selecteds = value! ? List.from(_source) : [];
+                              } else if (value!) {
+                                _selecteds.add(item);
+                              } else {
+                                _selecteds.removeWhere(
+                                    (map) => map["id"] == item["id"]);
+                              }
+                            });
+                          },
+                          footers: [
+                            Text('Total de ${_total} materiais.'),
+                          ]),
+                    ),
             ),
           ],
         ),

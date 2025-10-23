@@ -1,0 +1,15 @@
+class: Alerta
+table: alertas
+fields:
+  usuarioId: module:auth:UserInfo?, relation
+  tipo: String
+  titulo: String
+  mensagem: String
+  dataCriacao: DateTime, default=now
+  lido: bool, default=false
+  calibracao: Calibracao?, relation(optional)
+  movimentacao: Movimentacao?, relation(optional)
+  material: Materia?, relation(optional)
+  ferramenta: Ferramenta?, relation(optional)
+  nivelPrioridade: int?, default=1
+  ativo: bool, default=true

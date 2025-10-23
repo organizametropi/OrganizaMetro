@@ -1,0 +1,4 @@
+cron:
+  - name: verificar_alertas
+    schedule: "0 * * * *" # a cada hora
+    endpoint: /cron/verificar_alertas
