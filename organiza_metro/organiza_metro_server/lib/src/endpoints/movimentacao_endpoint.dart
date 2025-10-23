@@ -1,7 +1,8 @@
 import 'package:serverpod/serverpod.dart';
-import 'package:organiza_metro_server/src/generated/protocol.dart';
+import 'package:organiza_metro_server/src/generated/protocol.dart' as proto; 
 import 'package:serverpod_auth_server/module.dart' as auth;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart';
+
 
 /// Endpoint responsável por criar e gerenciar Movimentações.
 class MovimentacaoEndpoint extends Endpoint {
@@ -13,7 +14,7 @@ class MovimentacaoEndpoint extends Endpoint {
   /// A operação é executada dentro de uma transação atômica.
   Future<bool> criarRequisicaoSaida(
     Session session, {
-    required List<RequisicaoItem> itens,
+    required List<proto.RequisicaoItem> itens,
     required String modalidadeEntrega,
     String? observacao,
     // Campos de Localização de DESTINO (Opcional, pois a saída é para o usuário)
@@ -80,7 +81,7 @@ class MovimentacaoEndpoint extends Endpoint {
       Future<void> _processarSaidaMaterial(
         Session session,
         Transaction transactionSession,
-        RequisicaoItem item,
+        proto.RequisicaoItem item,
         int usuarioAuthId,
         String tipoMovimentacao,
         String modalidadeEntrega,
@@ -89,16 +90,17 @@ class MovimentacaoEndpoint extends Endpoint {
         int? destinoVeiculoId,
         List<String> alertas,
       ) async {
-        final material = await Material.db.findFirstRow(session,
+        final material = await proto.Material.db.findFirstRow(session,
             where: (t) => t.id.equals(item.material!.id),
+            include: proto.Material.include(),
             transaction: transactionSession);
 
         if (material == null) {
           throw Exception('Material não encontrado (ID: ${item.material!.id}).');
         }
 
-        Base? origemBaseId;
-        Veiculo? origemVeiculoId;
+        proto.Base? origemBaseId;
+        proto.Veiculo? origemVeiculoId;
 
         final double? estoqueAtual = material.quantidade;
         final double quantidadeRequerida = item.quantidade;
@@ -126,11 +128,11 @@ class MovimentacaoEndpoint extends Endpoint {
 
         material.quantidade = novoEstoque;
         material.dataUltimaMovimentacao = DateTime.now();
-        await Material.db
+        await proto.Material.db
             .updateRow(session, material, transaction: transactionSession);
 
         // 🚨 REGISTRO DA MOVIMENTAÇÃO (Utilizando todos os campos do modelo)
-        final movimentacao = Movimentacao(
+        final movimentacao = proto.Movimentacao(
           usuarioId: usuarioAuthId,
           materialId: material.id,
           material: material,
@@ -150,7 +152,7 @@ class MovimentacaoEndpoint extends Endpoint {
           destinoVeiculoId: destinoVeiculoId, // Usa o destino (se fornecido)
           dataDevolucao: null, // Não se aplica
         );
-        await Movimentacao.db
+        await proto.Movimentacao.db
             .insertRow(session, movimentacao, transaction: transactionSession);
       }
 

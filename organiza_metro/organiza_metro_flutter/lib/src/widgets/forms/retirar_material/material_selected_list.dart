@@ -74,7 +74,7 @@ class MaterialEditableRow extends StatelessWidget {
     final itemId = material['id'] as int;
     // Lógica para determinar se é ferramenta (e a quantidade deve ser fixa 1)
     final isFerramenta = material['ferramentaId'] != null || material['tipo'] == 'ferramenta'; 
-    final initialQuantity = (material['quantidade'] as double?)?.toStringAsFixed(material['quantidade'] is int ? 0 : 2) ?? '1';
+    final initialQuantity = '1'; 
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),

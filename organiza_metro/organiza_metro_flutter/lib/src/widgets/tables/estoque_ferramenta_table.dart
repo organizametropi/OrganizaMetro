@@ -132,7 +132,7 @@ class _estoqueTableState extends State<estoque_table_ferramenta> {
           value: "descricao",
           show: true,
           flex: 2,
-          sortable: true),
+          sortable: false),
       DatatableHeader(
           text: "Em uso", value: "emUso", show: true, sortable: false),
       DatatableHeader(text: "Tipo", value: "tipo", show: true, sortable: false),

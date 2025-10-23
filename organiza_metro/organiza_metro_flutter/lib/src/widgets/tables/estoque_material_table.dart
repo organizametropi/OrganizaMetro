@@ -133,10 +133,7 @@ class _estoqueTableState extends State<estoque_table_material> {
       DatatableHeader(
           text: "QTD", value: "quantidade", show: true, sortable: true),
       DatatableHeader(
-          text: "UNIDADE",
-          value: "unidadeMedida",
-          show: true,
-          sortable: false),
+          text: "UNIDADE", value: "unidadeMedida", show: true, sortable: false),
     ];
 
     _initializeData();

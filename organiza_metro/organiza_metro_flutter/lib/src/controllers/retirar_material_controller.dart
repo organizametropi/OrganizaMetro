@@ -82,13 +82,11 @@ class RetirarMaterialController extends ChangeNotifier {
     return _materialsToAdd.map((item) {
       // Assumimos que o map tem os campos 'id' (do material/ferramenta) e 'quantidade'
       final materialId = item['materialId'] as int?;
-      final ferramentaId = item['ferramentaId'] as int?;
 
-      // Se você está usando 'id' genérico no Map:
-      final itemId = item['id'] as int;
 
       return RequisicaoItem(
-        materialId: itemId,
+        materialId: materialId,
+        material: item['id'],
         ferramentaId: null,
         quantidade: (item['quantidade'] as double),
       );
@@ -113,6 +111,7 @@ class RetirarMaterialController extends ChangeNotifier {
 
     try {
       final itensDto = _mapItemsToDto();
+    
 
       // 🚨 CHAMADA FINAL AO ENDPOINT
       sucesso = await client.movimentacao.criarRequisicaoSaida(

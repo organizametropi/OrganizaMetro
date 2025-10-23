@@ -16,10 +16,18 @@ class AddMaterialModal extends StatefulWidget {
 class __AddMaterialModalState extends State<AddMaterialModal> {
   // Variáveis de estado para a tabela no modal
   List<DatatableHeader> _headers = [];
+  List<Map<String, dynamic>> _sourceOriginal = [];
+  List<Map<String, dynamic>> _sourceFiltered = [];
   List<Map<String, dynamic>> _source = [];
   List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
   int _total = 0;
+  String? _sortColumn;
+  bool _sortAscending = true;
+  String? _searchKey = "id";
+  int? _currentPerPage = 20;
+  int _currentPage = 1;
+  List<bool>? _expanded;
 
   List<Map<String, dynamic>> _convertMateriasToMap(List<Material> materiais) {
     return materiais.map((m) {
@@ -43,12 +51,17 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
       final List<Material> materiais = await client.material.getEstoque();
       print("Materiais recebidos: ${materiais.length}");
 
-      _source.clear();
-      _source.addAll(_convertMateriasToMap(materiais));
+      _sourceOriginal.clear();
+      _sourceOriginal.addAll(_convertMateriasToMap(materiais));
 
+      _sourceFiltered = _sourceOriginal;
       _total = _source.length;
 
-      _source = _source.getRange(0, _total).toList();
+      var _rangeTop = _currentPerPage! < _sourceFiltered.length
+          ? _sourceFiltered.length - (_sourceFiltered.length - _currentPerPage!)
+          : _sourceFiltered.length;
+      _expanded = List.generate(_rangeTop, (index) => false);
+      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
 
       print("Lista materias: $_source");
     } catch (e) {
@@ -67,20 +80,20 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
       DatatableHeader(
           text: "ID",
           value: "id",
-          show: true,
-          sortable: true), // Adicionado sortable
+          show: false,
+          sortable: false), // Adicionado sortable
       DatatableHeader(
           text: "CÓDIGO SAP",
           value: "codigoSap",
           show: true,
-          sortable: true,
+          sortable: false,
           flex: 1),
       DatatableHeader(
           text: "DESCRIÇÃO",
           value: "descricao",
           show: true,
           flex: 2,
-          sortable: true),
+          sortable: false),
       DatatableHeader(
           text: "QTD", value: "quantidade", show: true, sortable: true),
       DatatableHeader(
@@ -89,7 +102,8 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
 
     _initializeData();
   }
-//  !!!!!!!!!!!!!!!!! O On sort parce ser essencial !!!!!!!!!!!!!!!!!!!!!!
+
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -104,44 +118,52 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : SingleChildScrollView(
-                      child: ResponsiveDatatable(
-                          source: [
-                            {
-                              "id": 1,
-                              "codigoSap": "10000000",
-                              "descricao": "Teste Item",
-                              "quantidade": 10,
-                              "unidadeMedida": "UN",
-                            },
-                            {
-                              "id": 2,
-                              "codigoSap": "10000001",
-                              "descricao": "Teste Item 2",
-                              "quantidade": 20,
-                              "unidadeMedida": "CJ",
-                            }
-                          ],
-                          selecteds: _selecteds,
-                          showSelect: true,
-                          isLoading: _isLoading,
-                          autoHeight: false,
-                          onSelect: (value, item) {
-                            setState(() {
-                              if (item == null) {
-                                _selecteds = value! ? List.from(_source) : [];
-                              } else if (value!) {
-                                _selecteds.add(item);
-                              } else {
-                                _selecteds.removeWhere(
-                                    (map) => map["id"] == item["id"]);
-                              }
-                            });
-                          },
-                          footers: [
-                            Text('Total de ${_total} materiais.'),
-                          ]),
-                    ),
+                  : ResponsiveDatatable(
+                      headers: _headers,
+                      source: _source,
+                      selecteds: _selecteds,
+                      showSelect: true,
+                      autoHeight: false,
+                      onSelect: (value, item) {
+                        setState(() {
+                          if (item == null) {
+                            _selecteds = value! ? List.from(_source) : [];
+                          } else if (value!) {
+                            _selecteds.add(item);
+                          } else {
+                            _selecteds
+                                .removeWhere((map) => map["id"] == item["id"]);
+                          }
+                        });
+                      },
+                      onSort: (value) {
+                        setState(() => _isLoading = true);
+
+                        setState(() {
+                          _sortColumn = value;
+                          _sortAscending = !_sortAscending;
+                          if (_sortAscending) {
+                            _sourceFiltered.sort((a, b) =>
+                                b["$_sortColumn"].compareTo(a["$_sortColumn"]));
+                          } else {
+                            _sourceFiltered.sort((a, b) =>
+                                a["$_sortColumn"].compareTo(b["$_sortColumn"]));
+                          }
+                          var _rangeTop =
+                              _currentPerPage! < _sourceFiltered.length
+                                  ? _currentPage!
+                                  : _sourceFiltered.length;
+                          _source =
+                              _sourceFiltered.getRange(0, _rangeTop).toList();
+                          _searchKey = value;
+
+                          _isLoading = false;
+                        });
+                      },
+                      expanded: _expanded,
+                      footers: [
+                        Text('Total de ${_total} materiais.'),
+                      ]),
             ),
           ],
         ),
