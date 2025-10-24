@@ -51,6 +51,10 @@ sessionLogs:
   consoleEnabled: true
   consoleLogFormat: text # Defaults to "json", options are "text" or "json"
 
+log:
+  level: debug
+  print: true
+
 # futureCallExecutionEnabled: true # Defaults to true
 
 #futureCall:

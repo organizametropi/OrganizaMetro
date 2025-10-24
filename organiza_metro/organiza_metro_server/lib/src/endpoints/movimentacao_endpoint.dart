@@ -30,6 +30,7 @@ class MovimentacaoEndpoint extends Endpoint {
 
     // 2. Executar a lógica dentro de uma Transação
     return await session.db.transaction((transactionSession) async {
+      session.log('Itens recebidos: ${itens.map((e) => e.toJson()).toList()}');
       for (final item in itens) {
         final isMaterial = item.materialId != null;
         final isFerramenta = item.ferramentaId != null;
@@ -90,13 +91,14 @@ class MovimentacaoEndpoint extends Endpoint {
         int? destinoVeiculoId,
         List<String> alertas,
       ) async {
+        session.log('DEBUG -> materialId: ${item.materialId}', level: LogLevel.debug);
         final material = await proto.Material.db.findFirstRow(session,
-            where: (t) => t.id.equals(item.material!.id),
+            where: (t) => t.id.equals(item.materialId),
             include: proto.Material.include(),
             transaction: transactionSession);
 
         if (material == null) {
-          throw Exception('Material não encontrado (ID: ${item.material!.id}).');
+          throw Exception('Material não encontrado (ID: ${item.materialId}).');
         }
 
         proto.Base? origemBaseId;
@@ -144,10 +146,10 @@ class MovimentacaoEndpoint extends Endpoint {
           modalidadeEntrega: modalidadeEntrega,
           observacao: observacao,
 
-          origemBaseId: origemBaseId?.id,
-          origemBase: origemBaseId,
-          origemVeiculoId: origemVeiculoId?.id,
-          origemVeiculo: origemVeiculoId,
+          origemBaseId: material.baseId,
+          origemBase: material.base,
+          origemVeiculoId: material.veiculoId,
+          origemVeiculo: material.veiculo,
           destinoBaseId: destinoBaseId, // Usa o destino (se fornecido)
           destinoVeiculoId: destinoVeiculoId, // Usa o destino (se fornecido)
           dataDevolucao: null, // Não se aplica

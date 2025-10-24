@@ -81,12 +81,11 @@ class RetirarMaterialController extends ChangeNotifier {
   List<RequisicaoItem> _mapItemsToDto() {
     return _materialsToAdd.map((item) {
       // Assumimos que o map tem os campos 'id' (do material/ferramenta) e 'quantidade'
-      final materialId = item['materialId'] as int?;
 
+      print(item); 
 
       return RequisicaoItem(
-        materialId: materialId,
-        material: item['id'],
+        materialId: item['id'],
         ferramentaId: null,
         quantidade: (item['quantidade'] as double),
       );
@@ -111,6 +110,7 @@ class RetirarMaterialController extends ChangeNotifier {
 
     try {
       final itensDto = _mapItemsToDto();
+      print(itensDto);
     
 
       // 🚨 CHAMADA FINAL AO ENDPOINT

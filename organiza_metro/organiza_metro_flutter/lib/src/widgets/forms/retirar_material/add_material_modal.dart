@@ -49,21 +49,18 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
     setState(() => _isLoading = true);
     try {
       final List<Material> materiais = await client.material.getEstoque();
-      print("Materiais recebidos: ${materiais.length}");
 
       _sourceOriginal.clear();
       _sourceOriginal.addAll(_convertMateriasToMap(materiais));
 
       _sourceFiltered = _sourceOriginal;
-      _total = _source.length;
+      _total = _sourceOriginal.length;
 
       var _rangeTop = _currentPerPage! < _sourceFiltered.length
           ? _sourceFiltered.length - (_sourceFiltered.length - _currentPerPage!)
           : _sourceFiltered.length;
       _expanded = List.generate(_rangeTop, (index) => false);
       _source = _sourceFiltered.getRange(0, _rangeTop).toList();
-
-      print("Lista materias: $_source");
     } catch (e) {
       print("Erro ao buscar os dados no estoque: $e");
     } finally {
