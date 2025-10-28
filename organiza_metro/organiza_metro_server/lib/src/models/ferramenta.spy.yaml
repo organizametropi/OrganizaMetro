@@ -7,18 +7,20 @@ fields:
   patrimonio: String?
   
   emUso: bool # Corrigido
-  tipo: String
+  divisao: String
+  tipo: TipoMaterial?, relation
   status: String
   dataAquisicao: DateTime # Corrigido
   dataUltimaMovimentacao: DateTime? # Corrigido
 
   unidadeMedida: UnidadeMedida?, relation
+
   
   base: Base?, relation(optional)
   
   veiculo: Veiculo?, relation(optional)
   
-  empenhadoPara: module:auth:UserInfo?, relation
+  empenhadoPara: module:auth:UserInfo?, relation(optional)
 indexes:
   ferramenta_patrimonio_idx:
     fields: patrimonio

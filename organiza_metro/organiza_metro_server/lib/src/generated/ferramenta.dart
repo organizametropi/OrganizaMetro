@@ -12,10 +12,11 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'unidade_medida.dart' as _i2;
-import 'base.dart' as _i3;
-import 'veiculo.dart' as _i4;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i5;
+import 'tipo_material.dart' as _i2;
+import 'unidade_medida.dart' as _i3;
+import 'base.dart' as _i4;
+import 'veiculo.dart' as _i5;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i6;
 
 abstract class Ferramenta
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -25,7 +26,9 @@ abstract class Ferramenta
     required this.descricao,
     this.patrimonio,
     required this.emUso,
-    required this.tipo,
+    required this.divisao,
+    required this.tipoId,
+    this.tipo,
     required this.status,
     required this.dataAquisicao,
     this.dataUltimaMovimentacao,
@@ -35,7 +38,7 @@ abstract class Ferramenta
     this.base,
     this.veiculoId,
     this.veiculo,
-    required this.empenhadoParaId,
+    this.empenhadoParaId,
     this.empenhadoPara,
   });
 
@@ -45,18 +48,20 @@ abstract class Ferramenta
     required String descricao,
     String? patrimonio,
     required bool emUso,
-    required String tipo,
+    required String divisao,
+    required int tipoId,
+    _i2.TipoMaterial? tipo,
     required String status,
     required DateTime dataAquisicao,
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
-    _i2.UnidadeMedida? unidadeMedida,
+    _i3.UnidadeMedida? unidadeMedida,
     int? baseId,
-    _i3.Base? base,
+    _i4.Base? base,
     int? veiculoId,
-    _i4.Veiculo? veiculo,
-    required int empenhadoParaId,
-    _i5.UserInfo? empenhadoPara,
+    _i5.Veiculo? veiculo,
+    int? empenhadoParaId,
+    _i6.UserInfo? empenhadoPara,
   }) = _FerramentaImpl;
 
   factory Ferramenta.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -66,7 +71,12 @@ abstract class Ferramenta
       descricao: jsonSerialization['descricao'] as String,
       patrimonio: jsonSerialization['patrimonio'] as String?,
       emUso: jsonSerialization['emUso'] as bool,
-      tipo: jsonSerialization['tipo'] as String,
+      divisao: jsonSerialization['divisao'] as String,
+      tipoId: jsonSerialization['tipoId'] as int,
+      tipo: jsonSerialization['tipo'] == null
+          ? null
+          : _i2.TipoMaterial.fromJson(
+              (jsonSerialization['tipo'] as Map<String, dynamic>)),
       status: jsonSerialization['status'] as String,
       dataAquisicao: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['dataAquisicao']),
@@ -78,22 +88,22 @@ abstract class Ferramenta
       unidadeMedidaId: jsonSerialization['unidadeMedidaId'] as int,
       unidadeMedida: jsonSerialization['unidadeMedida'] == null
           ? null
-          : _i2.UnidadeMedida.fromJson(
+          : _i3.UnidadeMedida.fromJson(
               (jsonSerialization['unidadeMedida'] as Map<String, dynamic>)),
       baseId: jsonSerialization['baseId'] as int?,
       base: jsonSerialization['base'] == null
           ? null
-          : _i3.Base.fromJson(
+          : _i4.Base.fromJson(
               (jsonSerialization['base'] as Map<String, dynamic>)),
       veiculoId: jsonSerialization['veiculoId'] as int?,
       veiculo: jsonSerialization['veiculo'] == null
           ? null
-          : _i4.Veiculo.fromJson(
+          : _i5.Veiculo.fromJson(
               (jsonSerialization['veiculo'] as Map<String, dynamic>)),
-      empenhadoParaId: jsonSerialization['empenhadoParaId'] as int,
+      empenhadoParaId: jsonSerialization['empenhadoParaId'] as int?,
       empenhadoPara: jsonSerialization['empenhadoPara'] == null
           ? null
-          : _i5.UserInfo.fromJson(
+          : _i6.UserInfo.fromJson(
               (jsonSerialization['empenhadoPara'] as Map<String, dynamic>)),
     );
   }
@@ -113,7 +123,11 @@ abstract class Ferramenta
 
   bool emUso;
 
-  String tipo;
+  String divisao;
+
+  int tipoId;
+
+  _i2.TipoMaterial? tipo;
 
   String status;
 
@@ -123,19 +137,19 @@ abstract class Ferramenta
 
   int unidadeMedidaId;
 
-  _i2.UnidadeMedida? unidadeMedida;
+  _i3.UnidadeMedida? unidadeMedida;
 
   int? baseId;
 
-  _i3.Base? base;
+  _i4.Base? base;
 
   int? veiculoId;
 
-  _i4.Veiculo? veiculo;
+  _i5.Veiculo? veiculo;
 
-  int empenhadoParaId;
+  int? empenhadoParaId;
 
-  _i5.UserInfo? empenhadoPara;
+  _i6.UserInfo? empenhadoPara;
 
   @override
   _i1.Table<int?> get table => t;
@@ -149,18 +163,20 @@ abstract class Ferramenta
     String? descricao,
     String? patrimonio,
     bool? emUso,
-    String? tipo,
+    String? divisao,
+    int? tipoId,
+    _i2.TipoMaterial? tipo,
     String? status,
     DateTime? dataAquisicao,
     DateTime? dataUltimaMovimentacao,
     int? unidadeMedidaId,
-    _i2.UnidadeMedida? unidadeMedida,
+    _i3.UnidadeMedida? unidadeMedida,
     int? baseId,
-    _i3.Base? base,
+    _i4.Base? base,
     int? veiculoId,
-    _i4.Veiculo? veiculo,
+    _i5.Veiculo? veiculo,
     int? empenhadoParaId,
-    _i5.UserInfo? empenhadoPara,
+    _i6.UserInfo? empenhadoPara,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -170,7 +186,9 @@ abstract class Ferramenta
       'descricao': descricao,
       if (patrimonio != null) 'patrimonio': patrimonio,
       'emUso': emUso,
-      'tipo': tipo,
+      'divisao': divisao,
+      'tipoId': tipoId,
+      if (tipo != null) 'tipo': tipo?.toJson(),
       'status': status,
       'dataAquisicao': dataAquisicao.toJson(),
       if (dataUltimaMovimentacao != null)
@@ -181,7 +199,7 @@ abstract class Ferramenta
       if (base != null) 'base': base?.toJson(),
       if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJson(),
-      'empenhadoParaId': empenhadoParaId,
+      if (empenhadoParaId != null) 'empenhadoParaId': empenhadoParaId,
       if (empenhadoPara != null) 'empenhadoPara': empenhadoPara?.toJson(),
     };
   }
@@ -194,7 +212,9 @@ abstract class Ferramenta
       'descricao': descricao,
       if (patrimonio != null) 'patrimonio': patrimonio,
       'emUso': emUso,
-      'tipo': tipo,
+      'divisao': divisao,
+      'tipoId': tipoId,
+      if (tipo != null) 'tipo': tipo?.toJsonForProtocol(),
       'status': status,
       'dataAquisicao': dataAquisicao.toJson(),
       if (dataUltimaMovimentacao != null)
@@ -206,19 +226,21 @@ abstract class Ferramenta
       if (base != null) 'base': base?.toJsonForProtocol(),
       if (veiculoId != null) 'veiculoId': veiculoId,
       if (veiculo != null) 'veiculo': veiculo?.toJsonForProtocol(),
-      'empenhadoParaId': empenhadoParaId,
+      if (empenhadoParaId != null) 'empenhadoParaId': empenhadoParaId,
       if (empenhadoPara != null)
         'empenhadoPara': empenhadoPara?.toJsonForProtocol(),
     };
   }
 
   static FerramentaInclude include({
-    _i2.UnidadeMedidaInclude? unidadeMedida,
-    _i3.BaseInclude? base,
-    _i4.VeiculoInclude? veiculo,
-    _i5.UserInfoInclude? empenhadoPara,
+    _i2.TipoMaterialInclude? tipo,
+    _i3.UnidadeMedidaInclude? unidadeMedida,
+    _i4.BaseInclude? base,
+    _i5.VeiculoInclude? veiculo,
+    _i6.UserInfoInclude? empenhadoPara,
   }) {
     return FerramentaInclude._(
+      tipo: tipo,
       unidadeMedida: unidadeMedida,
       base: base,
       veiculo: veiculo,
@@ -261,24 +283,28 @@ class _FerramentaImpl extends Ferramenta {
     required String descricao,
     String? patrimonio,
     required bool emUso,
-    required String tipo,
+    required String divisao,
+    required int tipoId,
+    _i2.TipoMaterial? tipo,
     required String status,
     required DateTime dataAquisicao,
     DateTime? dataUltimaMovimentacao,
     required int unidadeMedidaId,
-    _i2.UnidadeMedida? unidadeMedida,
+    _i3.UnidadeMedida? unidadeMedida,
     int? baseId,
-    _i3.Base? base,
+    _i4.Base? base,
     int? veiculoId,
-    _i4.Veiculo? veiculo,
-    required int empenhadoParaId,
-    _i5.UserInfo? empenhadoPara,
+    _i5.Veiculo? veiculo,
+    int? empenhadoParaId,
+    _i6.UserInfo? empenhadoPara,
   }) : super._(
           id: id,
           codigoSap: codigoSap,
           descricao: descricao,
           patrimonio: patrimonio,
           emUso: emUso,
+          divisao: divisao,
+          tipoId: tipoId,
           tipo: tipo,
           status: status,
           dataAquisicao: dataAquisicao,
@@ -303,7 +329,9 @@ class _FerramentaImpl extends Ferramenta {
     String? descricao,
     Object? patrimonio = _Undefined,
     bool? emUso,
-    String? tipo,
+    String? divisao,
+    int? tipoId,
+    Object? tipo = _Undefined,
     String? status,
     DateTime? dataAquisicao,
     Object? dataUltimaMovimentacao = _Undefined,
@@ -313,7 +341,7 @@ class _FerramentaImpl extends Ferramenta {
     Object? base = _Undefined,
     Object? veiculoId = _Undefined,
     Object? veiculo = _Undefined,
-    int? empenhadoParaId,
+    Object? empenhadoParaId = _Undefined,
     Object? empenhadoPara = _Undefined,
   }) {
     return Ferramenta(
@@ -322,22 +350,25 @@ class _FerramentaImpl extends Ferramenta {
       descricao: descricao ?? this.descricao,
       patrimonio: patrimonio is String? ? patrimonio : this.patrimonio,
       emUso: emUso ?? this.emUso,
-      tipo: tipo ?? this.tipo,
+      divisao: divisao ?? this.divisao,
+      tipoId: tipoId ?? this.tipoId,
+      tipo: tipo is _i2.TipoMaterial? ? tipo : this.tipo?.copyWith(),
       status: status ?? this.status,
       dataAquisicao: dataAquisicao ?? this.dataAquisicao,
       dataUltimaMovimentacao: dataUltimaMovimentacao is DateTime?
           ? dataUltimaMovimentacao
           : this.dataUltimaMovimentacao,
       unidadeMedidaId: unidadeMedidaId ?? this.unidadeMedidaId,
-      unidadeMedida: unidadeMedida is _i2.UnidadeMedida?
+      unidadeMedida: unidadeMedida is _i3.UnidadeMedida?
           ? unidadeMedida
           : this.unidadeMedida?.copyWith(),
       baseId: baseId is int? ? baseId : this.baseId,
-      base: base is _i3.Base? ? base : this.base?.copyWith(),
+      base: base is _i4.Base? ? base : this.base?.copyWith(),
       veiculoId: veiculoId is int? ? veiculoId : this.veiculoId,
-      veiculo: veiculo is _i4.Veiculo? ? veiculo : this.veiculo?.copyWith(),
-      empenhadoParaId: empenhadoParaId ?? this.empenhadoParaId,
-      empenhadoPara: empenhadoPara is _i5.UserInfo?
+      veiculo: veiculo is _i5.Veiculo? ? veiculo : this.veiculo?.copyWith(),
+      empenhadoParaId:
+          empenhadoParaId is int? ? empenhadoParaId : this.empenhadoParaId,
+      empenhadoPara: empenhadoPara is _i6.UserInfo?
           ? empenhadoPara
           : this.empenhadoPara?.copyWith(),
     );
@@ -362,8 +393,12 @@ class FerramentaTable extends _i1.Table<int?> {
       'emUso',
       this,
     );
-    tipo = _i1.ColumnString(
-      'tipo',
+    divisao = _i1.ColumnString(
+      'divisao',
+      this,
+    );
+    tipoId = _i1.ColumnInt(
+      'tipoId',
       this,
     );
     status = _i1.ColumnString(
@@ -404,7 +439,11 @@ class FerramentaTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool emUso;
 
-  late final _i1.ColumnString tipo;
+  late final _i1.ColumnString divisao;
+
+  late final _i1.ColumnInt tipoId;
+
+  _i2.TipoMaterialTable? _tipo;
 
   late final _i1.ColumnString status;
 
@@ -414,68 +453,81 @@ class FerramentaTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt unidadeMedidaId;
 
-  _i2.UnidadeMedidaTable? _unidadeMedida;
+  _i3.UnidadeMedidaTable? _unidadeMedida;
 
   late final _i1.ColumnInt baseId;
 
-  _i3.BaseTable? _base;
+  _i4.BaseTable? _base;
 
   late final _i1.ColumnInt veiculoId;
 
-  _i4.VeiculoTable? _veiculo;
+  _i5.VeiculoTable? _veiculo;
 
   late final _i1.ColumnInt empenhadoParaId;
 
-  _i5.UserInfoTable? _empenhadoPara;
+  _i6.UserInfoTable? _empenhadoPara;
 
-  _i2.UnidadeMedidaTable get unidadeMedida {
+  _i2.TipoMaterialTable get tipo {
+    if (_tipo != null) return _tipo!;
+    _tipo = _i1.createRelationTable(
+      relationFieldName: 'tipo',
+      field: Ferramenta.t.tipoId,
+      foreignField: _i2.TipoMaterial.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.TipoMaterialTable(tableRelation: foreignTableRelation),
+    );
+    return _tipo!;
+  }
+
+  _i3.UnidadeMedidaTable get unidadeMedida {
     if (_unidadeMedida != null) return _unidadeMedida!;
     _unidadeMedida = _i1.createRelationTable(
       relationFieldName: 'unidadeMedida',
       field: Ferramenta.t.unidadeMedidaId,
-      foreignField: _i2.UnidadeMedida.t.id,
+      foreignField: _i3.UnidadeMedida.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.UnidadeMedidaTable(tableRelation: foreignTableRelation),
+          _i3.UnidadeMedidaTable(tableRelation: foreignTableRelation),
     );
     return _unidadeMedida!;
   }
 
-  _i3.BaseTable get base {
+  _i4.BaseTable get base {
     if (_base != null) return _base!;
     _base = _i1.createRelationTable(
       relationFieldName: 'base',
       field: Ferramenta.t.baseId,
-      foreignField: _i3.Base.t.id,
+      foreignField: _i4.Base.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.BaseTable(tableRelation: foreignTableRelation),
+          _i4.BaseTable(tableRelation: foreignTableRelation),
     );
     return _base!;
   }
 
-  _i4.VeiculoTable get veiculo {
+  _i5.VeiculoTable get veiculo {
     if (_veiculo != null) return _veiculo!;
     _veiculo = _i1.createRelationTable(
       relationFieldName: 'veiculo',
       field: Ferramenta.t.veiculoId,
-      foreignField: _i4.Veiculo.t.id,
+      foreignField: _i5.Veiculo.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.VeiculoTable(tableRelation: foreignTableRelation),
+          _i5.VeiculoTable(tableRelation: foreignTableRelation),
     );
     return _veiculo!;
   }
 
-  _i5.UserInfoTable get empenhadoPara {
+  _i6.UserInfoTable get empenhadoPara {
     if (_empenhadoPara != null) return _empenhadoPara!;
     _empenhadoPara = _i1.createRelationTable(
       relationFieldName: 'empenhadoPara',
       field: Ferramenta.t.empenhadoParaId,
-      foreignField: _i5.UserInfo.t.id,
+      foreignField: _i6.UserInfo.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i5.UserInfoTable(tableRelation: foreignTableRelation),
+          _i6.UserInfoTable(tableRelation: foreignTableRelation),
     );
     return _empenhadoPara!;
   }
@@ -487,7 +539,8 @@ class FerramentaTable extends _i1.Table<int?> {
         descricao,
         patrimonio,
         emUso,
-        tipo,
+        divisao,
+        tipoId,
         status,
         dataAquisicao,
         dataUltimaMovimentacao,
@@ -499,6 +552,9 @@ class FerramentaTable extends _i1.Table<int?> {
 
   @override
   _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'tipo') {
+      return tipo;
+    }
     if (relationField == 'unidadeMedida') {
       return unidadeMedida;
     }
@@ -517,27 +573,32 @@ class FerramentaTable extends _i1.Table<int?> {
 
 class FerramentaInclude extends _i1.IncludeObject {
   FerramentaInclude._({
-    _i2.UnidadeMedidaInclude? unidadeMedida,
-    _i3.BaseInclude? base,
-    _i4.VeiculoInclude? veiculo,
-    _i5.UserInfoInclude? empenhadoPara,
+    _i2.TipoMaterialInclude? tipo,
+    _i3.UnidadeMedidaInclude? unidadeMedida,
+    _i4.BaseInclude? base,
+    _i5.VeiculoInclude? veiculo,
+    _i6.UserInfoInclude? empenhadoPara,
   }) {
+    _tipo = tipo;
     _unidadeMedida = unidadeMedida;
     _base = base;
     _veiculo = veiculo;
     _empenhadoPara = empenhadoPara;
   }
 
-  _i2.UnidadeMedidaInclude? _unidadeMedida;
+  _i2.TipoMaterialInclude? _tipo;
 
-  _i3.BaseInclude? _base;
+  _i3.UnidadeMedidaInclude? _unidadeMedida;
 
-  _i4.VeiculoInclude? _veiculo;
+  _i4.BaseInclude? _base;
 
-  _i5.UserInfoInclude? _empenhadoPara;
+  _i5.VeiculoInclude? _veiculo;
+
+  _i6.UserInfoInclude? _empenhadoPara;
 
   @override
   Map<String, _i1.Include?> get includes => {
+        'tipo': _tipo,
         'unidadeMedida': _unidadeMedida,
         'base': _base,
         'veiculo': _veiculo,
@@ -794,12 +855,35 @@ class FerramentaRepository {
 class FerramentaAttachRowRepository {
   const FerramentaAttachRowRepository._();
 
+  /// Creates a relation between the given [Ferramenta] and [TipoMaterial]
+  /// by setting the [Ferramenta]'s foreign key `tipoId` to refer to the [TipoMaterial].
+  Future<void> tipo(
+    _i1.Session session,
+    Ferramenta ferramenta,
+    _i2.TipoMaterial tipo, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ferramenta.id == null) {
+      throw ArgumentError.notNull('ferramenta.id');
+    }
+    if (tipo.id == null) {
+      throw ArgumentError.notNull('tipo.id');
+    }
+
+    var $ferramenta = ferramenta.copyWith(tipoId: tipo.id);
+    await session.db.updateRow<Ferramenta>(
+      $ferramenta,
+      columns: [Ferramenta.t.tipoId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between the given [Ferramenta] and [UnidadeMedida]
   /// by setting the [Ferramenta]'s foreign key `unidadeMedidaId` to refer to the [UnidadeMedida].
   Future<void> unidadeMedida(
     _i1.Session session,
     Ferramenta ferramenta,
-    _i2.UnidadeMedida unidadeMedida, {
+    _i3.UnidadeMedida unidadeMedida, {
     _i1.Transaction? transaction,
   }) async {
     if (ferramenta.id == null) {
@@ -822,7 +906,7 @@ class FerramentaAttachRowRepository {
   Future<void> base(
     _i1.Session session,
     Ferramenta ferramenta,
-    _i3.Base base, {
+    _i4.Base base, {
     _i1.Transaction? transaction,
   }) async {
     if (ferramenta.id == null) {
@@ -845,7 +929,7 @@ class FerramentaAttachRowRepository {
   Future<void> veiculo(
     _i1.Session session,
     Ferramenta ferramenta,
-    _i4.Veiculo veiculo, {
+    _i5.Veiculo veiculo, {
     _i1.Transaction? transaction,
   }) async {
     if (ferramenta.id == null) {
@@ -868,7 +952,7 @@ class FerramentaAttachRowRepository {
   Future<void> empenhadoPara(
     _i1.Session session,
     Ferramenta ferramenta,
-    _i5.UserInfo empenhadoPara, {
+    _i6.UserInfo empenhadoPara, {
     _i1.Transaction? transaction,
   }) async {
     if (ferramenta.id == null) {
@@ -930,6 +1014,28 @@ class FerramentaDetachRowRepository {
     await session.db.updateRow<Ferramenta>(
       $ferramenta,
       columns: [Ferramenta.t.veiculoId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [Ferramenta] and the [UserInfo] set in `empenhadoPara`
+  /// by setting the [Ferramenta]'s foreign key `empenhadoParaId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> empenhadoPara(
+    _i1.Session session,
+    Ferramenta ferramenta, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ferramenta.id == null) {
+      throw ArgumentError.notNull('ferramenta.id');
+    }
+
+    var $ferramenta = ferramenta.copyWith(empenhadoParaId: null);
+    await session.db.updateRow<Ferramenta>(
+      $ferramenta,
+      columns: [Ferramenta.t.empenhadoParaId],
       transaction: transaction,
     );
   }

@@ -300,7 +300,7 @@ Future<void> main(List<String> args) async {
   final List<int> baseValues = baseIds.values.toList();
   final List<int> veiculoValues = veiculoIds.toList();
 
-  for (var i = 0; i < 15; i++) {
+  for (var i = 0; i < 35; i++) {
     final isConsumo = i % 3 == 0;
     final tipoNome = isConsumo ? 'Consumo' : 'Giro';
 
@@ -375,10 +375,11 @@ Future<void> main(List<String> args) async {
   print('-> Inserindo Ferramentas (Patrimoniado e Manual)');
   final List<int> empenhadoParaAuthIds = usuarioIds.values.toList();
 
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 20; i++) {
     final isInstrumento = i % 2 == 0;
     final tipoNome = isInstrumento ? 'Patrimoniado' : 'Ferramenta Manual';
 
+    final tipoId = tipoMaterialIds[tipoNome];
     final bool estaEmVeiculo = _random.nextDouble() < 0.1;
     final int? baseId =
         estaEmVeiculo ? null : baseValues[_random.nextInt(baseValues.length)];
@@ -406,6 +407,8 @@ Future<void> main(List<String> args) async {
       continue;
     }
 
+    var _tipoid = await proto.TipoMaterial.db
+        .findFirstRow(session, where: (t) => t.id.equals(tipoId));
     var _unidadeIdFerramenta = await proto.UnidadeMedida.db
         .findFirstRow(session, where: (t) => t.id.equals(unidadeIdFerramenta));
     var _empenhadoParaId = await auth.UserInfo.db.findFirstRow(session,
@@ -431,8 +434,10 @@ Future<void> main(List<String> args) async {
 
       empenhadoParaId: _empenhadoParaId!.id!,
       empenhadoPara: _empenhadoParaId,
+      tipoId: _tipoid!.id!,
+      tipo: _tipoid,
       emUso: true,
-      tipo: isInstrumento ? 'Instrumento' : 'Ferramenta',
+      divisao: isInstrumento ? 'Instrumento' : 'Ferramenta',
       status: 'Empenhada',
 
       baseId: _baseId?.id,

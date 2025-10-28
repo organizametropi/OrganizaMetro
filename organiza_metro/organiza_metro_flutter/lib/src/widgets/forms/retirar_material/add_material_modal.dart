@@ -94,7 +94,7 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
       DatatableHeader(
           text: "QTD", value: "quantidade", show: true, sortable: true),
       DatatableHeader(
-          text: "UNIDADE", value: "unidadeMedida", show: true, sortable: false),
+          text: "UNIDADE", value: "unidadeMedida", show: true, sortable: true),
     ];
 
     _initializeData();

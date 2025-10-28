@@ -3,9 +3,11 @@ authUtils:
   - getUserName:
 ferramenta:
   - getEstoque:
+  - getMinhasFerramentas:
 material:
   - getEstoque:
 movimentacao:
   - criarRequisicaoSaida:
+  - processarDevolucaoFerramenta:
 greeting:
   - hello:

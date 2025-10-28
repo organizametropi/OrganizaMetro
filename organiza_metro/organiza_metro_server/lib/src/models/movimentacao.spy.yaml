@@ -9,7 +9,8 @@ fields:
   
   quantidade: double?
   tipoMovimentacao: String 
-  dataMovimentacao: DateTime 
+  dataRequisicao: DateTime #Quando o usuario clicou pra pedir (datetime.now())
+  dataMovimentacao: DateTime #Quando o usuario enfim vai tirar o material
   dataDevolucao: DateTime? # Para ferramentas
   modalidadeEntrega: String?
   observacao: String?

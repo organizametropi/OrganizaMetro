@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:organiza_metro_flutter/src/screens/redirect/admin_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/estoque_screen.dart';
+import 'package:organiza_metro_flutter/src/screens/redirect/ferramenta_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/historico_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/relatorios_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/retirar_material_screen.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
-import 'package:organiza_metro_flutter/src/services/auth_service.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
 import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
@@ -12,13 +13,12 @@ import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
 class homePage extends StatefulWidget {
   const homePage({super.key});
 
- @override
+  @override
   State<homePage> createState() => _HomePageState();
 }
 
-
-class _HomePageState extends State<homePage>{
-bool _isAdmin = false;
+class _HomePageState extends State<homePage> {
+  bool _isAdmin = false;
   String? _userName;
 
   @override
@@ -28,7 +28,6 @@ bool _isAdmin = false;
   }
 
   Future<void> _loadUserInfo() async {
-    
     try {
       final isAdmin = await client.authUtils.isAdmin();
       final name = await client.authUtils.getUserName();
@@ -41,8 +40,6 @@ bool _isAdmin = false;
     }
   }
 
-
-  
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
@@ -52,52 +49,52 @@ bool _isAdmin = false;
           padding: const EdgeInsets.all(16.0),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              bool isWide =
-                  constraints.maxWidth > 600; 
+              bool isWide = constraints.maxWidth > 600;
 
               final welcomeText = Text(
                 // 🚨 Usa o nome carregado
-                'Bem-Vindo $_userName!', 
+                'Bem-Vindo ${_userName ?? ""}!',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: isWide ? 20 : 18,
                     color: Colors.black54),
               );
-              
+
               // 3. Define os botões de Admin que serão usados nos dois layouts
               final adminButtons = [
                 // 🚨 Botão Relatórios (visível SOMENTE para Admin)
-                Expanded(
-                  child: Container(
-                    height: 160,
-                    margin: const EdgeInsets.all(8),
-                    child: ButtonHomeTemplate(
-                      labelText: "Relatórios",
-                      goToPage: (context) => relatoriosPage(),
-                      color: const Color.fromRGBO(255, 199, 44, 1),
-                      assetImage: 'lib/assets/images/dataChart.png',
-                    ),
+
+                Container(
+                  height: 160,
+                  margin: const EdgeInsets.all(8),
+                  child: ButtonHomeTemplate(
+                    labelText: "Relatórios",
+                    goToPage: (context) => relatoriosPage(),
+                    color: const Color.fromRGBO(255, 199, 44, 1),
+                    assetImage: 'lib/assets/images/dataChart.png',
                   ),
                 ),
-                
+
                 // 🚨 Botão Administração (visível SOMENTE para Admin)
-                Expanded(
-                  child: Container(
-                    height: 160,
-                    margin: const EdgeInsets.all(8),
-                    child: ButtonHomeTemplate(
-                      labelText: "Administração",
-                      goToPage: (context) => const loginPage(), // Altere para a tela de admin correta
-                      color: const Color.fromRGBO(0, 26, 144, 1),
-                    ),
+
+                Container(
+                  height: 160,
+                  margin: const EdgeInsets.all(8),
+                  child: ButtonHomeTemplate(
+                    labelText: "Administração",
+                    goToPage: (context) =>
+                        const AdminPage(), // Altere para a tela de admin correta
+                    color: const Color.fromRGBO(0, 26, 144, 1),
                   ),
                 ),
               ];
-              
+
               if (isWide) {
                 return Column(
                   children: [
-                    Row(children: [welcomeText]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [welcomeText]),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -119,7 +116,7 @@ bool _isAdmin = false;
                             child: ButtonHomeTemplate(
                               labelText: "Estoque",
                               goToPage: (context) => estoquePage(),
-                              color: Color.fromRGBO(0,52,28,1),
+                              color: Color.fromRGBO(0, 52, 28, 1),
                             ),
                           ),
                         ),
@@ -134,8 +131,8 @@ bool _isAdmin = false;
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
                                 labelText: "Instrumentos Técnicos",
-                                goToPage: (context) => const loginPage(),
-                                color: Color.fromRGBO(229,110,51,1),
+                                goToPage: (context) => const FerramentaPage(),
+                                color: Color.fromRGBO(229, 110, 51, 1),
                                 assetImage: 'lib/assets/images/dataChart.png'),
                           ),
                         ),
@@ -155,7 +152,9 @@ bool _isAdmin = false;
                     if (_isAdmin)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: adminButtons,
+                        children: adminButtons
+                            .map((btn) => Expanded(child: btn))
+                            .toList(),
                       ),
                     Row(
                       children: [
@@ -183,13 +182,14 @@ bool _isAdmin = false;
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Sem alertas/notificações no momento', //caso Vazio
+                          Text(
+                              'Sem alertas/notificações no momento', //caso Vazio
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black38)),
                         ],
                       ),
-                       SizedBox(
+                      SizedBox(
                         height: 105,
                       )
                     ])
@@ -198,7 +198,12 @@ bool _isAdmin = false;
               } else {
                 return Column(
                   children: [
-                    welcomeText,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        welcomeText,
+                      ],
+                    ),
                     Container(
                       height: 160,
                       margin: const EdgeInsets.all(8),
@@ -214,7 +219,7 @@ bool _isAdmin = false;
                       child: ButtonHomeTemplate(
                         labelText: "Estoque",
                         goToPage: (context) => estoquePage(),
-                        color: Color.fromRGBO(0,52,28,1),
+                        color: Color.fromRGBO(0, 52, 28, 1),
                       ),
                     ),
                     Container(
@@ -222,8 +227,8 @@ bool _isAdmin = false;
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
                           labelText: "Instrumentos Técnicos",
-                          goToPage: (context) => const loginPage(),
-                          color: Color.fromRGBO(229,110,51,1),
+                          goToPage: (context) => const FerramentaPage(),
+                          color: Color.fromRGBO(229, 110, 51, 1),
                           assetImage: 'lib/assets/images/dataChart.png'),
                     ),
                     Container(
@@ -232,7 +237,7 @@ bool _isAdmin = false;
                       child: ButtonHomeTemplate(
                         labelText: "Meu Histórico",
                         goToPage: (context) => historicoPage(),
-                        color:Color.fromRGBO(125, 85, 199, 1),
+                        color: Color.fromRGBO(125, 85, 199, 1),
                       ),
                     ), // A partir daqui apenas para admins
                     if (_isAdmin) ...[
@@ -255,7 +260,7 @@ bool _isAdmin = false;
                         ),
                       ],
                     ),
-                     Column(children: [
+                    Column(children: [
                       Row(
                         children: [
                           Text(
@@ -273,13 +278,14 @@ bool _isAdmin = false;
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Sem alertas/notificações no momento', //caso Vazio
+                          Text(
+                              'Sem alertas/notificações no momento', //caso Vazio
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black38)),
                         ],
                       ),
-                       SizedBox(
+                      SizedBox(
                         height: 52,
                       )
                     ])
@@ -293,4 +299,3 @@ bool _isAdmin = false;
     ));
   }
 }
-

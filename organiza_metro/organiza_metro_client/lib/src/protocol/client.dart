@@ -53,6 +53,13 @@ class EndpointFerramenta extends _i1.EndpointRef {
         'getEstoque',
         {},
       );
+
+  _i2.Future<List<_i3.Ferramenta>> getMinhasFerramentas() =>
+      caller.callServerEndpoint<List<_i3.Ferramenta>>(
+        'ferramenta',
+        'getMinhasFerramentas',
+        {},
+      );
 }
 
 /// {@category Endpoint}
@@ -84,6 +91,7 @@ class EndpointMovimentacao extends _i1.EndpointRef {
   _i2.Future<bool> criarRequisicaoSaida({
     required List<_i5.RequisicaoItem> itens,
     required String modalidadeEntrega,
+    required DateTime dataDaMovimentacao,
     String? observacao,
     int? destinoBaseId,
     int? destinoVeiculoId,
@@ -94,9 +102,29 @@ class EndpointMovimentacao extends _i1.EndpointRef {
         {
           'itens': itens,
           'modalidadeEntrega': modalidadeEntrega,
+          'dataDaMovimentacao': dataDaMovimentacao,
           'observacao': observacao,
           'destinoBaseId': destinoBaseId,
           'destinoVeiculoId': destinoVeiculoId,
+        },
+      );
+
+  _i2.Future<bool> processarDevolucaoFerramenta({
+    required int ferramentaId,
+    required DateTime dataDaMovimentacao,
+    int? destinoBaseId,
+    int? destinoVeiculoId,
+    String? observacao,
+  }) =>
+      caller.callServerEndpoint<bool>(
+        'movimentacao',
+        'processarDevolucaoFerramenta',
+        {
+          'ferramentaId': ferramentaId,
+          'dataDaMovimentacao': dataDaMovimentacao,
+          'destinoBaseId': destinoBaseId,
+          'destinoVeiculoId': destinoVeiculoId,
+          'observacao': observacao,
         },
       );
 }

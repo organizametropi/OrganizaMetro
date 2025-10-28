@@ -245,6 +245,33 @@ class _FerramentaEndpoint {
       }
     });
   }
+
+  _i3.Future<List<_i4.Ferramenta>> getMinhasFerramentas(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'ferramenta',
+        method: 'getMinhasFerramentas',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ferramenta',
+          methodName: 'getMinhasFerramentas',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i4.Ferramenta>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _MaterialEndpoint {
@@ -299,6 +326,7 @@ class _MovimentacaoEndpoint {
     _i1.TestSessionBuilder sessionBuilder, {
     required List<_i6.RequisicaoItem> itens,
     required String modalidadeEntrega,
+    required DateTime dataDaMovimentacao,
     String? observacao,
     int? destinoBaseId,
     int? destinoVeiculoId,
@@ -317,9 +345,49 @@ class _MovimentacaoEndpoint {
           parameters: _i1.testObjectToJson({
             'itens': itens,
             'modalidadeEntrega': modalidadeEntrega,
+            'dataDaMovimentacao': dataDaMovimentacao,
             'observacao': observacao,
             'destinoBaseId': destinoBaseId,
             'destinoVeiculoId': destinoVeiculoId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<bool> processarDevolucaoFerramenta(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int ferramentaId,
+    required DateTime dataDaMovimentacao,
+    int? destinoBaseId,
+    int? destinoVeiculoId,
+    String? observacao,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'movimentacao',
+        method: 'processarDevolucaoFerramenta',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'movimentacao',
+          methodName: 'processarDevolucaoFerramenta',
+          parameters: _i1.testObjectToJson({
+            'ferramentaId': ferramentaId,
+            'dataDaMovimentacao': dataDaMovimentacao,
+            'destinoBaseId': destinoBaseId,
+            'destinoVeiculoId': destinoVeiculoId,
+            'observacao': observacao,
           }),
           serializationManager: _serializationManager,
         );

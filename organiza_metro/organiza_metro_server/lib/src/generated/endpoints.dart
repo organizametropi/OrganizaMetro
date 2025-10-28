@@ -93,7 +93,17 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['ferramenta'] as _i3.FerramentaEndpoint)
                   .getEstoque(session),
-        )
+        ),
+        'getMinhasFerramentas': _i1.MethodConnector(
+          name: 'getMinhasFerramentas',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['ferramenta'] as _i3.FerramentaEndpoint)
+                  .getMinhasFerramentas(session),
+        ),
       },
     );
     connectors['material'] = _i1.EndpointConnector(
@@ -129,6 +139,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'dataDaMovimentacao': _i1.ParameterDescription(
+              name: 'dataDaMovimentacao',
+              type: _i1.getType<DateTime>(),
+              nullable: false,
+            ),
             'observacao': _i1.ParameterDescription(
               name: 'observacao',
               type: _i1.getType<String?>(),
@@ -154,11 +169,55 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             itens: params['itens'],
             modalidadeEntrega: params['modalidadeEntrega'],
+            dataDaMovimentacao: params['dataDaMovimentacao'],
             observacao: params['observacao'],
             destinoBaseId: params['destinoBaseId'],
             destinoVeiculoId: params['destinoVeiculoId'],
           ),
-        )
+        ),
+        'processarDevolucaoFerramenta': _i1.MethodConnector(
+          name: 'processarDevolucaoFerramenta',
+          params: {
+            'ferramentaId': _i1.ParameterDescription(
+              name: 'ferramentaId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'dataDaMovimentacao': _i1.ParameterDescription(
+              name: 'dataDaMovimentacao',
+              type: _i1.getType<DateTime>(),
+              nullable: false,
+            ),
+            'destinoBaseId': _i1.ParameterDescription(
+              name: 'destinoBaseId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+            'destinoVeiculoId': _i1.ParameterDescription(
+              name: 'destinoVeiculoId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+            'observacao': _i1.ParameterDescription(
+              name: 'observacao',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['movimentacao'] as _i5.MovimentacaoEndpoint)
+                  .processarDevolucaoFerramenta(
+            session,
+            ferramentaId: params['ferramentaId'],
+            dataDaMovimentacao: params['dataDaMovimentacao'],
+            destinoBaseId: params['destinoBaseId'],
+            destinoVeiculoId: params['destinoVeiculoId'],
+            observacao: params['observacao'],
+          ),
+        ),
       },
     );
     connectors['greeting'] = _i1.EndpointConnector(

@@ -39,7 +39,7 @@ class _estoqueTableState extends State<estoque_table_ferramenta> {
         "codigoSap": m.codigoSap,
         "descricao": m.descricao,
         "emUso": m.emUso,
-        "tipo": m.tipo,
+        "tipo": m.tipo?.nome,
         "status": m.status,
       };
     }).toList();

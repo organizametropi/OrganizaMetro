@@ -9,7 +9,7 @@ fields:
   lido: bool, default=false
   calibracao: Calibracao?, relation(optional)
   movimentacao: Movimentacao?, relation(optional)
-  material: Materia?, relation(optional)
+  material: Material?, relation(optional)
   ferramenta: Ferramenta?, relation(optional)
   nivelPrioridade: int?, default=1
   ativo: bool, default=true

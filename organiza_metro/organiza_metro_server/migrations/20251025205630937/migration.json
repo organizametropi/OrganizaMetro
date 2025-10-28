@@ -1,0 +1,618 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "alertas",
+        "dartName": "Alerta",
+        "module": "organiza_metro",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('alertas_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "usuarioIdId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "tipo",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "titulo",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "mensagem",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "dataCriacao",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "lido",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          },
+          {
+            "name": "calibracaoId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "movimentacaoId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "materialId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "ferramentaId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "nivelPrioridade",
+            "columnType": 6,
+            "isNullable": true,
+            "columnDefault": "1",
+            "dartType": "int?"
+          },
+          {
+            "name": "ativo",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "true",
+            "dartType": "bool"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "alertas_fk_0",
+            "columns": [
+              "usuarioIdId"
+            ],
+            "referenceTable": "serverpod_user_info",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "alertas_fk_1",
+            "columns": [
+              "calibracaoId"
+            ],
+            "referenceTable": "calibracao",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "alertas_fk_2",
+            "columns": [
+              "movimentacaoId"
+            ],
+            "referenceTable": "movimentacao",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "alertas_fk_3",
+            "columns": [
+              "materialId"
+            ],
+            "referenceTable": "material",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "alertas_fk_4",
+            "columns": [
+              "ferramentaId"
+            ],
+            "referenceTable": "ferramenta",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "alertas_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "ferramenta"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "ferramenta",
+        "dartName": "Ferramenta",
+        "module": "organiza_metro",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('ferramenta_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "codigoSap",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "descricao",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "patrimonio",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "emUso",
+            "columnType": 1,
+            "isNullable": false,
+            "dartType": "bool"
+          },
+          {
+            "name": "divisao",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "tipoId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "status",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "dataAquisicao",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "dataUltimaMovimentacao",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "unidadeMedidaId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "baseId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "veiculoId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "empenhadoParaId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "ferramenta_fk_0",
+            "columns": [
+              "tipoId"
+            ],
+            "referenceTable": "tipo_material",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "ferramenta_fk_1",
+            "columns": [
+              "unidadeMedidaId"
+            ],
+            "referenceTable": "unidade_medida",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "ferramenta_fk_2",
+            "columns": [
+              "baseId"
+            ],
+            "referenceTable": "base",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "ferramenta_fk_3",
+            "columns": [
+              "veiculoId"
+            ],
+            "referenceTable": "veiculo",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "ferramenta_fk_4",
+            "columns": [
+              "empenhadoParaId"
+            ],
+            "referenceTable": "serverpod_user_info",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "ferramenta_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "ferramenta_patrimonio_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "patrimonio"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "movimentacao"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "movimentacao",
+        "dartName": "Movimentacao",
+        "module": "organiza_metro",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('movimentacao_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "usuarioId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "materialId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "ferramentaId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "quantidade",
+            "columnType": 3,
+            "isNullable": true,
+            "dartType": "double?"
+          },
+          {
+            "name": "tipoMovimentacao",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "dataRequisicao",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "dataMovimentacao",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "dataDevolucao",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "modalidadeEntrega",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "observacao",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "origemBaseId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "destinoBaseId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "origemVeiculoId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "destinoVeiculoId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "movimentacao_fk_0",
+            "columns": [
+              "usuarioId"
+            ],
+            "referenceTable": "serverpod_user_info",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "movimentacao_fk_1",
+            "columns": [
+              "materialId"
+            ],
+            "referenceTable": "material",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "movimentacao_fk_2",
+            "columns": [
+              "ferramentaId"
+            ],
+            "referenceTable": "ferramenta",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "movimentacao_fk_3",
+            "columns": [
+              "origemBaseId"
+            ],
+            "referenceTable": "base",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "movimentacao_fk_4",
+            "columns": [
+              "destinoBaseId"
+            ],
+            "referenceTable": "base",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "movimentacao_fk_5",
+            "columns": [
+              "origemVeiculoId"
+            ],
+            "referenceTable": "veiculo",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "movimentacao_fk_6",
+            "columns": [
+              "destinoVeiculoId"
+            ],
+            "referenceTable": "veiculo",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "movimentacao_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"tipo\" of table \"ferramenta\" will be dropped.",
+      "table": "ferramenta",
+      "columns": [
+        "tipo"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"ferramenta\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "ferramenta",
+      "columns": [
+        "divisao"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"movimentacao\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "movimentacao",
+      "columns": [
+        "dataRequisicao"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

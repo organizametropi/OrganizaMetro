@@ -5,7 +5,7 @@ import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
 // 1. Dados da Requisição
 class RetiradaFormData {
-  DateTime? dataRequisicao;
+  late DateTime dataRequisicao;
   String? centroCusto;
   String? centroLogistico;
   String? modalidadeEntrega; // Ex: 'Balcão', 'Veículo'
@@ -58,7 +58,7 @@ class RetirarMaterialController extends ChangeNotifier {
 
   // Sinks/Atualizadores de Formulário (Lógica de BINDING)
   void updateDataRequisicao(DateTime? date) {
-    formData.dataRequisicao = date;
+    formData.dataRequisicao = date!; // Talvevz quebre a lógica
   }
 
   void updateCentroCusto(String? value) {
@@ -118,9 +118,7 @@ class RetirarMaterialController extends ChangeNotifier {
         itens: itensDto,
         modalidadeEntrega: formData.modalidadeEntrega!,
         observacao: formData.justificativa,
-
-        // 🚨 Os campos de ORIGEM devem ser buscados no material (lógica do endpoint)
-        // 🚨 Assumindo que a ORIGEM é sempre a Base 1 para fins de teste de FK.
+        dataDaMovimentacao: formData.dataRequisicao,
 
         // Destino
         destinoBaseId: formData.destinoBaseId,

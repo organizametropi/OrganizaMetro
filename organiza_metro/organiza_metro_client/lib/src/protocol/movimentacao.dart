@@ -27,6 +27,7 @@ abstract class Movimentacao implements _i1.SerializableModel {
     this.ferramenta,
     this.quantidade,
     required this.tipoMovimentacao,
+    required this.dataRequisicao,
     required this.dataMovimentacao,
     this.dataDevolucao,
     this.modalidadeEntrega,
@@ -51,6 +52,7 @@ abstract class Movimentacao implements _i1.SerializableModel {
     _i4.Ferramenta? ferramenta,
     double? quantidade,
     required String tipoMovimentacao,
+    required DateTime dataRequisicao,
     required DateTime dataMovimentacao,
     DateTime? dataDevolucao,
     String? modalidadeEntrega,
@@ -85,6 +87,8 @@ abstract class Movimentacao implements _i1.SerializableModel {
               (jsonSerialization['ferramenta'] as Map<String, dynamic>)),
       quantidade: (jsonSerialization['quantidade'] as num?)?.toDouble(),
       tipoMovimentacao: jsonSerialization['tipoMovimentacao'] as String,
+      dataRequisicao: _i1.DateTimeJsonExtension.fromJson(
+          jsonSerialization['dataRequisicao']),
       dataMovimentacao: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['dataMovimentacao']),
       dataDevolucao: jsonSerialization['dataDevolucao'] == null
@@ -137,6 +141,8 @@ abstract class Movimentacao implements _i1.SerializableModel {
 
   String tipoMovimentacao;
 
+  DateTime dataRequisicao;
+
   DateTime dataMovimentacao;
 
   DateTime? dataDevolucao;
@@ -174,6 +180,7 @@ abstract class Movimentacao implements _i1.SerializableModel {
     _i4.Ferramenta? ferramenta,
     double? quantidade,
     String? tipoMovimentacao,
+    DateTime? dataRequisicao,
     DateTime? dataMovimentacao,
     DateTime? dataDevolucao,
     String? modalidadeEntrega,
@@ -199,6 +206,7 @@ abstract class Movimentacao implements _i1.SerializableModel {
       if (ferramenta != null) 'ferramenta': ferramenta?.toJson(),
       if (quantidade != null) 'quantidade': quantidade,
       'tipoMovimentacao': tipoMovimentacao,
+      'dataRequisicao': dataRequisicao.toJson(),
       'dataMovimentacao': dataMovimentacao.toJson(),
       if (dataDevolucao != null) 'dataDevolucao': dataDevolucao?.toJson(),
       if (modalidadeEntrega != null) 'modalidadeEntrega': modalidadeEntrega,
@@ -233,6 +241,7 @@ class _MovimentacaoImpl extends Movimentacao {
     _i4.Ferramenta? ferramenta,
     double? quantidade,
     required String tipoMovimentacao,
+    required DateTime dataRequisicao,
     required DateTime dataMovimentacao,
     DateTime? dataDevolucao,
     String? modalidadeEntrega,
@@ -255,6 +264,7 @@ class _MovimentacaoImpl extends Movimentacao {
           ferramenta: ferramenta,
           quantidade: quantidade,
           tipoMovimentacao: tipoMovimentacao,
+          dataRequisicao: dataRequisicao,
           dataMovimentacao: dataMovimentacao,
           dataDevolucao: dataDevolucao,
           modalidadeEntrega: modalidadeEntrega,
@@ -283,6 +293,7 @@ class _MovimentacaoImpl extends Movimentacao {
     Object? ferramenta = _Undefined,
     Object? quantidade = _Undefined,
     String? tipoMovimentacao,
+    DateTime? dataRequisicao,
     DateTime? dataMovimentacao,
     Object? dataDevolucao = _Undefined,
     Object? modalidadeEntrega = _Undefined,
@@ -309,6 +320,7 @@ class _MovimentacaoImpl extends Movimentacao {
           : this.ferramenta?.copyWith(),
       quantidade: quantidade is double? ? quantidade : this.quantidade,
       tipoMovimentacao: tipoMovimentacao ?? this.tipoMovimentacao,
+      dataRequisicao: dataRequisicao ?? this.dataRequisicao,
       dataMovimentacao: dataMovimentacao ?? this.dataMovimentacao,
       dataDevolucao:
           dataDevolucao is DateTime? ? dataDevolucao : this.dataDevolucao,
