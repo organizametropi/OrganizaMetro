@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:organiza_metro_flutter/src/screens/redirect/estoque_screen.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_flutter/src/screens/dashboard/home_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       locale: const Locale('pt', 'BR'),
-      home: estoquePage(),
+      home: MyHomePage(),
     ));
   }
 }
@@ -55,7 +54,6 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     sessionManager.addListener(() {
-      print('🔄 Estado de login mudou: ${sessionManager.isSignedIn}');
       setState(
         () {},
       );
