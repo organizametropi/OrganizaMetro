@@ -5,10 +5,10 @@ import 'package:organiza_metro_flutter/src/screens/redirect/ferramenta_screen.da
 import 'package:organiza_metro_flutter/src/screens/redirect/historico_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/relatorios_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/retirar_material_screen.dart';
-import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
+import 'package:organiza_metro_flutter/src/widgets/cards/user_notifications_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
-import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
+import 'package:organiza_metro_flutter/src/services/auth_service.dart'; 
 
 class homePage extends StatefulWidget {
   const homePage({super.key});
@@ -18,26 +18,27 @@ class homePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<homePage> {
+  final AuthService _auth = AuthService();
+
   bool _isAdmin = false;
   String? _userName;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadUserInfo();
+    _loadUserData();
   }
 
-  Future<void> _loadUserInfo() async {
-    try {
-      final isAdmin = await client.authUtils.isAdmin();
-      final name = await client.authUtils.getUserName();
-      setState(() {
-        _isAdmin = isAdmin;
-        _userName = name ?? 'Usuário';
-      });
-    } catch (e) {
-      print('Erro ao buscar info: $e');
-    }
+  Future<void> _loadUserData() async {
+    final isAdmin = await _auth.getIsAdmin();
+    final userName = await _auth.getUserName();
+
+    setState(() {
+      _isAdmin = isAdmin;
+      _userName = userName;
+      _isLoading = false;
+    });
   }
 
   @override
@@ -182,11 +183,7 @@ class _HomePageState extends State<homePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                              'Sem alertas/notificações no momento', //caso Vazio
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.black38)),
+                          UserNotificationsArea()
                         ],
                       ),
                       SizedBox(
@@ -278,11 +275,7 @@ class _HomePageState extends State<homePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                              'Sem alertas/notificações no momento', //caso Vazio
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.black38)),
+                          UserNotificationsArea()
                         ],
                       ),
                       SizedBox(

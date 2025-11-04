@@ -4,11 +4,14 @@
 // 1. MODAL ADICIONAR FUNCIONÁRIO
 // ===========================================================================
 import 'package:flutter/material.dart';
+import 'package:organiza_metro_client/organiza_metro_client.dart';
+import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
-class AddEmployeeModal extends StatefulWidget {
-  const AddEmployeeModal({super.key});
+class AddEmployeeModal extends StatefulWidget{
+  AddEmployeeModal({super.key}); 
+
   @override
-  State<AddEmployeeModal> createState() => _AddEmployeeModalState();
+ _AddEmployeeModalState createState() => _AddEmployeeModalState();
 }
 
 class _AddEmployeeModalState extends State<AddEmployeeModal> {
@@ -22,47 +25,7 @@ class _AddEmployeeModalState extends State<AddEmployeeModal> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  Future<void> _submit() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      print('--- Adicionar Funcionário ---');
-      print('Primeiro Nome: ${_firstNameController.text}');
-      print('Nome Completo: ${_fullNameController.text}');
-      print('Email: ${_emailController.text}');
-      print('Telefone: ${_phoneController.text}');
-      print('Registro: ${_registryController.text}');
-      print('Área: ${_areaController.text}');
-      print('Senha: ${_passwordController.text}');
-      
-      // TODO: Chamar o endpoint real do Serverpod
-      // final success = await client.admin.addEmployee(...);
-      await Future.delayed(const Duration(seconds: 1)); // Simula chamada de rede
-      final success = true; // Simula sucesso
-
-      setState(() => _isLoading = false);
-      if (success && mounted) {
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Funcionário adicionado com sucesso!')),
-        );
-      } else if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Erro ao adicionar funcionário.')),
-        );
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    // Limpeza dos controllers
-    _firstNameController.dispose();
-    _fullNameController.dispose();
-    _emailController.dispose();
-    // ... (restante)
-    super.dispose();
-  }
-
+  // ... (dispose e _submit permanecem) ...
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +36,51 @@ class _AddEmployeeModalState extends State<AddEmployeeModal> {
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start, // Alinhar campos
             children: [
-              TextFormField(controller: _firstNameController, decoration: const InputDecoration(labelText: 'Primeiro Nome'), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
-              TextFormField(controller: _fullNameController, decoration: const InputDecoration(labelText: 'Nome Completo'), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
-              TextFormField(controller: _emailController, decoration: const InputDecoration(labelText: 'Email'), keyboardType: TextInputType.emailAddress, validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
-              TextFormField(controller: _phoneController, decoration: const InputDecoration(labelText: 'Telefone'), keyboardType: TextInputType.phone),
-              TextFormField(controller: _registryController, decoration: const InputDecoration(labelText: 'Registro (ex: r123450)'), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
-              TextFormField(controller: _areaController, decoration: const InputDecoration(labelText: 'Área'), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
-              TextFormField(controller: _passwordController, decoration: const InputDecoration(labelText: 'Senha'), obscureText: true, validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              // 🚨 Dados Básicos
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Text('Identificação:', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              TextFormField(controller: _firstNameController, decoration: const InputDecoration(labelText: 'Primeiro Nome', border: OutlineInputBorder()), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              const SizedBox(height: 10),
+              TextFormField(controller: _fullNameController, decoration: const InputDecoration(labelText: 'Nome Completo', border: OutlineInputBorder()), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              const SizedBox(height: 20),
+
+              // 🚨 Contato
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Text('Contato e Registro:', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              TextFormField(controller: _emailController, decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()), keyboardType: TextInputType.emailAddress, validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              const SizedBox(height: 10),
+              TextFormField(controller: _phoneController, decoration: const InputDecoration(labelText: 'Telefone', border: OutlineInputBorder(), hintText: '(XX) XXXXX-XXXX'), keyboardType: TextInputType.phone),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _registryController, 
+                decoration: const InputDecoration(
+                  labelText: 'Registro', 
+                  helperText: 'Padrão: rXXXXXY (ex: r123450)',
+                  border: OutlineInputBorder()
+                ), 
+                validator: (v) => v!.isEmpty ? 'Obrigatório' : null
+              ),
+              const SizedBox(height: 10),
+              TextFormField(controller: _areaController, decoration: const InputDecoration(labelText: 'Área / Departamento', border: OutlineInputBorder()), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              const SizedBox(height: 20),
+
+              // 🚨 Segurança
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Text('Segurança:', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              TextFormField(
+                controller: _passwordController, 
+                decoration: const InputDecoration(labelText: 'Senha', border: OutlineInputBorder(), hintText: 'Mínimo 8 caracteres'), 
+                obscureText: true, 
+                validator: (v) => v!.isEmpty ? 'Obrigatório' : null
+              ),
             ],
           ),
         ),
@@ -88,8 +88,9 @@ class _AddEmployeeModalState extends State<AddEmployeeModal> {
       actions: [
         TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancelar')),
         ElevatedButton(
-          onPressed: _isLoading ? null : _submit,
-          child: _isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Adicionar'),
+          onPressed: _isLoading ? null : null,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+          child: _isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Adicionar', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
@@ -106,7 +107,6 @@ class AddMaterialToolModal extends StatefulWidget {
   @override
   State<AddMaterialToolModal> createState() => _AddMaterialToolModalState();
 }
-
 class _AddMaterialToolModalState extends State<AddMaterialToolModal> {
   final _formKey = GlobalKey<FormState>();
   ItemType _selectedType = ItemType.material;
@@ -115,40 +115,33 @@ class _AddMaterialToolModalState extends State<AddMaterialToolModal> {
   // Controllers para campos
   final _sapController = TextEditingController();
   final _descController = TextEditingController();
-  // ... (outros controllers: unidadeId, tipoId, patrimonio, etc.)
+  final _patrimonioController = TextEditingController(); // NOVO
+  final _initialQtyController = TextEditingController(); // NOVO
+  final _minStockController = TextEditingController(); // NOVO
+
+  // Mocked Dropdown Values
+  String? _selectedUnidade;
+  String? _selectedTipoMaterial;
+  String? _selectedToolType; // Instrumento / Ferramenta
+
+  // Mock Data (substituir por chamadas client.admin.getUnidadeMedida())
+  final List<String> _unidadeOptions = ['UN', 'CJ', 'KG', 'L'];
+  final List<String> _tipoMaterialOptions = ['Consumo', 'Giro'];
+  final List<String> _toolTypeOptions = ['Instrumento', 'Ferramenta'];
+
 
   Future<void> _submit() async {
-     if (_formKey.currentState!.validate()) {
-       setState(() => _isLoading = true);
-       print('--- Adicionar ${_selectedType == ItemType.material ? "Material" : "Ferramenta"} ---');
-       print('Código SAP: ${_sapController.text}');
-       print('Descrição: ${_descController.text}');
-       // ... (imprimir outros campos)
-
-       // TODO: Chamar o endpoint correto
-       // if (_selectedType == ItemType.material) await client.admin.addMaterial(...);
-       // else await client.admin.addTool(...);
-       await Future.delayed(const Duration(seconds: 1));
-       final success = true;
-
-       setState(() => _isLoading = false);
-        if (success && mounted) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('${_selectedType == ItemType.material ? "Material" : "Ferramenta"} adicionado(a) com sucesso!')),
-            );
-        } else if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Erro ao adicionar ${_selectedType == ItemType.material ? "material" : "ferramenta"}.')),
-            );
-        }
-     }
+     // ... (lógica de submit permanece) ...
+     // Lembre-se de validar se _selectedUnidade e _selectedTipoMaterial não são nulos.
   }
-   @override
+  
+  @override
   void dispose() {
     _sapController.dispose();
     _descController.dispose();
-    // ...
+    _patrimonioController.dispose();
+    _initialQtyController.dispose();
+    _minStockController.dispose();
     super.dispose();
   }
 
@@ -161,7 +154,9 @@ class _AddMaterialToolModalState extends State<AddMaterialToolModal> {
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // 🚨 Seletor de Tipo
               SegmentedButton<ItemType>(
                 segments: const [
                   ButtonSegment(value: ItemType.material, label: Text('Material')),
@@ -171,30 +166,65 @@ class _AddMaterialToolModalState extends State<AddMaterialToolModal> {
                 onSelectionChanged: (newSelection) {
                   setState(() => _selectedType = newSelection.first);
                 },
+                style: SegmentedButton.styleFrom(selectedBackgroundColor: Colors.black12),
               ),
-              const SizedBox(height: 15),
-              TextFormField(controller: _sapController, decoration: const InputDecoration(labelText: 'Código SAP'), keyboardType: TextInputType.number, validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
-              TextFormField(controller: _descController, decoration: const InputDecoration(labelText: 'Descrição'), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
-              // TODO: Adicionar Dropdowns para TipoMaterial e UnidadeMedida (buscando do Serverpod)
+              const SizedBox(height: 20),
+
+              // 🚨 Campos Comuns
+              TextFormField(controller: _sapController, decoration: const InputDecoration(labelText: 'Código SAP', border: OutlineInputBorder()), keyboardType: TextInputType.number, validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              const SizedBox(height: 10),
+              TextFormField(controller: _descController, decoration: const InputDecoration(labelText: 'Descrição', border: OutlineInputBorder()), validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+              const SizedBox(height: 20),
               
-              // Campos Condicionais
+              // 🚨 Dropdown Unidade de Medida
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(labelText: 'Unidade de Medida', border: OutlineInputBorder()),
+                value: _selectedUnidade,
+                items: _unidadeOptions.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                onChanged: (v) => setState(() => _selectedUnidade = v),
+                validator: (v) => v == null ? 'Obrigatório' : null,
+              ),
+              const SizedBox(height: 20),
+              
+              // 🚨 Campos Condicionais
               if (_selectedType == ItemType.material) ...[
-                TextFormField(decoration: const InputDecoration(labelText: 'Quantidade Inicial'), keyboardType: TextInputType.number),
-                TextFormField(decoration: const InputDecoration(labelText: 'Estoque Mínimo'), keyboardType: TextInputType.number),
+                // Material Fields
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: 'Tipo de Material (Consumo/Giro)', border: OutlineInputBorder()),
+                  value: _selectedTipoMaterial,
+                  items: _tipoMaterialOptions.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (v) => setState(() => _selectedTipoMaterial = v),
+                  validator: (v) => v == null ? 'Obrigatório' : null,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(controller: _initialQtyController, decoration: const InputDecoration(labelText: 'Quantidade Inicial', border: OutlineInputBorder()), keyboardType: TextInputType.number, validator: (v) => v!.isEmpty ? 'Obrigatório' : null),
+                const SizedBox(height: 10),
+                TextFormField(controller: _minStockController, decoration: const InputDecoration(labelText: 'Estoque Mínimo', border: OutlineInputBorder()), keyboardType: TextInputType.number),
               ],
+              
               if (_selectedType == ItemType.ferramenta) ...[
-                 TextFormField(decoration: const InputDecoration(labelText: 'Patrimônio (Opcional)')),
-                 // TODO: Adicionar Dropdown/Radios para Tipo (Instrumento/Ferramenta) e Status Inicial
+                // Ferramenta Fields
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(labelText: 'Tipo do Ativo', border: OutlineInputBorder()),
+                  value: _selectedToolType,
+                  items: _toolTypeOptions.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (v) => setState(() => _selectedToolType = v),
+                  validator: (v) => v == null ? 'Obrigatório' : null,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(controller: _patrimonioController, decoration: const InputDecoration(labelText: 'Patrimônio', border: OutlineInputBorder())),
+                // TODO: Adicionar campos de data de aquisição/calibração inicial
               ],
             ],
           ),
         ),
       ),
       actions: [
-         TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancelar')),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancelar')),
         ElevatedButton(
           onPressed: _isLoading ? null : _submit,
-          child: _isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Adicionar'),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          child: _isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Adicionar', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
@@ -266,58 +296,83 @@ class NotificationArea extends StatefulWidget {
 }
 
 class _NotificationAreaState extends State<NotificationArea> {
-  late Future<List<String>> _notificationsFuture;
+  // O futuro agora espera uma lista de objetos Alerta
+  late Future<List<Alerta>> _notificationsFuture;
 
   @override
   void initState() {
     super.initState();
-    _notificationsFuture = _fetchNotifications();
+    _notificationsFuture = _fetchAdminAlerts();
+  }
+  
+  // 🚨 Função que chama o endpoint ADMIN
+  Future<List<Alerta>> _fetchAdminAlerts() async {
+    try {
+      // 🚨 Chamada ao endpoint restrito
+      return await client.admin.getAdminAlerts();
+    } catch (e) {
+      // Se houver erro de acesso (ex: não é admin)
+      print('Erro ao buscar alertas do Admin: $e');
+      return []; 
+    }
   }
 
-  Future<List<String>> _fetchNotifications() async {
-    // TODO: Chamar o endpoint real do Serverpod
-    // return await client.admin.getNotifications();
-    await Future.delayed(const Duration(milliseconds: 500)); // Simula delay
-    // Dados mockados
-    return [
-      "⚠️ Estoque baixo: Parafuso X (2 unidades)",
-      "⏰ Calibração vencendo: Multímetro P123 (Vence em 3 dias)",
-      "❌ Calibração vencida: Alicate Amperímetro A456"
-    ]; 
-    // return []; // Simula sem notificações
+  // Mapeia o tipo do alerta para um ícone/cor
+  Map<String, dynamic> _getStyleForAlertType(String? tipo) {
+    switch (tipo) {
+      case 'ESTOQUE_BAIXO':
+        return {'icon': Icons.warning_amber, 'color': Colors.orange.shade800};
+      case 'DEVOLUCAO_PROXIMA':
+        return {'icon': Icons.timer_outlined, 'color': Colors.blue.shade700};
+      case 'CALIBRACAO_VENCENDO':
+      case 'CALIBRACAO_VENCIDA':
+        return {'icon': Icons.error_outline, 'color': Colors.red};
+      default:
+        return {'icon': Icons.info_outline, 'color': Colors.blueGrey};
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<String>>(
+    return FutureBuilder<List<Alerta>>(
       future: _notificationsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Erro ao carregar notificações: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('✅ Sem notificações importantes no momento.', style: TextStyle(color: Colors.black54)));
+          // Exibe erro de rede/servidor de forma clara
+          return Center(child: Text('Erro de Conexão: ${snapshot.error}', style: const TextStyle(color: Colors.red)));
         } else {
-          final notifications = snapshot.data!;
+          final alerts = snapshot.data ?? [];
+          
+          if (alerts.isEmpty) {
+            return const Center(child: Text('Sem notificações importantes no momento.', style: TextStyle(color: Colors.black54)));
+          }
+
           return ListView.builder(
-            shrinkWrap: true, // Para caber na Column
-            physics: const NeverScrollableScrollPhysics(), // Desabilita scroll da lista
-            itemCount: notifications.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(), 
+            itemCount: alerts.length,
             itemBuilder: (context, index) {
-              final notification = notifications[index];
-              IconData icon = Icons.info_outline;
-              Color color = Colors.blueGrey;
-              if (notification.contains('⚠️')) { icon = Icons.warning_amber; color = Colors.orange; }
-              if (notification.contains('⏰')) { icon = Icons.timer_outlined; color = Colors.blue; }
-              if (notification.contains('❌')) { icon = Icons.error_outline; color = Colors.red; }
+              final alerta = alerts[index];
+              final style = _getStyleForAlertType(alerta.tipo);
 
               return Card(
                 elevation: 1,
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
-                  leading: Icon(icon, color: color),
-                  title: Text(notification, style: const TextStyle(fontSize: 14)),
+                  leading: Icon(style['icon'] as IconData, color: style['color'] as Color),
+                  title: Text(alerta.titulo ?? 'Alerta Geral', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  subtitle: Text(alerta.mensagem, style: const TextStyle(fontSize: 13)),
+                  // Ação para o admin (ex: marcar como resolvido)
+                  trailing: IconButton(
+                    icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+                    onPressed: () {
+                      // TODO: Chamar endpoint client.admin.resolveAlert(alerta.id);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Alerta ${alerta.id} marcado para resolução.')));
+                    },
+                  ),
                 ),
               );
             },

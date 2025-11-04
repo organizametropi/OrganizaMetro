@@ -10,50 +10,86 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../endpoints/auth_utils_endpoint.dart' as _i2;
-import '../endpoints/ferramenta_endpoint.dart' as _i3;
-import '../endpoints/material_endpoint.dart' as _i4;
-import '../endpoints/movimentacao_endpoint.dart' as _i5;
-import '../greeting_endpoint.dart' as _i6;
+import '../endpoints/admin_endpoint.dart' as _i2;
+import '../endpoints/auth_utils_endpoint.dart' as _i3;
+import '../endpoints/cron_endpoint.dart' as _i4;
+import '../endpoints/ferramenta_endpoint.dart' as _i5;
+import '../endpoints/material_endpoint.dart' as _i6;
+import '../endpoints/movimentacao_endpoint.dart' as _i7;
+import '../endpoints/user_data_endpoint.dart' as _i8;
+import '../greeting_endpoint.dart' as _i9;
 import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
-    as _i7;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i8;
+    as _i10;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i11;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'authUtils': _i2.AuthUtilsEndpoint()
+      'admin': _i2.AdminEndpoint()
+        ..initialize(
+          server,
+          'admin',
+          null,
+        ),
+      'authUtils': _i3.AuthUtilsEndpoint()
         ..initialize(
           server,
           'authUtils',
           null,
         ),
-      'ferramenta': _i3.FerramentaEndpoint()
+      'cron': _i4.CronEndpoint()
+        ..initialize(
+          server,
+          'cron',
+          null,
+        ),
+      'ferramenta': _i5.FerramentaEndpoint()
         ..initialize(
           server,
           'ferramenta',
           null,
         ),
-      'material': _i4.MaterialEndpoint()
+      'material': _i6.MaterialEndpoint()
         ..initialize(
           server,
           'material',
           null,
         ),
-      'movimentacao': _i5.MovimentacaoEndpoint()
+      'movimentacao': _i7.MovimentacaoEndpoint()
         ..initialize(
           server,
           'movimentacao',
           null,
         ),
-      'greeting': _i6.GreetingEndpoint()
+      'userData': _i8.UserDataEndpoint()
+        ..initialize(
+          server,
+          'userData',
+          null,
+        ),
+      'greeting': _i9.GreetingEndpoint()
         ..initialize(
           server,
           'greeting',
           null,
         ),
     };
+    connectors['admin'] = _i1.EndpointConnector(
+      name: 'admin',
+      endpoint: endpoints['admin']!,
+      methodConnectors: {
+        'getAdminAlerts': _i1.MethodConnector(
+          name: 'getAdminAlerts',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).getAdminAlerts(session),
+        )
+      },
+    );
     connectors['authUtils'] = _i1.EndpointConnector(
       name: 'authUtils',
       endpoint: endpoints['authUtils']!,
@@ -65,7 +101,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['authUtils'] as _i2.AuthUtilsEndpoint)
+              (endpoints['authUtils'] as _i3.AuthUtilsEndpoint)
                   .isAdmin(session),
         ),
         'getUserName': _i1.MethodConnector(
@@ -75,9 +111,24 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['authUtils'] as _i2.AuthUtilsEndpoint)
+              (endpoints['authUtils'] as _i3.AuthUtilsEndpoint)
                   .getUserName(session),
         ),
+      },
+    );
+    connectors['cron'] = _i1.EndpointConnector(
+      name: 'cron',
+      endpoint: endpoints['cron']!,
+      methodConnectors: {
+        'verificarAlertas': _i1.MethodConnector(
+          name: 'verificarAlertas',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['cron'] as _i4.CronEndpoint).verificarAlertas(session),
+        )
       },
     );
     connectors['ferramenta'] = _i1.EndpointConnector(
@@ -91,7 +142,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['ferramenta'] as _i3.FerramentaEndpoint)
+              (endpoints['ferramenta'] as _i5.FerramentaEndpoint)
                   .getEstoque(session),
         ),
         'getMinhasFerramentas': _i1.MethodConnector(
@@ -101,7 +152,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['ferramenta'] as _i3.FerramentaEndpoint)
+              (endpoints['ferramenta'] as _i5.FerramentaEndpoint)
                   .getMinhasFerramentas(session),
         ),
       },
@@ -117,7 +168,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['material'] as _i4.MaterialEndpoint)
+              (endpoints['material'] as _i6.MaterialEndpoint)
                   .getEstoque(session),
         )
       },
@@ -131,7 +182,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'itens': _i1.ParameterDescription(
               name: 'itens',
-              type: _i1.getType<List<_i7.RequisicaoItem>>(),
+              type: _i1.getType<List<_i10.RequisicaoItem>>(),
               nullable: false,
             ),
             'modalidadeEntrega': _i1.ParameterDescription(
@@ -143,6 +194,11 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'dataDaMovimentacao',
               type: _i1.getType<DateTime>(),
               nullable: false,
+            ),
+            'dataDevolucao': _i1.ParameterDescription(
+              name: 'dataDevolucao',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
             ),
             'observacao': _i1.ParameterDescription(
               name: 'observacao',
@@ -164,12 +220,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['movimentacao'] as _i5.MovimentacaoEndpoint)
+              (endpoints['movimentacao'] as _i7.MovimentacaoEndpoint)
                   .criarRequisicaoSaida(
             session,
             itens: params['itens'],
             modalidadeEntrega: params['modalidadeEntrega'],
             dataDaMovimentacao: params['dataDaMovimentacao'],
+            dataDevolucao: params['dataDevolucao'],
             observacao: params['observacao'],
             destinoBaseId: params['destinoBaseId'],
             destinoVeiculoId: params['destinoVeiculoId'],
@@ -208,7 +265,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['movimentacao'] as _i5.MovimentacaoEndpoint)
+              (endpoints['movimentacao'] as _i7.MovimentacaoEndpoint)
                   .processarDevolucaoFerramenta(
             session,
             ferramentaId: params['ferramentaId'],
@@ -217,6 +274,32 @@ class Endpoints extends _i1.EndpointDispatch {
             destinoVeiculoId: params['destinoVeiculoId'],
             observacao: params['observacao'],
           ),
+        ),
+      },
+    );
+    connectors['userData'] = _i1.EndpointConnector(
+      name: 'userData',
+      endpoint: endpoints['userData']!,
+      methodConnectors: {
+        'getMyAlerts': _i1.MethodConnector(
+          name: 'getMyAlerts',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['userData'] as _i8.UserDataEndpoint)
+                  .getMyAlerts(session),
+        ),
+        'getMyHistory': _i1.MethodConnector(
+          name: 'getMyHistory',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['userData'] as _i8.UserDataEndpoint)
+                  .getMyHistory(session),
         ),
       },
     );
@@ -237,13 +320,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['greeting'] as _i6.GreetingEndpoint).hello(
+              (endpoints['greeting'] as _i9.GreetingEndpoint).hello(
             session,
             params['name'],
           ),
         )
       },
     );
-    modules['serverpod_auth'] = _i8.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i11.Endpoints()..initializeEndpoints(server);
   }
 }

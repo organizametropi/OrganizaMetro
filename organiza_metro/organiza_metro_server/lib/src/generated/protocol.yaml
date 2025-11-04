@@ -1,6 +1,10 @@
+admin:
+  - getAdminAlerts:
 authUtils:
   - isAdmin:
   - getUserName:
+cron:
+  - verificarAlertas:
 ferramenta:
   - getEstoque:
   - getMinhasFerramentas:
@@ -9,5 +13,8 @@ material:
 movimentacao:
   - criarRequisicaoSaida:
   - processarDevolucaoFerramenta:
+userData:
+  - getMyAlerts:
+  - getMyHistory:
 greeting:
   - hello:

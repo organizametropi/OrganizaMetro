@@ -3,6 +3,7 @@
 // ===========================================================================
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart';
 import 'package:organiza_metro_flutter/src/controllers/ferramenta_controller.dart';
 import 'package:responsive_table/responsive_table.dart';
@@ -119,6 +120,55 @@ class _RetiradaViewState extends State<RetiradaView> {
     _source = _sourceFiltered.getRange(0, _rangeTop).toList();
   }
 
+  DateTime? _modalDevolucaoDate;
+
+  void _showRetiradaConfirmationModal(BuildContext context, Map<String, dynamic> selectedTool) {
+    final int ferramentaId = selectedTool['id'] as int;
+    final String ferramentaDescricao = selectedTool['descricao'] as String;
+    
+    // Reset da data para o padrão de 7 dias ou o valor salvo
+    _modalDevolucaoDate = DateTime.now().add(const Duration(days: 7)); 
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Retirada e Devolução'),
+          content: SingleChildScrollView(
+            child: _RetiradaModalContent(
+              ferramentaDescricao: ferramentaDescricao,
+              // Captura a data selecionada do widget interno
+              onDateSelected: (date) {
+                _modalDevolucaoDate = date; 
+                // Não precisa de setState aqui, pois o botão será reativado/confirmado no ONPRESSED
+              },
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancelar')),
+            ElevatedButton(
+              onPressed: widget.controller.isLoading || _modalDevolucaoDate == null
+                  ? null
+                  : () {
+                      // Usa a data capturada da variável de estado do modal
+                      widget.controller.processarRetirada(
+                        context, 
+                        ferramentaId, 
+                        dataDevolucaoEsperada: _modalDevolucaoDate,
+                      );
+                      Navigator.of(context).pop();
+                    },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: widget.controller.isLoading 
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) 
+                  : const Text('CONFIRMAR EMPENHO'),
+            ),
+          ],
+        );
+      },
+    );
+}
+
   @override
   Widget build(BuildContext context) {
     if (_source.isEmpty) {
@@ -135,6 +185,8 @@ class _RetiradaViewState extends State<RetiradaView> {
     final screenHeight = MediaQuery.of(context).size.height;
     // Define uma altura máxima razoável (por exemplo, 70% da tela)
     final double maxTableHeight = screenHeight * 0.7;
+
+    final selectedTool = _selecteds.isNotEmpty ? _selecteds.first : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -194,29 +246,104 @@ class _RetiradaViewState extends State<RetiradaView> {
                 });
               },
               expanded: _expanded,
-              footers: [
-                SizedBox(height: 10),
-                ElevatedButton.icon(
-                  onPressed:
-                      _selecteds.length == 1 && !widget.controller.isLoading
-                          ? () => widget.controller.processarRetirada(
-                              context, _selecteds.first['id'] as int)
-                          : null,
-                  icon: widget.controller.isLoading
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 2))
-                      : const Icon(Icons.outbox, size: 16),
-                  label: Text(widget.controller.isLoading
-                      ? 'EMPENHANDO...'
-                      : 'CONFIRMAR RETIRADA'),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                ),
-              ],
             ),
           ),
+        ),
+        
+        Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: ElevatedButton.icon(
+            onPressed: selectedTool != null && !widget.controller.isLoading
+                ? () => _showRetiradaConfirmationModal(context, selectedTool) // 🚨 CHAMA O MODAL
+                : null,
+            icon: widget.controller.isLoading
+                ? const SizedBox(
+                    width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : const Icon(Icons.outbox, size: 16),
+            label: Text(widget.controller.isLoading ? 'EMPENHANDO...' : 'CONFIRMAR RETIRADA', style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RetiradaModalContent extends StatefulWidget {
+  final String ferramentaDescricao;
+  
+  // Callback para retornar a data selecionada
+  final Function(DateTime) onDateSelected;
+
+  const _RetiradaModalContent({
+    required this.ferramentaDescricao,
+    required this.onDateSelected,
+  });
+
+  @override
+  State<_RetiradaModalContent> createState() => __RetiradaModalContentState();
+}
+
+class __RetiradaModalContentState extends State<_RetiradaModalContent> {
+  DateTime _dataDevolucao = DateTime.now().add(const Duration(days: 7));
+  final TextEditingController _dateController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicializa o controller de texto com o valor padrão
+    _dateController.text = DateFormat('dd/MM/yyyy').format(_dataDevolucao);
+    // Notifica o pai sobre a data inicial
+    widget.onDateSelected(_dataDevolucao);
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _dataDevolucao,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dataDevolucao = pickedDate;
+        _dateController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+      });
+      // Notifica o pai (o builder do AlertDialog) sobre a data final
+      widget.onDateSelected(pickedDate);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Você irá empenhar a ferramenta:', style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 5),
+        Text(widget.ferramentaDescricao, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        const SizedBox(height: 15),
+
+        // Campo de Data de Devolução Esperada
+        const Text('Data de Devolução Sugerida:', style: TextStyle(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: _dateController, // Usando o controller para exibir a data
+          readOnly: true,
+          decoration: const InputDecoration(
+            labelText: "Devolução Esperada",
+            border: OutlineInputBorder(),
+            suffixIcon: Icon(Icons.calendar_today),
+          ),
+          onTap: () => _selectDate(context),
         ),
       ],
     );

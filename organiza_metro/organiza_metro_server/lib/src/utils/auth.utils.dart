@@ -3,8 +3,7 @@ import 'package:organiza_metro_server/src/generated/protocol.dart';
 import 'package:serverpod_auth_server/module.dart' as auth;
 
 /// Endpoint para utilidades de autenticação e permissão
-class AuthUtilsEndpoint extends Endpoint {
-  @override
+class AuthUtilsEndpoint{
   bool get requireLogin => true;
 
   // Retorna se o usuário autenticado é admin
@@ -12,16 +11,10 @@ class AuthUtilsEndpoint extends Endpoint {
     final authenticationInfo = await session.authenticated;
     final userId = authenticationInfo?.userId;
 
-    print('authenticationInfo: $authenticationInfo');
-    print('userId: $userId');
-
-    // Busca na sua tabela UserInfo (custom)
     final localInfo = await LocalUserInfo.db.findFirstRow(
       session,
       where: (t) => t.userInfoId.equals(userId),
     );
-
-    print('localinfo: $localInfo');
 
     return localInfo?.isAdmin ?? false;
   }
@@ -32,6 +25,7 @@ class AuthUtilsEndpoint extends Endpoint {
     final userId = authenticationInfo?.userId;
 
     final info = await auth.UserInfo.db.findById(session, userId!);
+
 
     return info?.userName;
   }

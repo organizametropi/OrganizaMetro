@@ -1,7 +1,7 @@
 class: Alerta
 table: alertas
 fields:
-  usuarioId: module:auth:UserInfo?, relation
+  usuarioId: module:auth:UserInfo?, relation(optional)
   tipo: String
   titulo: String
   mensagem: String

@@ -69,7 +69,7 @@ class FerramentaController extends ChangeNotifier {
   // LÓGICA DE RETIRADA (Empenho)
   // -----------------------------------------------------------
 
-  Future<bool> processarRetirada(BuildContext context, int ferramentaId) async {
+  Future<bool> processarRetirada(BuildContext context, int ferramentaId, {DateTime? dataDevolucaoEsperada}) async {
     _isLoading = true;
     notifyListeners();
 
@@ -83,7 +83,9 @@ class FerramentaController extends ChangeNotifier {
           itens: [item],
           modalidadeEntrega: 'Balcão', // Retirada padrão
           observacao: 'Retirada individual rápida via app.',
-          dataDaMovimentacao: DateTime.now());
+          dataDaMovimentacao: DateTime.now(),
+          dataDevolucao: dataDevolucaoEsperada,
+          );
 
       if (sucesso) {
         fetchData(); // Recarrega a lista

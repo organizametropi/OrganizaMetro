@@ -24,10 +24,12 @@ import 'tipo_material.dart' as _i12;
 import 'unidade_medida.dart' as _i13;
 import 'user_info.dart' as _i14;
 import 'veiculo.dart' as _i15;
-import 'package:organiza_metro_server/src/generated/ferramenta.dart' as _i16;
-import 'package:organiza_metro_server/src/generated/material.dart' as _i17;
+import 'package:organiza_metro_server/src/generated/alertas.dart' as _i16;
+import 'package:organiza_metro_server/src/generated/ferramenta.dart' as _i17;
+import 'package:organiza_metro_server/src/generated/material.dart' as _i18;
 import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
-    as _i18;
+    as _i19;
+import 'package:organiza_metro_server/src/generated/movimentacao.dart' as _i20;
 export 'greeting.dart';
 export 'alertas.dart';
 export 'base.dart';
@@ -65,8 +67,8 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'usuarioIdId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'tipo',
@@ -1231,17 +1233,26 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i15.Veiculo?>()) {
       return (data != null ? _i15.Veiculo.fromJson(data) : null) as T;
     }
-    if (t == List<_i16.Ferramenta>) {
-      return (data as List).map((e) => deserialize<_i16.Ferramenta>(e)).toList()
+    if (t == List<_i16.Alerta>) {
+      return (data as List).map((e) => deserialize<_i16.Alerta>(e)).toList()
           as T;
     }
-    if (t == List<_i17.Material>) {
-      return (data as List).map((e) => deserialize<_i17.Material>(e)).toList()
+    if (t == List<_i17.Ferramenta>) {
+      return (data as List).map((e) => deserialize<_i17.Ferramenta>(e)).toList()
           as T;
     }
-    if (t == List<_i18.RequisicaoItem>) {
+    if (t == List<_i18.Material>) {
+      return (data as List).map((e) => deserialize<_i18.Material>(e)).toList()
+          as T;
+    }
+    if (t == List<_i19.RequisicaoItem>) {
       return (data as List)
-          .map((e) => deserialize<_i18.RequisicaoItem>(e))
+          .map((e) => deserialize<_i19.RequisicaoItem>(e))
+          .toList() as T;
+    }
+    if (t == List<_i20.Movimentacao>) {
+      return (data as List)
+          .map((e) => deserialize<_i20.Movimentacao>(e))
           .toList() as T;
     }
     try {

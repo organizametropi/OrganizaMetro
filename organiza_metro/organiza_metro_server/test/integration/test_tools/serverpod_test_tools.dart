@@ -14,11 +14,13 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:organiza_metro_server/src/generated/ferramenta.dart' as _i4;
-import 'package:organiza_metro_server/src/generated/material.dart' as _i5;
+import 'package:organiza_metro_server/src/generated/alertas.dart' as _i4;
+import 'package:organiza_metro_server/src/generated/ferramenta.dart' as _i5;
+import 'package:organiza_metro_server/src/generated/material.dart' as _i6;
 import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
-    as _i6;
-import 'package:organiza_metro_server/src/generated/greeting.dart' as _i7;
+    as _i7;
+import 'package:organiza_metro_server/src/generated/movimentacao.dart' as _i8;
+import 'package:organiza_metro_server/src/generated/greeting.dart' as _i9;
 import 'package:organiza_metro_server/src/generated/protocol.dart';
 import 'package:organiza_metro_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -105,13 +107,19 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _AdminEndpoint admin;
+
   late final _AuthUtilsEndpoint authUtils;
+
+  late final _CronEndpoint cron;
 
   late final _FerramentaEndpoint ferramenta;
 
   late final _MaterialEndpoint material;
 
   late final _MovimentacaoEndpoint movimentacao;
+
+  late final _UserDataEndpoint userData;
 
   late final _GreetingEndpoint greeting;
 }
@@ -123,7 +131,15 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    admin = _AdminEndpoint(
+      endpoints,
+      serializationManager,
+    );
     authUtils = _AuthUtilsEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    cron = _CronEndpoint(
       endpoints,
       serializationManager,
     );
@@ -139,10 +155,52 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+    userData = _UserDataEndpoint(
+      endpoints,
+      serializationManager,
+    );
     greeting = _GreetingEndpoint(
       endpoints,
       serializationManager,
     );
+  }
+}
+
+class _AdminEndpoint {
+  _AdminEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i4.Alerta>> getAdminAlerts(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'admin',
+        method: 'getAdminAlerts',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'admin',
+          methodName: 'getAdminAlerts',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i4.Alerta>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
   }
 }
 
@@ -209,6 +267,44 @@ class _AuthUtilsEndpoint {
   }
 }
 
+class _CronEndpoint {
+  _CronEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<void> verificarAlertas(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'cron',
+        method: 'verificarAlertas',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'cron',
+          methodName: 'verificarAlertas',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _FerramentaEndpoint {
   _FerramentaEndpoint(
     this._endpointDispatch,
@@ -219,7 +315,7 @@ class _FerramentaEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i4.Ferramenta>> getEstoque(
+  _i3.Future<List<_i5.Ferramenta>> getEstoque(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -238,7 +334,7 @@ class _FerramentaEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i4.Ferramenta>>);
+        ) as _i3.Future<List<_i5.Ferramenta>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -246,7 +342,7 @@ class _FerramentaEndpoint {
     });
   }
 
-  _i3.Future<List<_i4.Ferramenta>> getMinhasFerramentas(
+  _i3.Future<List<_i5.Ferramenta>> getMinhasFerramentas(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -265,7 +361,7 @@ class _FerramentaEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i4.Ferramenta>>);
+        ) as _i3.Future<List<_i5.Ferramenta>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -284,7 +380,7 @@ class _MaterialEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i5.Material>> getEstoque(
+  _i3.Future<List<_i6.Material>> getEstoque(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -303,7 +399,7 @@ class _MaterialEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.Material>>);
+        ) as _i3.Future<List<_i6.Material>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -324,9 +420,10 @@ class _MovimentacaoEndpoint {
 
   _i3.Future<bool> criarRequisicaoSaida(
     _i1.TestSessionBuilder sessionBuilder, {
-    required List<_i6.RequisicaoItem> itens,
+    required List<_i7.RequisicaoItem> itens,
     required String modalidadeEntrega,
     required DateTime dataDaMovimentacao,
+    DateTime? dataDevolucao,
     String? observacao,
     int? destinoBaseId,
     int? destinoVeiculoId,
@@ -346,6 +443,7 @@ class _MovimentacaoEndpoint {
             'itens': itens,
             'modalidadeEntrega': modalidadeEntrega,
             'dataDaMovimentacao': dataDaMovimentacao,
+            'dataDevolucao': dataDevolucao,
             'observacao': observacao,
             'destinoBaseId': destinoBaseId,
             'destinoVeiculoId': destinoVeiculoId,
@@ -403,6 +501,71 @@ class _MovimentacaoEndpoint {
   }
 }
 
+class _UserDataEndpoint {
+  _UserDataEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i4.Alerta>> getMyAlerts(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'userData',
+        method: 'getMyAlerts',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userData',
+          methodName: 'getMyAlerts',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i4.Alerta>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i8.Movimentacao>> getMyHistory(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'userData',
+        method: 'getMyHistory',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userData',
+          methodName: 'getMyHistory',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i8.Movimentacao>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _GreetingEndpoint {
   _GreetingEndpoint(
     this._endpointDispatch,
@@ -413,7 +576,7 @@ class _GreetingEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i7.Greeting> hello(
+  _i3.Future<_i9.Greeting> hello(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -434,7 +597,7 @@ class _GreetingEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Greeting>);
+        ) as _i3.Future<_i9.Greeting>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

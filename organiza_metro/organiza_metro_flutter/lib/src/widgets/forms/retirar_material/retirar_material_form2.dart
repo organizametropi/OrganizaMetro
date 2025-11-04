@@ -73,7 +73,7 @@ class _raForm2State extends State<retirarMaterialForm2> {
                       ),
                       dateFormat: DateFormat('dd MMMM yyyy', 'pt_BR'),
                       mode: DateTimeFieldPickerMode.date,
-                      initialPickerDateTime: DateTime.now(),
+                      firstDate: DateTime.now(),
                       onChanged:
                           controller.updateDataRequisicao, // 🚨 Sink de dados
                       validator: (value) =>

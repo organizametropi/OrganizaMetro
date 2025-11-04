@@ -21,7 +21,7 @@ import 'ferramenta.dart' as _i6;
 abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Alerta._({
     this.id,
-    required this.usuarioIdId,
+    this.usuarioIdId,
     this.usuarioId,
     required this.tipo,
     required this.titulo,
@@ -45,7 +45,7 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   factory Alerta({
     int? id,
-    required int usuarioIdId,
+    int? usuarioIdId,
     _i2.UserInfo? usuarioId,
     required String tipo,
     required String titulo,
@@ -67,7 +67,7 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   factory Alerta.fromJson(Map<String, dynamic> jsonSerialization) {
     return Alerta(
       id: jsonSerialization['id'] as int?,
-      usuarioIdId: jsonSerialization['usuarioIdId'] as int,
+      usuarioIdId: jsonSerialization['usuarioIdId'] as int?,
       usuarioId: jsonSerialization['usuarioId'] == null
           ? null
           : _i2.UserInfo.fromJson(
@@ -110,7 +110,7 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   int? id;
 
-  int usuarioIdId;
+  int? usuarioIdId;
 
   _i2.UserInfo? usuarioId;
 
@@ -174,7 +174,7 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'usuarioIdId': usuarioIdId,
+      if (usuarioIdId != null) 'usuarioIdId': usuarioIdId,
       if (usuarioId != null) 'usuarioId': usuarioId?.toJson(),
       'tipo': tipo,
       'titulo': titulo,
@@ -198,7 +198,7 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      'usuarioIdId': usuarioIdId,
+      if (usuarioIdId != null) 'usuarioIdId': usuarioIdId,
       if (usuarioId != null) 'usuarioId': usuarioId?.toJsonForProtocol(),
       'tipo': tipo,
       'titulo': titulo,
@@ -266,7 +266,7 @@ class _Undefined {}
 class _AlertaImpl extends Alerta {
   _AlertaImpl({
     int? id,
-    required int usuarioIdId,
+    int? usuarioIdId,
     _i2.UserInfo? usuarioId,
     required String tipo,
     required String titulo,
@@ -310,7 +310,7 @@ class _AlertaImpl extends Alerta {
   @override
   Alerta copyWith({
     Object? id = _Undefined,
-    int? usuarioIdId,
+    Object? usuarioIdId = _Undefined,
     Object? usuarioId = _Undefined,
     String? tipo,
     String? titulo,
@@ -330,7 +330,7 @@ class _AlertaImpl extends Alerta {
   }) {
     return Alerta(
       id: id is int? ? id : this.id,
-      usuarioIdId: usuarioIdId ?? this.usuarioIdId,
+      usuarioIdId: usuarioIdId is int? ? usuarioIdId : this.usuarioIdId,
       usuarioId:
           usuarioId is _i2.UserInfo? ? usuarioId : this.usuarioId?.copyWith(),
       tipo: tipo ?? this.tipo,
@@ -956,6 +956,28 @@ class AlertaAttachRowRepository {
 
 class AlertaDetachRowRepository {
   const AlertaDetachRowRepository._();
+
+  /// Detaches the relation between this [Alerta] and the [UserInfo] set in `usuarioId`
+  /// by setting the [Alerta]'s foreign key `usuarioIdId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> usuarioId(
+    _i1.Session session,
+    Alerta alerta, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (alerta.id == null) {
+      throw ArgumentError.notNull('alerta.id');
+    }
+
+    var $alerta = alerta.copyWith(usuarioIdId: null);
+    await session.db.updateRow<Alerta>(
+      $alerta,
+      columns: [Alerta.t.usuarioIdId],
+      transaction: transaction,
+    );
+  }
 
   /// Detaches the relation between this [Alerta] and the [Calibracao] set in `calibracao`
   /// by setting the [Alerta]'s foreign key `calibracaoId` to `null`.

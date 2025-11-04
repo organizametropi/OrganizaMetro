@@ -78,7 +78,7 @@ class AdminPage extends StatelessWidget {
   void _showAddEmployeeModal(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => const AddEmployeeModal(),
+      builder: (_) => AddEmployeeModal(),
     );
   }
 

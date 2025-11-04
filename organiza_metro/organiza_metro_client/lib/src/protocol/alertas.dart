@@ -19,7 +19,7 @@ import 'ferramenta.dart' as _i6;
 abstract class Alerta implements _i1.SerializableModel {
   Alerta._({
     this.id,
-    required this.usuarioIdId,
+    this.usuarioIdId,
     this.usuarioId,
     required this.tipo,
     required this.titulo,
@@ -43,7 +43,7 @@ abstract class Alerta implements _i1.SerializableModel {
 
   factory Alerta({
     int? id,
-    required int usuarioIdId,
+    int? usuarioIdId,
     _i2.UserInfo? usuarioId,
     required String tipo,
     required String titulo,
@@ -65,7 +65,7 @@ abstract class Alerta implements _i1.SerializableModel {
   factory Alerta.fromJson(Map<String, dynamic> jsonSerialization) {
     return Alerta(
       id: jsonSerialization['id'] as int?,
-      usuarioIdId: jsonSerialization['usuarioIdId'] as int,
+      usuarioIdId: jsonSerialization['usuarioIdId'] as int?,
       usuarioId: jsonSerialization['usuarioId'] == null
           ? null
           : _i2.UserInfo.fromJson(
@@ -106,7 +106,7 @@ abstract class Alerta implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int usuarioIdId;
+  int? usuarioIdId;
 
   _i2.UserInfo? usuarioId;
 
@@ -167,7 +167,7 @@ abstract class Alerta implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'usuarioIdId': usuarioIdId,
+      if (usuarioIdId != null) 'usuarioIdId': usuarioIdId,
       if (usuarioId != null) 'usuarioId': usuarioId?.toJson(),
       'tipo': tipo,
       'titulo': titulo,
@@ -198,7 +198,7 @@ class _Undefined {}
 class _AlertaImpl extends Alerta {
   _AlertaImpl({
     int? id,
-    required int usuarioIdId,
+    int? usuarioIdId,
     _i2.UserInfo? usuarioId,
     required String tipo,
     required String titulo,
@@ -242,7 +242,7 @@ class _AlertaImpl extends Alerta {
   @override
   Alerta copyWith({
     Object? id = _Undefined,
-    int? usuarioIdId,
+    Object? usuarioIdId = _Undefined,
     Object? usuarioId = _Undefined,
     String? tipo,
     String? titulo,
@@ -262,7 +262,7 @@ class _AlertaImpl extends Alerta {
   }) {
     return Alerta(
       id: id is int? ? id : this.id,
-      usuarioIdId: usuarioIdId ?? this.usuarioIdId,
+      usuarioIdId: usuarioIdId is int? ? usuarioIdId : this.usuarioIdId,
       usuarioId:
           usuarioId is _i2.UserInfo? ? usuarioId : this.usuarioId?.copyWith(),
       tipo: tipo ?? this.tipo,

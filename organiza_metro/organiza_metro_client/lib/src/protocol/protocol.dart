@@ -22,11 +22,13 @@ import 'tipo_material.dart' as _i10;
 import 'unidade_medida.dart' as _i11;
 import 'user_info.dart' as _i12;
 import 'veiculo.dart' as _i13;
-import 'package:organiza_metro_client/src/protocol/ferramenta.dart' as _i14;
-import 'package:organiza_metro_client/src/protocol/material.dart' as _i15;
+import 'package:organiza_metro_client/src/protocol/alertas.dart' as _i14;
+import 'package:organiza_metro_client/src/protocol/ferramenta.dart' as _i15;
+import 'package:organiza_metro_client/src/protocol/material.dart' as _i16;
 import 'package:organiza_metro_client/src/protocol/requisicao_items.dart'
-    as _i16;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i17;
+    as _i17;
+import 'package:organiza_metro_client/src/protocol/movimentacao.dart' as _i18;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i19;
 export 'greeting.dart';
 export 'alertas.dart';
 export 'base.dart';
@@ -126,21 +128,30 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i13.Veiculo?>()) {
       return (data != null ? _i13.Veiculo.fromJson(data) : null) as T;
     }
-    if (t == List<_i14.Ferramenta>) {
-      return (data as List).map((e) => deserialize<_i14.Ferramenta>(e)).toList()
+    if (t == List<_i14.Alerta>) {
+      return (data as List).map((e) => deserialize<_i14.Alerta>(e)).toList()
           as T;
     }
-    if (t == List<_i15.Material>) {
-      return (data as List).map((e) => deserialize<_i15.Material>(e)).toList()
+    if (t == List<_i15.Ferramenta>) {
+      return (data as List).map((e) => deserialize<_i15.Ferramenta>(e)).toList()
           as T;
     }
-    if (t == List<_i16.RequisicaoItem>) {
+    if (t == List<_i16.Material>) {
+      return (data as List).map((e) => deserialize<_i16.Material>(e)).toList()
+          as T;
+    }
+    if (t == List<_i17.RequisicaoItem>) {
       return (data as List)
-          .map((e) => deserialize<_i16.RequisicaoItem>(e))
+          .map((e) => deserialize<_i17.RequisicaoItem>(e))
+          .toList() as T;
+    }
+    if (t == List<_i18.Movimentacao>) {
+      return (data as List)
+          .map((e) => deserialize<_i18.Movimentacao>(e))
           .toList() as T;
     }
     try {
-      return _i17.Protocol().deserialize<T>(data, t);
+      return _i19.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -185,7 +196,7 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i13.Veiculo) {
       return 'Veiculo';
     }
-    className = _i17.Protocol().getClassNameForObject(data);
+    className = _i19.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -236,7 +247,7 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i17.Protocol().deserializeByClassName(data);
+      return _i19.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
