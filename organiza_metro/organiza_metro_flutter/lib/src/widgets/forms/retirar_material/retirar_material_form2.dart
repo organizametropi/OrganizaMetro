@@ -80,6 +80,27 @@ class _raForm2State extends State<retirarMaterialForm2> {
                           value == null ? 'Selecione a data' : null,
                     ),
                   );
+                  
+                   Widget dataField2 = SizedBox(
+                    height: 50,
+                    width: isWide ? 300 : 268,
+                    child: DateTimeFormField(
+                      decoration: const InputDecoration(
+                        labelText: "Até",
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0)),
+                      ),
+                      dateFormat: DateFormat('dd MMMM yyyy', 'pt_BR'),
+                      mode: DateTimeFieldPickerMode.date,
+                      firstDate: DateTime.now(),
+                      onChanged:
+                          controller.updateDataDevolucao, // 🚨 Sink de dados
+                    ),
+                  );
+
+
 
                   Widget centroCustoField = SizedBox(
                     height: 50,
@@ -128,6 +149,7 @@ class _raForm2State extends State<retirarMaterialForm2> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             dataField,
+                            dataField2, 
                             centroCustoField,
                             centroLogisticoField,
                           ],
@@ -138,6 +160,10 @@ class _raForm2State extends State<retirarMaterialForm2> {
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [dataField]),
+                            const SizedBox(height: 20),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [dataField2]),
                             const SizedBox(height: 20),
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -15,30 +15,55 @@ class _historicoPageState extends State<historicoPage> {
     return Scaffold(
         appBar: MyAppBar(),
         body: SingleChildScrollView(
-            child: Padding(
-          padding: EdgeInsetsGeometry.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Historico 📝',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
-                  )
-                ],
+              Container(
+                constraints: BoxConstraints(minHeight: 95),
+                color: const Color.fromRGBO(0, 20, 137, 0.7),
+                child: SizedBox(
+                    child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0, left: 16.0),
+                      child: Text(
+                        'Historico 📝',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 42,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(1.5, 1.5),
+                                blurRadius: 3.0,
+                                color: Colors.black45,
+                              ),
+                              Shadow(
+                                offset: Offset(-1.0, -1.0),
+                                blurRadius: 2.0,
+                                color: Colors.black26,
+                              ),
+                            ]),
+                      ),
+                    )
+                  ],
+                )),
               ),
               SizedBox(
                 height: 8.0,
               ),
-              Divider(color: const Color.fromRGBO(0, 20, 137, 1)),
-              SizedBox(
-                height: 8.0,
-              ),
-              UserHistoryWidget()
+
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    UserHistoryWidget(),
+                  ],
+                ),
+              )
             ],
           ),
-        )));
+        ));
   }
 }

@@ -6,6 +6,7 @@ import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 // 1. Dados da Requisição
 class RetiradaFormData {
   late DateTime dataRequisicao;
+  late DateTime dataDevolucao;
   String? centroCusto;
   String? centroLogistico;
   String? modalidadeEntrega; // Ex: 'Balcão', 'Veículo'
@@ -59,6 +60,10 @@ class RetirarMaterialController extends ChangeNotifier {
   // Sinks/Atualizadores de Formulário (Lógica de BINDING)
   void updateDataRequisicao(DateTime? date) {
     formData.dataRequisicao = date!; // Talvevz quebre a lógica
+  }
+
+  void updateDataDevolucao(DateTime? date){
+    formData.dataDevolucao = date!; 
   }
 
   void updateCentroCusto(String? value) {

@@ -259,7 +259,7 @@ class _RetiradaViewState extends State<RetiradaView> {
             icon: widget.controller.isLoading
                 ? const SizedBox(
                     width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : const Icon(Icons.outbox, size: 16),
+                : const Icon(Icons.outbox, size: 16, color: Colors.white,),
             label: Text(widget.controller.isLoading ? 'EMPENHANDO...' : 'CONFIRMAR RETIRADA', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
           ),
@@ -465,7 +465,7 @@ class FerramentaDevolucaoCard extends StatelessWidget {
         title: Text(ferramenta.descricao,
             style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(
-            'Patrimônio: ${ferramenta.patrimonio}\nStatus: Empenhada',
+            'Patrimônio: ${ferramenta.patrimonio}\nStatus: Empenhada\nData de Empenho: ${ferramenta.dataUltimaMovimentacao?.hour}:${ferramenta.dataUltimaMovimentacao?.minute}',
             style: const TextStyle(fontSize: 12)),
         trailing: ElevatedButton(
           onPressed:

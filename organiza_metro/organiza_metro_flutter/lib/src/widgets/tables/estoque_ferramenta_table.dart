@@ -32,8 +32,8 @@ class _estoqueTableState extends State<estoque_table_ferramenta> {
   bool _showSelected = false;
 
   List<Map<String, dynamic>> _convertFerramentasToMap(
-      List<Ferramenta> materiais) {
-    return materiais.map((m) {
+      List<Ferramenta> ferramenta) {
+    return ferramenta.map((m) {
       return {
         "id": m.id,
         "codigoSap": m.codigoSap,
@@ -41,6 +41,8 @@ class _estoqueTableState extends State<estoque_table_ferramenta> {
         "emUso": m.emUso,
         "tipo": m.tipo?.nome,
         "status": m.status,
+        "base": m.base?.nome,
+        "veiculo": m.veiculo?.descricao //Fazer serverpod generate 
       };
     }).toList();
   }
@@ -52,10 +54,10 @@ class _estoqueTableState extends State<estoque_table_ferramenta> {
   _mockPullData() async {
     setState(() => _isLoading = true);
     try {
-      final List<Ferramenta> materiais = await client.ferramenta.getEstoque();
+      final List<Ferramenta> ferramenta = await client.ferramenta.getEstoque();
 
       _sourceOriginal.clear();
-      _sourceOriginal.addAll(_convertFerramentasToMap(materiais));
+      _sourceOriginal.addAll(_convertFerramentasToMap(ferramenta));
 
       _sourceFiltered = _sourceOriginal;
       _total = _sourceFiltered.length;
@@ -119,7 +121,7 @@ class _estoqueTableState extends State<estoque_table_ferramenta> {
       DatatableHeader(
           text: "ID",
           value: "id",
-          show: true,
+          show: false,
           sortable: true), // Adicionado sortable
       DatatableHeader(
           text: "CÓDIGO SAP",
@@ -132,12 +134,159 @@ class _estoqueTableState extends State<estoque_table_ferramenta> {
           value: "descricao",
           show: true,
           flex: 2,
-          sortable: false),
+          sortable: false,
+          sourceBuilder: (value, row) {
+            return Center(
+              child: Text(
+                value ?? "",
+                style: const TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 14,
+                  color: Colors.black87,
+                  height: 1.3,
+                ),
+                overflow:
+                    TextOverflow.ellipsis, // corta com "..." se for muito longo
+                maxLines: 2, // evita quebrar layout
+              ),
+            );
+          }),
       DatatableHeader(
-          text: "Em uso", value: "emUso", show: true, sortable: false),
-      DatatableHeader(text: "Tipo", value: "tipo", show: true, sortable: false),
+        text: "Em uso",
+        value: "emUso",
+        show: true,
+        sortable: false,
+        sourceBuilder: (value, row) {
+          final bool emUso = value == true;
+
+          return Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: emUso ? Colors.green : Colors.red,
+                width: 2,
+              ),
+              color: (emUso ? Colors.green : Colors.red).withOpacity(0.1),
+            ),
+            child: Center(
+              child: Text(
+                emUso ? "Sim" : "Não",
+                style: TextStyle(
+                  color: emUso ? Colors.green : Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
       DatatableHeader(
-          text: "Status", value: "status", show: true, sortable: false),
+        text: "Tipo",
+        value: "tipo",
+        show: true,
+        sortable: false,
+        sourceBuilder: (value, row) {
+          return Center(
+            child: Text(
+              value.toUpperCase() ?? "",
+              style: const TextStyle(
+                fontFamily: 'Helvetica',
+                fontSize: 14,
+                color: Colors.black87,
+                height: 1.3,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          );
+        },
+      ),
+      DatatableHeader(
+        text: "Status",
+        value: "status",
+        show: true,
+        sortable: false,
+        sourceBuilder: (value, row) {
+          final String status = (value ?? "").toString().toLowerCase();
+
+          Color borderColor;
+          Color textColor;
+          Color backgroundColor;
+
+          switch (status) {
+            case "em uso":
+              borderColor = Colors.green.shade600;
+              textColor = Colors.green.shade800;
+              backgroundColor = Colors.green.withOpacity(0.1);
+              break;
+            case "em movimentação":
+              borderColor = Colors.blue.shade600;
+              textColor = Colors.blue.shade800;
+              backgroundColor = Colors.blue.withOpacity(0.1);
+              break;
+            case "empenhada":
+              borderColor = Colors.orange.shade600;
+              textColor = Colors.orange.shade800;
+              backgroundColor = Colors.orange.withOpacity(0.1);
+              break;
+            default:
+              borderColor = Colors.grey.shade500;
+              textColor = Colors.grey.shade800;
+              backgroundColor = Colors.grey.withOpacity(0.1);
+          }
+
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: borderColor, width: 1.5),
+              color: backgroundColor,
+            ),
+            child: Center(
+              child: Text(
+                value ?? "-",
+                style: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: textColor,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+      DatatableHeader(
+        text: "Origem",
+        value: "origem",
+        show: true,
+        sourceBuilder: (value, row) {
+          final base = row['base'];
+          final veiculo = row['veiculo'];
+
+          String displayText;
+          if (base != null && base.isNotEmpty) {
+            displayText = base;
+          } else if (veiculo != null && veiculo.isNotEmpty) {
+            displayText = veiculo;
+          } else {
+            displayText = "Não informado";
+          }
+
+          return Center(
+            child: Text(
+              displayText,
+              style: const TextStyle(
+                fontFamily: 'Helvetica',
+                fontSize: 14,
+                color: Colors.black87,
+              ),
+            ),
+          );
+        },
+      )
     ];
 
     _initializeData();

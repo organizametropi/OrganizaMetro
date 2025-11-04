@@ -25,7 +25,7 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
   String? _sortColumn;
   bool _sortAscending = true;
   String? _searchKey = "id";
-  int? _currentPerPage = 20;
+  int? _currentPerPage = 100;
   int _currentPage = 1;
   List<bool>? _expanded;
 

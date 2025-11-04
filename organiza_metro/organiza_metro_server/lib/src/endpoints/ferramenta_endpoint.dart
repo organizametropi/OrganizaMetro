@@ -8,7 +8,7 @@ class FerramentaEndpoint extends Endpoint {
 
   Future<List<Ferramenta>> getEstoque(Session session) async {
     final ferramentas = await Ferramenta.db.find(session,
-        include: Ferramenta.include(tipo: TipoMaterial.include()));
+        include: Ferramenta.include(tipo: TipoMaterial.include(), base: Base.include(), veiculo: Veiculo.include()));
     return ferramentas;
   }
 

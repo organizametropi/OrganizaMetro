@@ -8,7 +8,7 @@ import 'package:organiza_metro_flutter/src/screens/redirect/retirar_material_scr
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/cards/user_notifications_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
-import 'package:organiza_metro_flutter/src/services/auth_service.dart'; 
+import 'package:organiza_metro_flutter/src/services/auth_service.dart';
 
 class homePage extends StatefulWidget {
   const homePage({super.key});
@@ -34,11 +34,18 @@ class _HomePageState extends State<homePage> {
     final isAdmin = await _auth.getIsAdmin();
     final userName = await _auth.getUserName();
 
+    if (!mounted) return;
+
     setState(() {
       _isAdmin = isAdmin;
       _userName = userName;
       _isLoading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -178,16 +185,11 @@ class _HomePageState extends State<homePage> {
                         ],
                       ),
                       SizedBox(
-                        height: 105,
+                        height: 15,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          UserNotificationsArea()
-                        ],
-                      ),
+                      UserNotificationsArea(), 
                       SizedBox(
-                        height: 105,
+                        height: 25,
                       )
                     ])
                   ],
@@ -270,16 +272,11 @@ class _HomePageState extends State<homePage> {
                         ],
                       ),
                       SizedBox(
-                        height: 52,
+                        height: 15,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          UserNotificationsArea()
-                        ],
-                      ),
+                      UserNotificationsArea(),
                       SizedBox(
-                        height: 52,
+                        height: 25,
                       )
                     ])
                   ],
