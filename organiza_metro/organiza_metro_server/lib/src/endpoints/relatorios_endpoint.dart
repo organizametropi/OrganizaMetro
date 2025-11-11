@@ -143,6 +143,38 @@ ORDER BY
     }).toList();
   }
 
+  Future<List<ConsumoMensal>> getConsmuoClVeiculo(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final sql = """
+     SELECT
+  v.descricao AS desc_veiculo,
+  COUNT(mov."origemVeiculoId") AS aparicoes
+FROM movimentacao mov
+JOIN base b ON mov."origemVeiculoId" = v.id
+WHERE 
+  mov."tipoMovimentacao" = 'Saída' AND
+  mov."materialId" IS NOT NULL
+GROUP BY
+  v.descricao
+ORDER BY
+  aparicoes DESC
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result = await session.db.unsafeQuery(sql);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
   // --- PBI 3.1.3 e 3.2.4: Painel de Instrumentos com Calibração Vencida/A Vencer ---
   Future<List<Ferramenta>> getInstrumentosCalibracao(Session session) async {
     if (await Auth.isAdmin(session) == false) {

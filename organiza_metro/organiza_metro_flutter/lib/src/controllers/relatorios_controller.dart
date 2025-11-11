@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart' as cli;
@@ -13,6 +14,8 @@ enum RelatorioType {
   calibracoesVencidas
 }
 
+enum BaseOrVeiculo { base, veiculo }
+
 class RelatoriosController extends ChangeNotifier {
   RelatorioMode _mode = RelatorioMode.dashboard;
   ItemType _itemType = ItemType.material;
@@ -26,13 +29,22 @@ class RelatoriosController extends ChangeNotifier {
 
   // Variáveis específicas para o BarChart
   List<cli.ConsumoMensal> _topConsumidos = [];
-  int _barChartLimit = 10; 
+  int _barChartLimit = 5;
+  int get barChartLimit => _barChartLimit;
 
   // Variáveis específicas para o PieChart
   List<cli.ConsumoMensal> _consumoPorBase = [];
   List<cli.ConsumoMensal> get consumoPorBase => _consumoPorBase;
 
-  // Dados para Gráficos/Tabelas (MOCK/TODO - Substituir por tipos reais do Serverpod)
+  List<cli.ConsumoMensal> _consumoPorVeiculo = [];
+  List<cli.ConsumoMensal> get consumoPorVeiculo => _consumoPorVeiculo;
+
+  // Variaveis especificas para os DropDowns
+
+  BaseOrVeiculo _baseOrVeiculo = BaseOrVeiculo.base;
+  BaseOrVeiculo get baseOrVeiculo => _baseOrVeiculo;
+
+  // Dados para Gráficos/Tabelas
   List<cli.Material> _materiaisEstoque = [];
   List<cli.Movimentacao> _movimentacoes = [];
   List<cli.Ferramenta> _ferramentasEstoque = [];
@@ -41,12 +53,12 @@ class RelatoriosController extends ChangeNotifier {
   List<cli.Movimentacao> get movimentacoes => _movimentacoes;
   List<cli.Ferramenta> get ferramentas => _ferramentasEstoque;
   List<cli.ConsumoMensal> get topConsumidos => _topConsumidos;
-  int get barChartLimit => _barChartLimit;
+
 
   RelatoriosController() {
     fetchData();
-    fetchTopConsumoData(); 
-    fetchConsumoPorBase(); 
+    fetchTopConsumoData();
+    fetchConsumoPorBase();
   }
 
   void setMode(RelatorioMode newMode) {
@@ -69,6 +81,18 @@ class RelatoriosController extends ChangeNotifier {
     _relatorioAtivo = newType;
     notifyListeners();
     fetchData();
+  }
+
+  void setBarChartLimit(int limit){
+    _barChartLimit = limit; 
+    notifyListeners();
+    fetchData(); 
+  }
+
+  void setPieChartType(BaseOrVeiculo newType){
+    _baseOrVeiculo = newType; 
+    notifyListeners();
+    fetchData(); 
   }
 
   Future<void> fetchData() async {
@@ -125,13 +149,14 @@ class RelatoriosController extends ChangeNotifier {
     notifyListeners();
   }
 
-   Future<void> fetchConsumoPorBase() async {
+  Future<void> fetchConsumoPorBase() async {
     _isLoading = true;
     notifyListeners();
 
     try {
       // 🚨 Chamada usando o limite do Controller
       _consumoPorBase = await client.relatorios.getConsmuoClBase();
+      // _consumoPorVeiculo = await client.relatorios.getConsmuoClVeiculo();
     } catch (e) {
       print('Erro ao buscar Top Consumidos: $e');
     }
@@ -140,4 +165,5 @@ class RelatoriosController extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
 }

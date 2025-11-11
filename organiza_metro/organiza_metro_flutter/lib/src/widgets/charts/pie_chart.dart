@@ -90,7 +90,7 @@ class ConsumoPieChart extends StatelessWidget {
   Widget build(BuildContext context) {
     // 🚨 Acessa o Controller e os dados
     final controller = Provider.of<RelatoriosController>(context);
-    final consumo = controller.consumoPorBase; // Ou consumoPorVeiculo no futuro
+    final consumo = controller.baseOrVeiculo == BaseOrVeiculo.base ? controller.consumoPorBase : controller.consumoPorVeiculo;  
 
     if (controller.isLoading) {
       return const Center(
