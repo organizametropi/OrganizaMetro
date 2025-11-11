@@ -8,7 +8,7 @@ class AdminEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  AuthUtilsEndpoint auth = AuthUtilsEndpoint();
+  AuthUtils auth = AuthUtils();
 
   Future<List<Alerta>> getAdminAlerts(Session session) async {
     if (await auth.isAdmin(session) == false) {

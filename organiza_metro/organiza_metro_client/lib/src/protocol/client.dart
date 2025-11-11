@@ -16,10 +16,11 @@ import 'package:organiza_metro_client/src/protocol/ferramenta.dart' as _i4;
 import 'package:organiza_metro_client/src/protocol/material.dart' as _i5;
 import 'package:organiza_metro_client/src/protocol/requisicao_items.dart'
     as _i6;
-import 'package:organiza_metro_client/src/protocol/movimentacao.dart' as _i7;
-import 'package:organiza_metro_client/src/protocol/greeting.dart' as _i8;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i9;
-import 'protocol.dart' as _i10;
+import 'package:organiza_metro_client/src/protocol/consumo_mensal.dart' as _i7;
+import 'package:organiza_metro_client/src/protocol/movimentacao.dart' as _i8;
+import 'package:organiza_metro_client/src/protocol/greeting.dart' as _i9;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i10;
+import 'protocol.dart' as _i11;
 
 /// Endpoint para funções administrativas (acesso restrito por permissão).
 /// {@category Endpoint}
@@ -164,6 +165,49 @@ class EndpointMovimentacao extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointRelatorios extends _i1.EndpointRef {
+  EndpointRelatorios(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'relatorios';
+
+  _i2.Future<List<_i7.ConsumoMensal>> getTopConsumidos(int LIMIT) =>
+      caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
+        'relatorios',
+        'getTopConsumidos',
+        {'LIMIT': LIMIT},
+      );
+
+  _i2.Future<List<_i7.ConsumoMensal>> getTopFerramentasUtilizadas(int LIMIT) =>
+      caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
+        'relatorios',
+        'getTopFerramentasUtilizadas',
+        {'LIMIT': LIMIT},
+      );
+
+  _i2.Future<List<_i7.ConsumoMensal>> getConsmuoClBase() =>
+      caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
+        'relatorios',
+        'getConsmuoClBase',
+        {},
+      );
+
+  _i2.Future<List<_i4.Ferramenta>> getInstrumentosCalibracao() =>
+      caller.callServerEndpoint<List<_i4.Ferramenta>>(
+        'relatorios',
+        'getInstrumentosCalibracao',
+        {},
+      );
+
+  _i2.Future<List<_i4.Ferramenta>> getInstrumentosEmUso() =>
+      caller.callServerEndpoint<List<_i4.Ferramenta>>(
+        'relatorios',
+        'getInstrumentosEmUso',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointUserData extends _i1.EndpointRef {
   EndpointUserData(_i1.EndpointCaller caller) : super(caller);
 
@@ -179,8 +223,8 @@ class EndpointUserData extends _i1.EndpointRef {
       );
 
   /// Retorna o histórico de movimentações do usuário logado.
-  _i2.Future<List<_i7.Movimentacao>> getMyHistory() =>
-      caller.callServerEndpoint<List<_i7.Movimentacao>>(
+  _i2.Future<List<_i8.Movimentacao>> getMyHistory() =>
+      caller.callServerEndpoint<List<_i8.Movimentacao>>(
         'userData',
         'getMyHistory',
         {},
@@ -197,8 +241,8 @@ class EndpointGreeting extends _i1.EndpointRef {
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _i2.Future<_i8.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i8.Greeting>(
+  _i2.Future<_i9.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i9.Greeting>(
         'greeting',
         'hello',
         {'name': name},
@@ -207,10 +251,10 @@ class EndpointGreeting extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i9.Caller(client);
+    auth = _i10.Caller(client);
   }
 
-  late final _i9.Caller auth;
+  late final _i10.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -229,7 +273,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i10.Protocol(),
+          _i11.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -245,6 +289,7 @@ class Client extends _i1.ServerpodClientShared {
     ferramenta = EndpointFerramenta(this);
     material = EndpointMaterial(this);
     movimentacao = EndpointMovimentacao(this);
+    relatorios = EndpointRelatorios(this);
     userData = EndpointUserData(this);
     greeting = EndpointGreeting(this);
     modules = Modules(this);
@@ -262,6 +307,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointMovimentacao movimentacao;
 
+  late final EndpointRelatorios relatorios;
+
   late final EndpointUserData userData;
 
   late final EndpointGreeting greeting;
@@ -276,6 +323,7 @@ class Client extends _i1.ServerpodClientShared {
         'ferramenta': ferramenta,
         'material': material,
         'movimentacao': movimentacao,
+        'relatorios': relatorios,
         'userData': userData,
         'greeting': greeting,
       };

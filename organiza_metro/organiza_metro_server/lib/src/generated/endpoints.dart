@@ -16,11 +16,12 @@ import '../endpoints/cron_endpoint.dart' as _i4;
 import '../endpoints/ferramenta_endpoint.dart' as _i5;
 import '../endpoints/material_endpoint.dart' as _i6;
 import '../endpoints/movimentacao_endpoint.dart' as _i7;
-import '../endpoints/user_data_endpoint.dart' as _i8;
-import '../greeting_endpoint.dart' as _i9;
+import '../endpoints/relatorios_endpoint.dart' as _i8;
+import '../endpoints/user_data_endpoint.dart' as _i9;
+import '../greeting_endpoint.dart' as _i10;
 import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
-    as _i10;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i11;
+    as _i11;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i12;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -62,13 +63,19 @@ class Endpoints extends _i1.EndpointDispatch {
           'movimentacao',
           null,
         ),
-      'userData': _i8.UserDataEndpoint()
+      'relatorios': _i8.RelatoriosEndpoint()
+        ..initialize(
+          server,
+          'relatorios',
+          null,
+        ),
+      'userData': _i9.UserDataEndpoint()
         ..initialize(
           server,
           'userData',
           null,
         ),
-      'greeting': _i9.GreetingEndpoint()
+      'greeting': _i10.GreetingEndpoint()
         ..initialize(
           server,
           'greeting',
@@ -182,7 +189,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'itens': _i1.ParameterDescription(
               name: 'itens',
-              type: _i1.getType<List<_i10.RequisicaoItem>>(),
+              type: _i1.getType<List<_i11.RequisicaoItem>>(),
               nullable: false,
             ),
             'modalidadeEntrega': _i1.ParameterDescription(
@@ -277,6 +284,80 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['relatorios'] = _i1.EndpointConnector(
+      name: 'relatorios',
+      endpoint: endpoints['relatorios']!,
+      methodConnectors: {
+        'getTopConsumidos': _i1.MethodConnector(
+          name: 'getTopConsumidos',
+          params: {
+            'LIMIT': _i1.ParameterDescription(
+              name: 'LIMIT',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getTopConsumidos(
+            session,
+            params['LIMIT'],
+          ),
+        ),
+        'getTopFerramentasUtilizadas': _i1.MethodConnector(
+          name: 'getTopFerramentasUtilizadas',
+          params: {
+            'LIMIT': _i1.ParameterDescription(
+              name: 'LIMIT',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getTopFerramentasUtilizadas(
+            session,
+            params['LIMIT'],
+          ),
+        ),
+        'getConsmuoClBase': _i1.MethodConnector(
+          name: 'getConsmuoClBase',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getConsmuoClBase(session),
+        ),
+        'getInstrumentosCalibracao': _i1.MethodConnector(
+          name: 'getInstrumentosCalibracao',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getInstrumentosCalibracao(session),
+        ),
+        'getInstrumentosEmUso': _i1.MethodConnector(
+          name: 'getInstrumentosEmUso',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getInstrumentosEmUso(session),
+        ),
+      },
+    );
     connectors['userData'] = _i1.EndpointConnector(
       name: 'userData',
       endpoint: endpoints['userData']!,
@@ -288,7 +369,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['userData'] as _i8.UserDataEndpoint)
+              (endpoints['userData'] as _i9.UserDataEndpoint)
                   .getMyAlerts(session),
         ),
         'getMyHistory': _i1.MethodConnector(
@@ -298,7 +379,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['userData'] as _i8.UserDataEndpoint)
+              (endpoints['userData'] as _i9.UserDataEndpoint)
                   .getMyHistory(session),
         ),
       },
@@ -320,13 +401,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['greeting'] as _i9.GreetingEndpoint).hello(
+              (endpoints['greeting'] as _i10.GreetingEndpoint).hello(
             session,
             params['name'],
           ),
         )
       },
     );
-    modules['serverpod_auth'] = _i11.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i12.Endpoints()..initializeEndpoints(server);
   }
 }

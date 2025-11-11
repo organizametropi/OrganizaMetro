@@ -3,7 +3,7 @@ import 'package:organiza_metro_server/src/generated/protocol.dart';
 import 'package:serverpod_auth_server/module.dart' as auth;
 
 /// Endpoint para utilidades de autenticação e permissão
-class AuthUtilsEndpoint{
+class AuthUtils{
   bool get requireLogin => true;
 
   // Retorna se o usuário autenticado é admin

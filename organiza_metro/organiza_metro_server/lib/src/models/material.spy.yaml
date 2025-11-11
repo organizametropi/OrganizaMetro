@@ -1,6 +1,7 @@
 class: Material
 table: material
 fields:
+  nome: String? #por enquanto vai poder ser null para fim de debug
   codigoSap: int # Corrigido
   descricao: String
   quantidade: double?

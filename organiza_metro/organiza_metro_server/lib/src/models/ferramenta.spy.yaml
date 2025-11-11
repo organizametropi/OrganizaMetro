@@ -1,11 +1,13 @@
 class: Ferramenta
 table: ferramenta
 fields:
+  nome: String? #por enquanto vai poder ser null para fim de debug
   codigoSap: int # Corrigido
   descricao: String
   
   patrimonio: String?
   
+  quantidade: int?
   emUso: bool # Corrigido
   divisao: String
   tipo: TipoMaterial?, relation

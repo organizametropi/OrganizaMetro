@@ -19,8 +19,9 @@ import 'package:organiza_metro_server/src/generated/ferramenta.dart' as _i5;
 import 'package:organiza_metro_server/src/generated/material.dart' as _i6;
 import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
     as _i7;
-import 'package:organiza_metro_server/src/generated/movimentacao.dart' as _i8;
-import 'package:organiza_metro_server/src/generated/greeting.dart' as _i9;
+import 'package:organiza_metro_server/src/generated/consumo_mensal.dart' as _i8;
+import 'package:organiza_metro_server/src/generated/movimentacao.dart' as _i9;
+import 'package:organiza_metro_server/src/generated/greeting.dart' as _i10;
 import 'package:organiza_metro_server/src/generated/protocol.dart';
 import 'package:organiza_metro_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -119,6 +120,8 @@ class TestEndpoints {
 
   late final _MovimentacaoEndpoint movimentacao;
 
+  late final _RelatoriosEndpoint relatorios;
+
   late final _UserDataEndpoint userData;
 
   late final _GreetingEndpoint greeting;
@@ -152,6 +155,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     movimentacao = _MovimentacaoEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    relatorios = _RelatoriosEndpoint(
       endpoints,
       serializationManager,
     );
@@ -501,6 +508,156 @@ class _MovimentacaoEndpoint {
   }
 }
 
+class _RelatoriosEndpoint {
+  _RelatoriosEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<List<_i8.ConsumoMensal>> getTopConsumidos(
+    _i1.TestSessionBuilder sessionBuilder,
+    int LIMIT,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'relatorios',
+        method: 'getTopConsumidos',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'relatorios',
+          methodName: 'getTopConsumidos',
+          parameters: _i1.testObjectToJson({'LIMIT': LIMIT}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i8.ConsumoMensal>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i8.ConsumoMensal>> getTopFerramentasUtilizadas(
+    _i1.TestSessionBuilder sessionBuilder,
+    int LIMIT,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'relatorios',
+        method: 'getTopFerramentasUtilizadas',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'relatorios',
+          methodName: 'getTopFerramentasUtilizadas',
+          parameters: _i1.testObjectToJson({'LIMIT': LIMIT}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i8.ConsumoMensal>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i8.ConsumoMensal>> getConsmuoClBase(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'relatorios',
+        method: 'getConsmuoClBase',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'relatorios',
+          methodName: 'getConsmuoClBase',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i8.ConsumoMensal>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i5.Ferramenta>> getInstrumentosCalibracao(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'relatorios',
+        method: 'getInstrumentosCalibracao',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'relatorios',
+          methodName: 'getInstrumentosCalibracao',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i5.Ferramenta>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i5.Ferramenta>> getInstrumentosEmUso(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'relatorios',
+        method: 'getInstrumentosEmUso',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'relatorios',
+          methodName: 'getInstrumentosEmUso',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i5.Ferramenta>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _UserDataEndpoint {
   _UserDataEndpoint(
     this._endpointDispatch,
@@ -538,7 +695,7 @@ class _UserDataEndpoint {
     });
   }
 
-  _i3.Future<List<_i8.Movimentacao>> getMyHistory(
+  _i3.Future<List<_i9.Movimentacao>> getMyHistory(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -557,7 +714,7 @@ class _UserDataEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i8.Movimentacao>>);
+        ) as _i3.Future<List<_i9.Movimentacao>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -576,7 +733,7 @@ class _GreetingEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i9.Greeting> hello(
+  _i3.Future<_i10.Greeting> hello(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
   ) async {
@@ -597,7 +754,7 @@ class _GreetingEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i9.Greeting>);
+        ) as _i3.Future<_i10.Greeting>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

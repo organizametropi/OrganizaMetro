@@ -18,6 +18,7 @@ import 'veiculo.dart' as _i5;
 abstract class Material implements _i1.SerializableModel {
   Material._({
     this.id,
+    this.nome,
     required this.codigoSap,
     required this.descricao,
     this.quantidade,
@@ -35,6 +36,7 @@ abstract class Material implements _i1.SerializableModel {
 
   factory Material({
     int? id,
+    String? nome,
     required int codigoSap,
     required String descricao,
     double? quantidade,
@@ -53,6 +55,7 @@ abstract class Material implements _i1.SerializableModel {
   factory Material.fromJson(Map<String, dynamic> jsonSerialization) {
     return Material(
       id: jsonSerialization['id'] as int?,
+      nome: jsonSerialization['nome'] as String?,
       codigoSap: jsonSerialization['codigoSap'] as int,
       descricao: jsonSerialization['descricao'] as String,
       quantidade: (jsonSerialization['quantidade'] as num?)?.toDouble(),
@@ -90,6 +93,8 @@ abstract class Material implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
+  String? nome;
+
   int codigoSap;
 
   String descricao;
@@ -121,6 +126,7 @@ abstract class Material implements _i1.SerializableModel {
   @_i1.useResult
   Material copyWith({
     int? id,
+    String? nome,
     int? codigoSap,
     String? descricao,
     double? quantidade,
@@ -139,6 +145,7 @@ abstract class Material implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (nome != null) 'nome': nome,
       'codigoSap': codigoSap,
       'descricao': descricao,
       if (quantidade != null) 'quantidade': quantidade,
@@ -167,6 +174,7 @@ class _Undefined {}
 class _MaterialImpl extends Material {
   _MaterialImpl({
     int? id,
+    String? nome,
     required int codigoSap,
     required String descricao,
     double? quantidade,
@@ -182,6 +190,7 @@ class _MaterialImpl extends Material {
     _i5.Veiculo? veiculo,
   }) : super._(
           id: id,
+          nome: nome,
           codigoSap: codigoSap,
           descricao: descricao,
           quantidade: quantidade,
@@ -203,6 +212,7 @@ class _MaterialImpl extends Material {
   @override
   Material copyWith({
     Object? id = _Undefined,
+    Object? nome = _Undefined,
     int? codigoSap,
     String? descricao,
     Object? quantidade = _Undefined,
@@ -219,6 +229,7 @@ class _MaterialImpl extends Material {
   }) {
     return Material(
       id: id is int? ? id : this.id,
+      nome: nome is String? ? nome : this.nome,
       codigoSap: codigoSap ?? this.codigoSap,
       descricao: descricao ?? this.descricao,
       quantidade: quantidade is double? ? quantidade : this.quantidade,

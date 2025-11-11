@@ -13,6 +13,12 @@ material:
 movimentacao:
   - criarRequisicaoSaida:
   - processarDevolucaoFerramenta:
+relatorios:
+  - getTopConsumidos:
+  - getTopFerramentasUtilizadas:
+  - getConsmuoClBase:
+  - getInstrumentosCalibracao:
+  - getInstrumentosEmUso:
 userData:
   - getMyAlerts:
   - getMyHistory:

@@ -19,9 +19,11 @@ import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i6;
 abstract class Ferramenta implements _i1.SerializableModel {
   Ferramenta._({
     this.id,
+    this.nome,
     required this.codigoSap,
     required this.descricao,
     this.patrimonio,
+    this.quantidade,
     required this.emUso,
     required this.divisao,
     required this.tipoId,
@@ -41,9 +43,11 @@ abstract class Ferramenta implements _i1.SerializableModel {
 
   factory Ferramenta({
     int? id,
+    String? nome,
     required int codigoSap,
     required String descricao,
     String? patrimonio,
+    int? quantidade,
     required bool emUso,
     required String divisao,
     required int tipoId,
@@ -64,9 +68,11 @@ abstract class Ferramenta implements _i1.SerializableModel {
   factory Ferramenta.fromJson(Map<String, dynamic> jsonSerialization) {
     return Ferramenta(
       id: jsonSerialization['id'] as int?,
+      nome: jsonSerialization['nome'] as String?,
       codigoSap: jsonSerialization['codigoSap'] as int,
       descricao: jsonSerialization['descricao'] as String,
       patrimonio: jsonSerialization['patrimonio'] as String?,
+      quantidade: jsonSerialization['quantidade'] as int?,
       emUso: jsonSerialization['emUso'] as bool,
       divisao: jsonSerialization['divisao'] as String,
       tipoId: jsonSerialization['tipoId'] as int,
@@ -110,11 +116,15 @@ abstract class Ferramenta implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
+  String? nome;
+
   int codigoSap;
 
   String descricao;
 
   String? patrimonio;
+
+  int? quantidade;
 
   bool emUso;
 
@@ -151,9 +161,11 @@ abstract class Ferramenta implements _i1.SerializableModel {
   @_i1.useResult
   Ferramenta copyWith({
     int? id,
+    String? nome,
     int? codigoSap,
     String? descricao,
     String? patrimonio,
+    int? quantidade,
     bool? emUso,
     String? divisao,
     int? tipoId,
@@ -174,9 +186,11 @@ abstract class Ferramenta implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (nome != null) 'nome': nome,
       'codigoSap': codigoSap,
       'descricao': descricao,
       if (patrimonio != null) 'patrimonio': patrimonio,
+      if (quantidade != null) 'quantidade': quantidade,
       'emUso': emUso,
       'divisao': divisao,
       'tipoId': tipoId,
@@ -207,9 +221,11 @@ class _Undefined {}
 class _FerramentaImpl extends Ferramenta {
   _FerramentaImpl({
     int? id,
+    String? nome,
     required int codigoSap,
     required String descricao,
     String? patrimonio,
+    int? quantidade,
     required bool emUso,
     required String divisao,
     required int tipoId,
@@ -227,9 +243,11 @@ class _FerramentaImpl extends Ferramenta {
     _i6.UserInfo? empenhadoPara,
   }) : super._(
           id: id,
+          nome: nome,
           codigoSap: codigoSap,
           descricao: descricao,
           patrimonio: patrimonio,
+          quantidade: quantidade,
           emUso: emUso,
           divisao: divisao,
           tipoId: tipoId,
@@ -253,9 +271,11 @@ class _FerramentaImpl extends Ferramenta {
   @override
   Ferramenta copyWith({
     Object? id = _Undefined,
+    Object? nome = _Undefined,
     int? codigoSap,
     String? descricao,
     Object? patrimonio = _Undefined,
+    Object? quantidade = _Undefined,
     bool? emUso,
     String? divisao,
     int? tipoId,
@@ -274,9 +294,11 @@ class _FerramentaImpl extends Ferramenta {
   }) {
     return Ferramenta(
       id: id is int? ? id : this.id,
+      nome: nome is String? ? nome : this.nome,
       codigoSap: codigoSap ?? this.codigoSap,
       descricao: descricao ?? this.descricao,
       patrimonio: patrimonio is String? ? patrimonio : this.patrimonio,
+      quantidade: quantidade is int? ? quantidade : this.quantidade,
       emUso: emUso ?? this.emUso,
       divisao: divisao ?? this.divisao,
       tipoId: tipoId ?? this.tipoId,
