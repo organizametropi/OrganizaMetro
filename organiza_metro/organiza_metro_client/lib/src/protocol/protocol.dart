@@ -15,27 +15,31 @@ import 'alertas.dart' as _i3;
 import 'base.dart' as _i4;
 import 'calibracao.dart' as _i5;
 import 'consumo_mensal.dart' as _i6;
-import 'ferramenta.dart' as _i7;
-import 'material.dart' as _i8;
-import 'movimentacao.dart' as _i9;
-import 'requisicao_items.dart' as _i10;
-import 'tipo_material.dart' as _i11;
-import 'unidade_medida.dart' as _i12;
-import 'user_info.dart' as _i13;
-import 'veiculo.dart' as _i14;
-import 'package:organiza_metro_client/src/protocol/alertas.dart' as _i15;
-import 'package:organiza_metro_client/src/protocol/ferramenta.dart' as _i16;
-import 'package:organiza_metro_client/src/protocol/material.dart' as _i17;
+import 'consumo_periodo_detalhado.dart' as _i7;
+import 'ferramenta.dart' as _i8;
+import 'material.dart' as _i9;
+import 'movimentacao.dart' as _i10;
+import 'requisicao_items.dart' as _i11;
+import 'tipo_material.dart' as _i12;
+import 'unidade_medida.dart' as _i13;
+import 'user_info.dart' as _i14;
+import 'veiculo.dart' as _i15;
+import 'package:organiza_metro_client/src/protocol/alertas.dart' as _i16;
+import 'package:organiza_metro_client/src/protocol/ferramenta.dart' as _i17;
+import 'package:organiza_metro_client/src/protocol/material.dart' as _i18;
 import 'package:organiza_metro_client/src/protocol/requisicao_items.dart'
-    as _i18;
-import 'package:organiza_metro_client/src/protocol/consumo_mensal.dart' as _i19;
-import 'package:organiza_metro_client/src/protocol/movimentacao.dart' as _i20;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i21;
+    as _i19;
+import 'package:organiza_metro_client/src/protocol/consumo_mensal.dart' as _i20;
+import 'package:organiza_metro_client/src/protocol/consumo_periodo_detalhado.dart'
+    as _i21;
+import 'package:organiza_metro_client/src/protocol/movimentacao.dart' as _i22;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i23;
 export 'greeting.dart';
 export 'alertas.dart';
 export 'base.dart';
 export 'calibracao.dart';
 export 'consumo_mensal.dart';
+export 'consumo_periodo_detalhado.dart';
 export 'ferramenta.dart';
 export 'material.dart';
 export 'movimentacao.dart';
@@ -74,29 +78,32 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i6.ConsumoMensal) {
       return _i6.ConsumoMensal.fromJson(data) as T;
     }
-    if (t == _i7.Ferramenta) {
-      return _i7.Ferramenta.fromJson(data) as T;
+    if (t == _i7.ConsumoPeriodoDetalhado) {
+      return _i7.ConsumoPeriodoDetalhado.fromJson(data) as T;
     }
-    if (t == _i8.Material) {
-      return _i8.Material.fromJson(data) as T;
+    if (t == _i8.Ferramenta) {
+      return _i8.Ferramenta.fromJson(data) as T;
     }
-    if (t == _i9.Movimentacao) {
-      return _i9.Movimentacao.fromJson(data) as T;
+    if (t == _i9.Material) {
+      return _i9.Material.fromJson(data) as T;
     }
-    if (t == _i10.RequisicaoItem) {
-      return _i10.RequisicaoItem.fromJson(data) as T;
+    if (t == _i10.Movimentacao) {
+      return _i10.Movimentacao.fromJson(data) as T;
     }
-    if (t == _i11.TipoMaterial) {
-      return _i11.TipoMaterial.fromJson(data) as T;
+    if (t == _i11.RequisicaoItem) {
+      return _i11.RequisicaoItem.fromJson(data) as T;
     }
-    if (t == _i12.UnidadeMedida) {
-      return _i12.UnidadeMedida.fromJson(data) as T;
+    if (t == _i12.TipoMaterial) {
+      return _i12.TipoMaterial.fromJson(data) as T;
     }
-    if (t == _i13.LocalUserInfo) {
-      return _i13.LocalUserInfo.fromJson(data) as T;
+    if (t == _i13.UnidadeMedida) {
+      return _i13.UnidadeMedida.fromJson(data) as T;
     }
-    if (t == _i14.Veiculo) {
-      return _i14.Veiculo.fromJson(data) as T;
+    if (t == _i14.LocalUserInfo) {
+      return _i14.LocalUserInfo.fromJson(data) as T;
+    }
+    if (t == _i15.Veiculo) {
+      return _i15.Veiculo.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Greeting?>()) {
       return (data != null ? _i2.Greeting.fromJson(data) : null) as T;
@@ -113,59 +120,68 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i6.ConsumoMensal?>()) {
       return (data != null ? _i6.ConsumoMensal.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Ferramenta?>()) {
-      return (data != null ? _i7.Ferramenta.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i8.Material?>()) {
-      return (data != null ? _i8.Material.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i9.Movimentacao?>()) {
-      return (data != null ? _i9.Movimentacao.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i10.RequisicaoItem?>()) {
-      return (data != null ? _i10.RequisicaoItem.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i11.TipoMaterial?>()) {
-      return (data != null ? _i11.TipoMaterial.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i12.UnidadeMedida?>()) {
-      return (data != null ? _i12.UnidadeMedida.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i13.LocalUserInfo?>()) {
-      return (data != null ? _i13.LocalUserInfo.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i14.Veiculo?>()) {
-      return (data != null ? _i14.Veiculo.fromJson(data) : null) as T;
-    }
-    if (t == List<_i15.Alerta>) {
-      return (data as List).map((e) => deserialize<_i15.Alerta>(e)).toList()
+    if (t == _i1.getType<_i7.ConsumoPeriodoDetalhado?>()) {
+      return (data != null ? _i7.ConsumoPeriodoDetalhado.fromJson(data) : null)
           as T;
     }
-    if (t == List<_i16.Ferramenta>) {
-      return (data as List).map((e) => deserialize<_i16.Ferramenta>(e)).toList()
+    if (t == _i1.getType<_i8.Ferramenta?>()) {
+      return (data != null ? _i8.Ferramenta.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i9.Material?>()) {
+      return (data != null ? _i9.Material.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i10.Movimentacao?>()) {
+      return (data != null ? _i10.Movimentacao.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i11.RequisicaoItem?>()) {
+      return (data != null ? _i11.RequisicaoItem.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i12.TipoMaterial?>()) {
+      return (data != null ? _i12.TipoMaterial.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i13.UnidadeMedida?>()) {
+      return (data != null ? _i13.UnidadeMedida.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i14.LocalUserInfo?>()) {
+      return (data != null ? _i14.LocalUserInfo.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i15.Veiculo?>()) {
+      return (data != null ? _i15.Veiculo.fromJson(data) : null) as T;
+    }
+    if (t == List<_i16.Alerta>) {
+      return (data as List).map((e) => deserialize<_i16.Alerta>(e)).toList()
           as T;
     }
-    if (t == List<_i17.Material>) {
-      return (data as List).map((e) => deserialize<_i17.Material>(e)).toList()
+    if (t == List<_i17.Ferramenta>) {
+      return (data as List).map((e) => deserialize<_i17.Ferramenta>(e)).toList()
           as T;
     }
-    if (t == List<_i18.RequisicaoItem>) {
+    if (t == List<_i18.Material>) {
+      return (data as List).map((e) => deserialize<_i18.Material>(e)).toList()
+          as T;
+    }
+    if (t == List<_i19.RequisicaoItem>) {
       return (data as List)
-          .map((e) => deserialize<_i18.RequisicaoItem>(e))
+          .map((e) => deserialize<_i19.RequisicaoItem>(e))
           .toList() as T;
     }
-    if (t == List<_i19.ConsumoMensal>) {
+    if (t == List<_i20.ConsumoMensal>) {
       return (data as List)
-          .map((e) => deserialize<_i19.ConsumoMensal>(e))
+          .map((e) => deserialize<_i20.ConsumoMensal>(e))
           .toList() as T;
     }
-    if (t == List<_i20.Movimentacao>) {
+    if (t == List<_i21.ConsumoPeriodoDetalhado>) {
       return (data as List)
-          .map((e) => deserialize<_i20.Movimentacao>(e))
+          .map((e) => deserialize<_i21.ConsumoPeriodoDetalhado>(e))
+          .toList() as T;
+    }
+    if (t == List<_i22.Movimentacao>) {
+      return (data as List)
+          .map((e) => deserialize<_i22.Movimentacao>(e))
           .toList() as T;
     }
     try {
-      return _i21.Protocol().deserialize<T>(data, t);
+      return _i23.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -189,31 +205,34 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i6.ConsumoMensal) {
       return 'ConsumoMensal';
     }
-    if (data is _i7.Ferramenta) {
+    if (data is _i7.ConsumoPeriodoDetalhado) {
+      return 'ConsumoPeriodoDetalhado';
+    }
+    if (data is _i8.Ferramenta) {
       return 'Ferramenta';
     }
-    if (data is _i8.Material) {
+    if (data is _i9.Material) {
       return 'Material';
     }
-    if (data is _i9.Movimentacao) {
+    if (data is _i10.Movimentacao) {
       return 'Movimentacao';
     }
-    if (data is _i10.RequisicaoItem) {
+    if (data is _i11.RequisicaoItem) {
       return 'RequisicaoItem';
     }
-    if (data is _i11.TipoMaterial) {
+    if (data is _i12.TipoMaterial) {
       return 'TipoMaterial';
     }
-    if (data is _i12.UnidadeMedida) {
+    if (data is _i13.UnidadeMedida) {
       return 'UnidadeMedida';
     }
-    if (data is _i13.LocalUserInfo) {
+    if (data is _i14.LocalUserInfo) {
       return 'LocalUserInfo';
     }
-    if (data is _i14.Veiculo) {
+    if (data is _i15.Veiculo) {
       return 'Veiculo';
     }
-    className = _i21.Protocol().getClassNameForObject(data);
+    className = _i23.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -241,33 +260,36 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'ConsumoMensal') {
       return deserialize<_i6.ConsumoMensal>(data['data']);
     }
+    if (dataClassName == 'ConsumoPeriodoDetalhado') {
+      return deserialize<_i7.ConsumoPeriodoDetalhado>(data['data']);
+    }
     if (dataClassName == 'Ferramenta') {
-      return deserialize<_i7.Ferramenta>(data['data']);
+      return deserialize<_i8.Ferramenta>(data['data']);
     }
     if (dataClassName == 'Material') {
-      return deserialize<_i8.Material>(data['data']);
+      return deserialize<_i9.Material>(data['data']);
     }
     if (dataClassName == 'Movimentacao') {
-      return deserialize<_i9.Movimentacao>(data['data']);
+      return deserialize<_i10.Movimentacao>(data['data']);
     }
     if (dataClassName == 'RequisicaoItem') {
-      return deserialize<_i10.RequisicaoItem>(data['data']);
+      return deserialize<_i11.RequisicaoItem>(data['data']);
     }
     if (dataClassName == 'TipoMaterial') {
-      return deserialize<_i11.TipoMaterial>(data['data']);
+      return deserialize<_i12.TipoMaterial>(data['data']);
     }
     if (dataClassName == 'UnidadeMedida') {
-      return deserialize<_i12.UnidadeMedida>(data['data']);
+      return deserialize<_i13.UnidadeMedida>(data['data']);
     }
     if (dataClassName == 'LocalUserInfo') {
-      return deserialize<_i13.LocalUserInfo>(data['data']);
+      return deserialize<_i14.LocalUserInfo>(data['data']);
     }
     if (dataClassName == 'Veiculo') {
-      return deserialize<_i14.Veiculo>(data['data']);
+      return deserialize<_i15.Veiculo>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i21.Protocol().deserializeByClassName(data);
+      return _i23.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

@@ -73,7 +73,7 @@ class ConsumoBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<RelatoriosController>(context);
-    final consumo = controller.topConsumidos;
+    final consumo = controller.itemType == ItemType.material ? controller.topConsumidosMaterial : controller.topConsumidosFerramenta;
 
     if (controller.isLoading) {
       return const Center(
@@ -147,5 +147,3 @@ class ConsumoBarChart extends StatelessWidget {
   }
 }
 
-// 🚨 Substitua o seu barChart no _WideMaterialDashboard e _NarrowMaterialDashboard por:
-// ConsumoBarChart()

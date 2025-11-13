@@ -14,11 +14,15 @@ movimentacao:
   - criarRequisicaoSaida:
   - processarDevolucaoFerramenta:
 relatorios:
-  - getTopConsumidos:
-  - getTopFerramentasUtilizadas:
-  - getConsmuoClBase:
+  - getTopConsumidosMaterial:
+  - getTopConsumidosFerramenta:
+  - getConsmuoMaterialClBase:
+  - getConsmuoMaterialClVeiculo:
+  - getConsmuoFerramentaClBase:
+  - getConsmuoFerramentaClVeiculo:
   - getInstrumentosCalibracao:
   - getInstrumentosEmUso:
+  - getConsumoDetalhadoPorPeriodo:
 userData:
   - getMyAlerts:
   - getMyHistory:

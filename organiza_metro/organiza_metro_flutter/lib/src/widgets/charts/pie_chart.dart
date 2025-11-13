@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart';
 import 'package:organiza_metro_flutter/src/controllers/relatorios_controller.dart';
 
-// 🚨 WIDGET AUXILIAR PARA A LEGENDA
+//  WIDGET AUXILIAR PARA A LEGENDA
 class Indicator extends StatelessWidget {
   final Color color;
   final String text;
@@ -50,10 +50,10 @@ class ConsumoPieChart extends StatelessWidget {
     Color(0xFFAB47BC), // Roxo
   ];
 
-  // 🚨 Variável de estado local para rastrear o toque
+  // Variável de estado local para rastrear o toque
   static int _touchedIndex = -1;
 
-  // 🚨 Mapeamento de ConsumoMensal para PieChartSectionData
+  // Mapeamento de ConsumoMensal para PieChartSectionData
   List<PieChartSectionData> _mapDataToSections(
       List<ConsumoMensal> consumo, double totalSum) {
     return consumo.asMap().entries.map((entry) {
@@ -88,7 +88,6 @@ class ConsumoPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🚨 Acessa o Controller e os dados
     final controller = Provider.of<RelatoriosController>(context);
     final consumo = controller.baseOrVeiculo == BaseOrVeiculo.base ? controller.consumoPorBase : controller.consumoPorVeiculo;  
 
@@ -138,7 +137,6 @@ class ConsumoPieChart extends StatelessWidget {
           ),
           const SizedBox(height: 15),
 
-          // ✅ LEGENDAS DINÂMICAS — sem height fixo, cresce conforme o conteúdo
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 18.0),
             child: Column(

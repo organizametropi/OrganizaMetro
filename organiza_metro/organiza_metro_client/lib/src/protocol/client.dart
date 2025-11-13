@@ -17,10 +17,12 @@ import 'package:organiza_metro_client/src/protocol/material.dart' as _i5;
 import 'package:organiza_metro_client/src/protocol/requisicao_items.dart'
     as _i6;
 import 'package:organiza_metro_client/src/protocol/consumo_mensal.dart' as _i7;
-import 'package:organiza_metro_client/src/protocol/movimentacao.dart' as _i8;
-import 'package:organiza_metro_client/src/protocol/greeting.dart' as _i9;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i10;
-import 'protocol.dart' as _i11;
+import 'package:organiza_metro_client/src/protocol/consumo_periodo_detalhado.dart'
+    as _i8;
+import 'package:organiza_metro_client/src/protocol/movimentacao.dart' as _i9;
+import 'package:organiza_metro_client/src/protocol/greeting.dart' as _i10;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i11;
+import 'protocol.dart' as _i12;
 
 /// Endpoint para funções administrativas (acesso restrito por permissão).
 /// {@category Endpoint}
@@ -171,24 +173,45 @@ class EndpointRelatorios extends _i1.EndpointRef {
   @override
   String get name => 'relatorios';
 
-  _i2.Future<List<_i7.ConsumoMensal>> getTopConsumidos(int LIMIT) =>
+  _i2.Future<List<_i7.ConsumoMensal>> getTopConsumidosMaterial(int LIMIT) =>
       caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
         'relatorios',
-        'getTopConsumidos',
+        'getTopConsumidosMaterial',
         {'LIMIT': LIMIT},
       );
 
-  _i2.Future<List<_i7.ConsumoMensal>> getTopFerramentasUtilizadas(int LIMIT) =>
+  _i2.Future<List<_i7.ConsumoMensal>> getTopConsumidosFerramenta(int LIMIT) =>
       caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
         'relatorios',
-        'getTopFerramentasUtilizadas',
+        'getTopConsumidosFerramenta',
         {'LIMIT': LIMIT},
       );
 
-  _i2.Future<List<_i7.ConsumoMensal>> getConsmuoClBase() =>
+  _i2.Future<List<_i7.ConsumoMensal>> getConsmuoMaterialClBase() =>
       caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
         'relatorios',
-        'getConsmuoClBase',
+        'getConsmuoMaterialClBase',
+        {},
+      );
+
+  _i2.Future<List<_i7.ConsumoMensal>> getConsmuoMaterialClVeiculo() =>
+      caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
+        'relatorios',
+        'getConsmuoMaterialClVeiculo',
+        {},
+      );
+
+  _i2.Future<List<_i7.ConsumoMensal>> getConsmuoFerramentaClBase() =>
+      caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
+        'relatorios',
+        'getConsmuoFerramentaClBase',
+        {},
+      );
+
+  _i2.Future<List<_i7.ConsumoMensal>> getConsmuoFerramentaClVeiculo() =>
+      caller.callServerEndpoint<List<_i7.ConsumoMensal>>(
+        'relatorios',
+        'getConsmuoFerramentaClVeiculo',
         {},
       );
 
@@ -204,6 +227,20 @@ class EndpointRelatorios extends _i1.EndpointRef {
         'relatorios',
         'getInstrumentosEmUso',
         {},
+      );
+
+  /// PBI 3.2.2: Retorna o consumo total de Materiais e Ferramentas agrupado por dia.
+  _i2.Future<List<_i8.ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo({
+    required DateTime dataInicio,
+    required DateTime dataFim,
+  }) =>
+      caller.callServerEndpoint<List<_i8.ConsumoPeriodoDetalhado>>(
+        'relatorios',
+        'getConsumoDetalhadoPorPeriodo',
+        {
+          'dataInicio': dataInicio,
+          'dataFim': dataFim,
+        },
       );
 }
 
@@ -223,8 +260,8 @@ class EndpointUserData extends _i1.EndpointRef {
       );
 
   /// Retorna o histórico de movimentações do usuário logado.
-  _i2.Future<List<_i8.Movimentacao>> getMyHistory() =>
-      caller.callServerEndpoint<List<_i8.Movimentacao>>(
+  _i2.Future<List<_i9.Movimentacao>> getMyHistory() =>
+      caller.callServerEndpoint<List<_i9.Movimentacao>>(
         'userData',
         'getMyHistory',
         {},
@@ -241,8 +278,8 @@ class EndpointGreeting extends _i1.EndpointRef {
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _i2.Future<_i9.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i9.Greeting>(
+  _i2.Future<_i10.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i10.Greeting>(
         'greeting',
         'hello',
         {'name': name},
@@ -251,10 +288,10 @@ class EndpointGreeting extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i10.Caller(client);
+    auth = _i11.Caller(client);
   }
 
-  late final _i10.Caller auth;
+  late final _i11.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -273,7 +310,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i11.Protocol(),
+          _i12.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

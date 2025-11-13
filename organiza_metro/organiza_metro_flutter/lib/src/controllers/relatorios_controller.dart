@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart' as cli;
@@ -17,18 +16,19 @@ enum RelatorioType {
 enum BaseOrVeiculo { base, veiculo }
 
 class RelatoriosController extends ChangeNotifier {
+  // Variáveis para navegação da página 
   RelatorioMode _mode = RelatorioMode.dashboard;
   ItemType _itemType = ItemType.material;
   RelatorioType _relatorioAtivo = RelatorioType.movimentacoes;
   bool _isLoading = false;
-
   RelatorioMode get mode => _mode;
   ItemType get itemType => _itemType;
   RelatorioType get relatorioAtivo => _relatorioAtivo;
   bool get isLoading => _isLoading;
 
   // Variáveis específicas para o BarChart
-  List<cli.ConsumoMensal> _topConsumidos = [];
+  List<cli.ConsumoMensal> _topConsumidosMaterial = [];
+  List<cli.ConsumoMensal> _topConsumidosFerramenta = [];
   int _barChartLimit = 5;
   int get barChartLimit => _barChartLimit;
 
@@ -40,7 +40,6 @@ class RelatoriosController extends ChangeNotifier {
   List<cli.ConsumoMensal> get consumoPorVeiculo => _consumoPorVeiculo;
 
   // Variaveis especificas para os DropDowns
-
   BaseOrVeiculo _baseOrVeiculo = BaseOrVeiculo.base;
   BaseOrVeiculo get baseOrVeiculo => _baseOrVeiculo;
 
@@ -52,7 +51,13 @@ class RelatoriosController extends ChangeNotifier {
   List<cli.Material> get materiaisEstoque => _materiaisEstoque;
   List<cli.Movimentacao> get movimentacoes => _movimentacoes;
   List<cli.Ferramenta> get ferramentas => _ferramentasEstoque;
-  List<cli.ConsumoMensal> get topConsumidos => _topConsumidos;
+  List<cli.ConsumoMensal> get topConsumidosMaterial => _topConsumidosMaterial;
+  List<cli.ConsumoMensal> get topConsumidosFerramenta => _topConsumidosFerramenta;
+
+  List<cli.ConsumoPeriodoDetalhado> _consumoPeriodoDetalhado = [];
+  List<cli.ConsumoPeriodoDetalhado> get consumoPeriodoDetalhado => _consumoPeriodoDetalhado;
+  DateTime dataFiltroInicio = DateTime.now().subtract(const Duration(days: 30));
+  DateTime dataFiltroFim = DateTime.now();
 
 
   RelatoriosController() {
@@ -75,6 +80,7 @@ class RelatoriosController extends ChangeNotifier {
     _itemType = newType;
     notifyListeners();
     fetchData();
+    fetchConsumoPorBase();
   }
 
   void setRelatorioAtivo(RelatorioType newType) {
@@ -83,17 +89,27 @@ class RelatoriosController extends ChangeNotifier {
     fetchData();
   }
 
-  void setBarChartLimit(int limit){
-    _barChartLimit = limit; 
+  void setBarChartLimit(int limit) {
+    _barChartLimit = limit;
     notifyListeners();
-    fetchData(); 
+    fetchData();
   }
 
-  void setPieChartType(BaseOrVeiculo newType){
-    _baseOrVeiculo = newType; 
+  void setPieChartType(BaseOrVeiculo newType) {
+    _baseOrVeiculo = newType;
     notifyListeners();
-    fetchData(); 
+    fetchData();
   }
+
+  void setDataFiltroInicio(DateTime date) {
+        dataFiltroInicio = date;
+        fetchData(); 
+    }
+
+    void setDataFiltroFim(DateTime date) {
+        dataFiltroFim = date;
+        fetchData();
+    }
 
   Future<void> fetchData() async {
     _isLoading = true;
@@ -123,6 +139,13 @@ class RelatoriosController extends ChangeNotifier {
           // TODO: Buscar ferramentas com calibração vencida/próxima
           _ferramentasEstoque = [];
         }
+        if (_relatorioAtivo == RelatorioType.consumo) {
+                // 🚨 Chamada ao novo endpoint
+                _consumoPeriodoDetalhado = await client.relatorios.getConsumoDetalhadoPorPeriodo(
+                    dataInicio: dataFiltroInicio,
+                    dataFim: dataFiltroFim,
+                );
+        }
       }
     } catch (e) {
       print('Erro ao buscar dados de relatórios: $e');
@@ -139,12 +162,14 @@ class RelatoriosController extends ChangeNotifier {
 
     try {
       // 🚨 Chamada usando o limite do Controller
-      _topConsumidos = await client.relatorios.getTopConsumidos(barChartLimit);
+      _topConsumidosMaterial =
+          await client.relatorios.getTopConsumidosMaterial(barChartLimit);
+      _topConsumidosFerramenta =
+          await client.relatorios.getTopConsumidosFerramenta(barChartLimit);
     } catch (e) {
       print('Erro ao buscar Top Consumidos: $e');
     }
 
-    await Future.delayed(const Duration(milliseconds: 500)); // Simula loading
     _isLoading = false;
     notifyListeners();
   }
@@ -152,18 +177,19 @@ class RelatoriosController extends ChangeNotifier {
   Future<void> fetchConsumoPorBase() async {
     _isLoading = true;
     notifyListeners();
-
     try {
-      // 🚨 Chamada usando o limite do Controller
-      _consumoPorBase = await client.relatorios.getConsmuoClBase();
-      // _consumoPorVeiculo = await client.relatorios.getConsmuoClVeiculo();
+      if (_itemType == ItemType.material) {
+        _consumoPorBase = await client.relatorios.getConsmuoMaterialClBase();
+        _consumoPorVeiculo = await client.relatorios.getConsmuoMaterialClVeiculo();
+      } else if (_itemType == ItemType.ferramenta) {
+        _consumoPorBase = await client.relatorios.getConsmuoFerramentaClBase();
+        _consumoPorVeiculo = await client.relatorios.getConsmuoFerramentaClVeiculo();
+      }
     } catch (e) {
       print('Erro ao buscar Top Consumidos: $e');
     }
 
-    await Future.delayed(const Duration(milliseconds: 500)); // Simula loading
     _isLoading = false;
     notifyListeners();
   }
-
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart' as cli;
 import 'package:organiza_metro_flutter/src/controllers/relatorios_controller.dart';
 import 'package:organiza_metro_flutter/src/widgets/charts/bar_chart.dart';
+import 'package:organiza_metro_flutter/src/widgets/charts/line_chart.dart';
 import 'package:organiza_metro_flutter/src/widgets/charts/pie_chart.dart';
 import 'package:responsive_table/responsive_table.dart';
 
 const Map<RelatorioType, String> relatorioLabels = {
   RelatorioType.movimentacoes: 'Movimentações (3.2.1)',
-  RelatorioType.consumo: 'Consumo por Período (3.2.2)',
+  RelatorioType.consumo: 'Consumo por Período',
   RelatorioType.instrumentosEmUso: 'Instrumentos em Uso (3.2.3)',
   RelatorioType.calibracoesVencidas: 'Calibrações Vencidas (3.2.4)',
 };
@@ -176,8 +178,8 @@ class _WideMaterialDashboard extends StatelessWidget {
         Expanded(
           flex: 6,
           child: _ReportCard(
-            title: 'Inventário Consolidado (PBI 3.1.1)',
-            height: 620,
+            title: 'Inventário Consolidado',
+            height: 1050,
             child: EstoqueMaterialTable(
                 materiais: controller.materiaisEstoque), // 🚨 Sua Tabela
           ),
@@ -195,15 +197,22 @@ class _NarrowFerramentalDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _ReportCard(
-            title: 'Inventário Consolidado (PBI 3.1.1)',
-            height: 450,
-            child: EstoqueFerramentaTable(ferramenta: controller.ferramentas)),
+         _barReportCard(
+          height: 420,
+          controller: controller,
+          child: const Center(child: ConsumoBarChart()),
+        ),
+        const SizedBox(height: 20),
+        _pieReportCard(
+          height: 450,
+          controller: controller,
+          child: const Center(child: ConsumoPieChart()),
+        ),
         const SizedBox(height: 20),
         _ReportCard(
-          title: 'Top 10 Materiais Consumidos',
-          height: 300,
-          child: const Center(child: Text("Gráfico FL_CHART (Barra)")),
+          title: 'Inventário Consolidado',
+          height: 450,
+          child: EstoqueMaterialTable(materiais: controller.materiaisEstoque),
         ),
       ],
     );
@@ -224,16 +233,16 @@ class _WideFerramentaDashboard extends StatelessWidget {
           flex: 4,
           child: Column(
             children: [
-              _ReportCard(
-                title: 'Top 10 Materiais Consumidos (PBI 3.1.2)',
-                height: 300,
-                child: const Center(child: Text("Gráfico FL_CHART (Barra)")),
+               _barReportCard(
+                height: 420,
+                controller: controller,
+                child: const Center(child: ConsumoBarChart()),
               ),
               const SizedBox(height: 20),
-              _ReportCard(
-                title: 'Consumo por Centro Logístico (MOCK)',
-                height: 300,
-                child: const Center(child: Text("Gráfico FL_CHART (Pizza)")),
+               _pieReportCard(
+                height: 450,
+                controller: controller,
+                child: const Center(child: ConsumoPieChart()),
               ),
             ],
           ),
@@ -244,8 +253,8 @@ class _WideFerramentaDashboard extends StatelessWidget {
         Expanded(
           flex: 6,
           child: _ReportCard(
-            title: 'Inventário Consolidado (PBI 3.1.1)',
-            height: 620,
+            title: 'Inventário Consolidado',
+            height: 1050,
             child: EstoqueFerramentaTable(
                 ferramenta: controller.ferramentas), // 🚨 Sua Tabela
           ),
@@ -263,9 +272,9 @@ class _NarrowMaterialDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _ReportCard(
-          title: 'Top 10 Materiais Consumidos',
+        _barReportCard(
           height: 420,
+          controller: controller,
           child: const Center(child: ConsumoBarChart()),
         ),
         const SizedBox(height: 20),
@@ -276,7 +285,7 @@ class _NarrowMaterialDashboard extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         _ReportCard(
-          title: 'Inventário Consolidado (PBI 3.1.1)',
+          title: 'Inventário Consolidado',
           height: 450,
           child: EstoqueMaterialTable(materiais: controller.materiaisEstoque),
         ),
@@ -293,36 +302,77 @@ class RelatorioGerencialView extends StatelessWidget {
   final RelatoriosController controller;
   const RelatorioGerencialView({required this.controller});
 
+  Widget _buildDateFilter(BuildContext context, RelatoriosController controller, bool isInicio) {
+    DateTime initialDate = isInicio ? controller.dataFiltroInicio : controller.dataFiltroFim;
+    
+    return Flexible(
+      child: Container(
+        width: 180, // Largura fixa para campos de data
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: TextFormField(
+          readOnly: true,
+          controller: TextEditingController(text: DateFormat('dd/MM/yyyy').format(initialDate)),
+          decoration: InputDecoration(
+            labelText: isInicio ? 'Data Início' : 'Data Fim',
+            border: const OutlineInputBorder(),
+            suffixIcon: const Icon(Icons.calendar_today, size: 18),
+          ),
+          onTap: () async {
+            final newDate = await showDatePicker(
+              context: context,
+              initialDate: initialDate,
+              firstDate: DateTime(2023),
+              lastDate: DateTime.now(),
+            );
+            if (newDate != null) {
+              // Atualiza o controller
+              isInicio 
+                ? controller.setDataFiltroInicio(newDate)
+                : controller.setDataFiltroFim(newDate);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Certifique-se de que o modo ativo é 'consumo' para mostrar os filtros de data
+    final isConsumoReport = controller.relatorioAtivo == RelatorioType.consumo;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 20),
-        // Placeholder de Filtros de Data (para futuros relatórios)
-        Row(
-          children: [
-            const Text('Filtro de Período:',
-                style: TextStyle(fontWeight: FontWeight.w600)),
-            const SizedBox(width: 10),
-            // TODO: Campos de data (DateTimeFormField)
-          ],
-        ),
-        const SizedBox(height: 20),
-
-        // Exibe o conteúdo do relatório ativo
-        _ReportCard(
-          title: relatorioLabels[controller.relatorioAtivo]!,
-          height: 600,
-          child: RelatorioDetalheWidget(
-            relatorioType: controller.relatorioAtivo,
-            dados: controller.movimentacoes, // Dados dinâmicos do controller
+        // ... (Seletor Segmentado) ...
+        
+        // 🚨 FILTROS DE DATA
+        if (isConsumoReport)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20.0),
+          child: Row(
+            children: [
+              _buildDateFilter(context, controller, true), // Data Início
+              const SizedBox(width: 10),
+              _buildDateFilter(context, controller, false), // Data Fim
+            ],
           ),
+        ),
+        
+        // 🚨 CONTEÚDO DINÂMICO
+        _ReportCard(
+            title: relatorioLabels[controller.relatorioAtivo]!,
+            height: 600, // Altura ajustada para o gráfico
+            child: RelatorioDetalheWidget(
+                relatorioType: controller.relatorioAtivo,
+                dados: isConsumoReport ? controller.consumoPeriodoDetalhado : controller.movimentacoes, 
+            ), 
         ),
       ],
     );
   }
 }
+
 
 // ===========================================================================
 // WIDGETS AUXILIARES (Cards, Tabelas e Lógica de Exibição)
@@ -350,7 +400,7 @@ class _DropdownPie extends State<DropdownPie> {
     final currentSelection = widget.controller.baseOrVeiculo;
 
     return SizedBox(
-      height: 45,
+      height: 60,
       width: 200,
       child: DropdownButtonFormField<BaseOrVeiculo>(
         value: currentSelection,
@@ -377,16 +427,16 @@ class DropdownBar extends StatefulWidget {
   DropdownBar({super.key, required this.controller});
 
   @override
-  State<DropdownPie> createState() => _DropdownBar();
+  State<DropdownBar> createState() => _DropdownBar();
 }
 
-class _DropdownBar extends State<DropdownPie> {
-  List<DropdownMenuItem<int>> _dropdownItems = [
+class _DropdownBar extends State<DropdownBar> {
+  final List<DropdownMenuItem<int>> _dropdownItems = [
     const DropdownMenuItem(value: 5, child: Text('5')),
     const DropdownMenuItem(value: 10, child: Text('10')),
     const DropdownMenuItem(value: 15, child: Text('15')),
     const DropdownMenuItem(value: 20, child: Text('20')),
-    const DropdownMenuItem(value: 20, child: Text('30')),
+    const DropdownMenuItem(value: 30, child: Text('30')),
   ];
 
 
@@ -395,7 +445,7 @@ class _DropdownBar extends State<DropdownPie> {
     final currentSelection = widget.controller.barChartLimit;
 
     return SizedBox(
-      height: 45,
+      height: 60,
       width: 200,
       child: DropdownButtonFormField<int>(
         value: currentSelection,
@@ -522,11 +572,11 @@ class _barReportCard extends StatelessWidget {
               'Top Materiais Consumidos',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             Row(children: [
               DropdownBar(controller: controller),
             ]),
-            SizedBox(height: 10),
+            SizedBox(height: 30),
             SizedBox(
               height: height - 40, // Subtrai o padding/título
               child: child,
@@ -537,6 +587,7 @@ class _barReportCard extends StatelessWidget {
     );
   }
 }
+
 
 class RelatorioDetalheWidget extends StatelessWidget {
   final RelatorioType relatorioType;
@@ -556,7 +607,7 @@ class RelatorioDetalheWidget extends StatelessWidget {
     // TODO: Switch/Case para renderizar a tabela correta (MovimentacaoTable, CalibracaoTable, etc.)
     return switch (relatorioType.name) {
       'movimentacoes' => Text('oi'),
-      'consumo' => Text('tchau'),
+      'consumo' => ConsumoLineChart(),
       'instrumentosEmUso' => Text('beijo'),
       'calibracoesVencidas' => Text('ola'),
       _ => SizedBox.shrink()

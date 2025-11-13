@@ -3,10 +3,6 @@ import 'package:serverpod/serverpod.dart';
 import 'package:organiza_metro_server/src/generated/protocol.dart';
 import 'package:serverpod_auth_server/module.dart' as auth;
 
-// Nota: O campo 'nome' não está no modelo Ferramenta que você forneceu,
-// mas a query usará 'descricao' como o campo amigável para exibição.
-// Se você adicionar o campo 'nome' ao modelo Ferramenta, substitua f.descricao por f.nome.
-
 class RelatoriosEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
@@ -14,7 +10,7 @@ class RelatoriosEndpoint extends Endpoint {
   AuthUtils Auth = AuthUtils();
 
   // --- PBI 3.1.2: Gráfico dos 10 materiais mais consumidos no último mês ---
-  Future<List<ConsumoMensal>> getTopConsumidos(
+  Future<List<ConsumoMensal>> getTopConsumidosMaterial(
       Session session, int LIMIT) async {
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
@@ -58,11 +54,9 @@ class RelatoriosEndpoint extends Endpoint {
     }).toList();
   }
 
-  // -----------------------------------------------------------------------
-  // 🚀 NOVO: Top Ferramentas Utilizadas/Empenhadas
+
   // --- PBI 3.1.2 (Ferramentas): Gráfico das 10 ferramentas mais empenhadas no último mês ---
-  // -----------------------------------------------------------------------
-  Future<List<ConsumoMensal>> getTopFerramentasUtilizadas(
+  Future<List<ConsumoMensal>> getTopConsumidosFerramenta(
       Session session, int LIMIT) async {
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
@@ -75,8 +69,8 @@ class RelatoriosEndpoint extends Endpoint {
 
     // Parâmetros (reutilizamos os parâmetros de data do ConsumoMensal)
     final parameters = QueryParameters.named({
-      'oneMonthAgo': oneMonthAgo,
-      'startOfCurrentMonth': startOfCurrentMonth,
+      // 'oneMonthAgo': oneMonthAgo,
+      // 'startOfCurrentMonth': startOfCurrentMonth,
       'limite': limite
     });
 
@@ -86,16 +80,14 @@ class RelatoriosEndpoint extends Endpoint {
           f.descricao AS ferramentaDescricao,
           COUNT(mov.id) AS totalUsos 
       FROM movimentacao mov
-      JOIN ferramenta f ON mov."materialId"= f.id
+      JOIN ferramenta f ON mov."ferramentaId"= f.id
       WHERE 
-          mov."tipoMovimentacao" = 'Saída'  AND
-          mov."dataMovimentacao" >= \$1 AND 
-          mov."dataMovimentacao" < \$2
+          mov."tipoMovimentacao" = 'Saída'  
       GROUP BY
           f.descricao
       ORDER BY
           totalUsos DESC
-      LIMIT \$3;
+      LIMIT @limite;
     """;
 
     // Executa a query e mapeia o resultado
@@ -111,7 +103,7 @@ class RelatoriosEndpoint extends Endpoint {
     }).toList();
   }
 
-  Future<List<ConsumoMensal>> getConsmuoClBase(Session session) async {
+  Future<List<ConsumoMensal>> getConsmuoMaterialClBase(Session session) async {
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
     }
@@ -143,7 +135,7 @@ ORDER BY
     }).toList();
   }
 
-  Future<List<ConsumoMensal>> getConsmuoClVeiculo(Session session) async {
+  Future<List<ConsumoMensal>> getConsmuoMaterialClVeiculo(Session session) async {
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
     }
@@ -153,10 +145,74 @@ ORDER BY
   v.descricao AS desc_veiculo,
   COUNT(mov."origemVeiculoId") AS aparicoes
 FROM movimentacao mov
-JOIN base b ON mov."origemVeiculoId" = v.id
+JOIN veiculo v ON mov."origemVeiculoId" = v.id
 WHERE 
   mov."tipoMovimentacao" = 'Saída' AND
   mov."materialId" IS NOT NULL
+GROUP BY
+  v.descricao
+ORDER BY
+  aparicoes DESC
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result = await session.db.unsafeQuery(sql);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+    Future<List<ConsumoMensal>> getConsmuoFerramentaClBase(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final sql = """
+     SELECT
+  b.nome AS nome_base,
+  COUNT(mov."origemBaseId") AS aparicoes
+FROM movimentacao mov
+JOIN base b ON mov."origemBaseId" = b.id
+WHERE 
+  mov."tipoMovimentacao" = 'Saída' AND
+  mov."ferramentaId" IS NOT NULL
+GROUP BY
+  b.nome
+ORDER BY
+  aparicoes DESC
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result = await session.db.unsafeQuery(sql);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  Future<List<ConsumoMensal>> getConsmuoFerramentaClVeiculo(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final sql = """
+     SELECT
+  v.descricao AS desc_veiculo,
+  COUNT(mov."origemVeiculoId") AS aparicoes
+FROM movimentacao mov
+JOIN veiculo v ON mov."origemVeiculoId" = v.id
+WHERE 
+  mov."tipoMovimentacao" = 'Saída' AND
+  mov."ferramentaId" IS NOT NULL
 GROUP BY
   v.descricao
 ORDER BY
@@ -245,4 +301,58 @@ ORDER BY
       ),
     );
   }
+
+  // Dentro de class RelatoriosEndpoint extends Endpoint { ... }
+
+/// PBI 3.2.2: Retorna o consumo total de Materiais e Ferramentas agrupado por dia.
+Future<List<ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo(
+    Session session, {
+    required DateTime dataInicio,
+    required DateTime dataFim,
+}) async {
+    // 🚨 Validação de segurança
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final parameters = QueryParameters.named({
+      'dataInicio': dataInicio.toUtc(),
+      'dataFim': dataFim.toUtc(),
+    });
+    
+    // TRUNC DATE para agrupar por dia (day)
+    final sql = """
+      SELECT
+          DATE_TRUNC('day', mov."dataMovimentacao") AS data,
+          
+          -- Soma de Materiais (somente se materialId NÃO for NULL)
+          SUM(CASE WHEN mov."materialId" IS NOT NULL THEN mov.quantidade ELSE 0 END) AS totalMaterial,
+          
+          -- Soma de Ferramentas (somente se ferramentaId NÃO for NULL)
+          SUM(CASE WHEN mov."ferramentaId" IS NOT NULL THEN mov.quantidade ELSE 0 END) AS totalFerramenta
+          
+      FROM movimentacao mov
+      WHERE 
+          mov."tipoMovimentacao" = 'Saída' AND
+          mov."dataMovimentacao" >= @dataInicio AND 
+          mov."dataMovimentacao" <= @dataFim
+      GROUP BY
+          DATE_TRUNC('day', mov."dataMovimentacao")
+      ORDER BY
+          data;
+    """;
+
+    final List<List<dynamic>> result = await session.db.unsafeQuery(
+      sql, 
+      parameters: parameters
+    );
+
+    return result.map((row) {
+      return ConsumoPeriodoDetalhado(
+        data: (row[0] as DateTime).toLocal(),
+        totalMaterial: (row[1] as num).toDouble(),
+        totalFerramenta: (row[2] as num).toDouble(),
+      );
+    }).toList();
+}
 }

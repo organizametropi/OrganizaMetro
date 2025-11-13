@@ -288,8 +288,8 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'relatorios',
       endpoint: endpoints['relatorios']!,
       methodConnectors: {
-        'getTopConsumidos': _i1.MethodConnector(
-          name: 'getTopConsumidos',
+        'getTopConsumidosMaterial': _i1.MethodConnector(
+          name: 'getTopConsumidosMaterial',
           params: {
             'LIMIT': _i1.ParameterDescription(
               name: 'LIMIT',
@@ -302,13 +302,13 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
-                  .getTopConsumidos(
+                  .getTopConsumidosMaterial(
             session,
             params['LIMIT'],
           ),
         ),
-        'getTopFerramentasUtilizadas': _i1.MethodConnector(
-          name: 'getTopFerramentasUtilizadas',
+        'getTopConsumidosFerramenta': _i1.MethodConnector(
+          name: 'getTopConsumidosFerramenta',
           params: {
             'LIMIT': _i1.ParameterDescription(
               name: 'LIMIT',
@@ -321,20 +321,50 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
-                  .getTopFerramentasUtilizadas(
+                  .getTopConsumidosFerramenta(
             session,
             params['LIMIT'],
           ),
         ),
-        'getConsmuoClBase': _i1.MethodConnector(
-          name: 'getConsmuoClBase',
+        'getConsmuoMaterialClBase': _i1.MethodConnector(
+          name: 'getConsmuoMaterialClBase',
           params: {},
           call: (
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
               (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
-                  .getConsmuoClBase(session),
+                  .getConsmuoMaterialClBase(session),
+        ),
+        'getConsmuoMaterialClVeiculo': _i1.MethodConnector(
+          name: 'getConsmuoMaterialClVeiculo',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getConsmuoMaterialClVeiculo(session),
+        ),
+        'getConsmuoFerramentaClBase': _i1.MethodConnector(
+          name: 'getConsmuoFerramentaClBase',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getConsmuoFerramentaClBase(session),
+        ),
+        'getConsmuoFerramentaClVeiculo': _i1.MethodConnector(
+          name: 'getConsmuoFerramentaClVeiculo',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getConsmuoFerramentaClVeiculo(session),
         ),
         'getInstrumentosCalibracao': _i1.MethodConnector(
           name: 'getInstrumentosCalibracao',
@@ -355,6 +385,31 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
                   .getInstrumentosEmUso(session),
+        ),
+        'getConsumoDetalhadoPorPeriodo': _i1.MethodConnector(
+          name: 'getConsumoDetalhadoPorPeriodo',
+          params: {
+            'dataInicio': _i1.ParameterDescription(
+              name: 'dataInicio',
+              type: _i1.getType<DateTime>(),
+              nullable: false,
+            ),
+            'dataFim': _i1.ParameterDescription(
+              name: 'dataFim',
+              type: _i1.getType<DateTime>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getConsumoDetalhadoPorPeriodo(
+            session,
+            dataInicio: params['dataInicio'],
+            dataFim: params['dataFim'],
+          ),
         ),
       },
     );
