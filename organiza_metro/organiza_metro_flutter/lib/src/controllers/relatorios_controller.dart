@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart' as cli;
