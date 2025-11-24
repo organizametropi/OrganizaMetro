@@ -15,7 +15,7 @@ class UserDataEndpoint extends Endpoint {
       session,
       where: (t) =>
           t.ativo.equals(true) &
-          (t.usuarioIdId.equals(userId) | t.usuarioIdId.equals(null)),
+          (t.usuarioId.equals(userId)),
       orderBy: (t) => t.dataCriacao,
       orderDescending: true,
     );

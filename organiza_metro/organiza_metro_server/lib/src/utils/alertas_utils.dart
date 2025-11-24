@@ -16,7 +16,7 @@ class AlertasUtils {
       final existe = await Alerta.db.findFirstRow(
         session,
         where: (a) =>
-            a.usuarioIdId.equals(e.usuarioId) &
+            a.usuarioId.equals(e.usuarioId) &
             a.tipo.equals('DEVOLUCAO_PROXIMA') &
             a.ativo.equals(true),
       );
@@ -25,7 +25,7 @@ class AlertasUtils {
         await Alerta.db.insertRow(
           session,
           Alerta(
-            usuarioIdId: e.usuarioId,
+            usuarioId: e.usuarioId,
             tipo: 'DEVOLUCAO_PROXIMA',
             titulo: 'Prazo de devolução próximo',
             mensagem: 'A ferramenta ${e.ferramenta!.codigoSap} deve ser devolvida até ${e.dataDevolucao}.'
@@ -55,7 +55,7 @@ class AlertasUtils {
         await Alerta.db.insertRow(
           session,
           Alerta(
-            usuarioIdId: null,
+            usuarioId: null,
             tipo: 'ESTOQUE_BAIXO',
             titulo: 'Estoque baixo',
             mensagem: 'O material ${mat.codigoSap} está com apenas ${mat.quantidade} unidades.'

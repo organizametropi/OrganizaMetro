@@ -1,4 +1,0 @@
-cron:
-  - name: verificar_alertas
-    schedule: "0 * * * *" # a cada hora
-    endpoint: organiza_metro_server\lib\src\endpoints\cron_endpoint.dart

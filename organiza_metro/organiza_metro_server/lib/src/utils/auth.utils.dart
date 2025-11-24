@@ -4,6 +4,7 @@ import 'package:serverpod_auth_server/module.dart' as auth;
 
 /// Endpoint para utilidades de autenticação e permissão
 class AuthUtils{
+    
   bool get requireLogin => true;
 
   // Retorna se o usuário autenticado é admin

@@ -48,10 +48,12 @@ class FerramentaController extends ChangeNotifier {
 
     try {
       if (_mode == FerramentaMode.retirar) {
-        final data = await client.ferramenta.getEstoque();
+        _disponiveis.clear();
+        final data = await client.ferramenta.getDisponiveis();
         _disponiveis = data;
         _empenhadas.clear();
       } else {
+        _empenhadas.clear();
         final data = await client.ferramenta.getMinhasFerramentas();
         _empenhadas = data;
         _disponiveis.clear();
@@ -112,7 +114,8 @@ class FerramentaController extends ChangeNotifier {
   // -----------------------------------------------------------
 
   Future<bool> processarDevolucao(BuildContext context, int ferramentaId,
-      int destinoBaseId, int? destinoVeiculoId) async {
+      int? destinoBaseId, int? destinoVeiculoId,
+      {String? observacao}) async {
     _isLoading = true;
     notifyListeners();
 
@@ -123,7 +126,7 @@ class FerramentaController extends ChangeNotifier {
         dataDaMovimentacao: DateTime.now(),
         destinoBaseId: destinoBaseId,
         destinoVeiculoId: destinoVeiculoId,
-        observacao: 'Devolução via app.',
+        observacao: observacao,
       );
 
       if (sucesso) {

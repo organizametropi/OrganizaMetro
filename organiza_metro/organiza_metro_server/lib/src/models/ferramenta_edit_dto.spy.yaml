@@ -1,0 +1,15 @@
+class: FerramentaEditDto
+fields:
+  id: int
+  nome: String?
+  codigoSap: int?
+  descricao: String?
+  patrimonio: String?
+  quantidade: int?
+  divisao: String?
+  tipoMaterialId: int?
+  status: String?
+  dataAquisicao: DateTime?
+  unidadeMedidaId: int?
+  baseId: int?
+  veiculoId: int?

@@ -26,7 +26,6 @@ abstract class Ferramenta
     required this.codigoSap,
     required this.descricao,
     this.patrimonio,
-    this.quantidade,
     required this.emUso,
     required this.divisao,
     required this.tipoId,
@@ -50,7 +49,6 @@ abstract class Ferramenta
     required int codigoSap,
     required String descricao,
     String? patrimonio,
-    int? quantidade,
     required bool emUso,
     required String divisao,
     required int tipoId,
@@ -75,7 +73,6 @@ abstract class Ferramenta
       codigoSap: jsonSerialization['codigoSap'] as int,
       descricao: jsonSerialization['descricao'] as String,
       patrimonio: jsonSerialization['patrimonio'] as String?,
-      quantidade: jsonSerialization['quantidade'] as int?,
       emUso: jsonSerialization['emUso'] as bool,
       divisao: jsonSerialization['divisao'] as String,
       tipoId: jsonSerialization['tipoId'] as int,
@@ -129,8 +126,6 @@ abstract class Ferramenta
 
   String? patrimonio;
 
-  int? quantidade;
-
   bool emUso;
 
   String divisao;
@@ -173,7 +168,6 @@ abstract class Ferramenta
     int? codigoSap,
     String? descricao,
     String? patrimonio,
-    int? quantidade,
     bool? emUso,
     String? divisao,
     int? tipoId,
@@ -198,7 +192,6 @@ abstract class Ferramenta
       'codigoSap': codigoSap,
       'descricao': descricao,
       if (patrimonio != null) 'patrimonio': patrimonio,
-      if (quantidade != null) 'quantidade': quantidade,
       'emUso': emUso,
       'divisao': divisao,
       'tipoId': tipoId,
@@ -226,7 +219,6 @@ abstract class Ferramenta
       'codigoSap': codigoSap,
       'descricao': descricao,
       if (patrimonio != null) 'patrimonio': patrimonio,
-      if (quantidade != null) 'quantidade': quantidade,
       'emUso': emUso,
       'divisao': divisao,
       'tipoId': tipoId,
@@ -299,7 +291,6 @@ class _FerramentaImpl extends Ferramenta {
     required int codigoSap,
     required String descricao,
     String? patrimonio,
-    int? quantidade,
     required bool emUso,
     required String divisao,
     required int tipoId,
@@ -321,7 +312,6 @@ class _FerramentaImpl extends Ferramenta {
           codigoSap: codigoSap,
           descricao: descricao,
           patrimonio: patrimonio,
-          quantidade: quantidade,
           emUso: emUso,
           divisao: divisao,
           tipoId: tipoId,
@@ -349,7 +339,6 @@ class _FerramentaImpl extends Ferramenta {
     int? codigoSap,
     String? descricao,
     Object? patrimonio = _Undefined,
-    Object? quantidade = _Undefined,
     bool? emUso,
     String? divisao,
     int? tipoId,
@@ -372,7 +361,6 @@ class _FerramentaImpl extends Ferramenta {
       codigoSap: codigoSap ?? this.codigoSap,
       descricao: descricao ?? this.descricao,
       patrimonio: patrimonio is String? ? patrimonio : this.patrimonio,
-      quantidade: quantidade is int? ? quantidade : this.quantidade,
       emUso: emUso ?? this.emUso,
       divisao: divisao ?? this.divisao,
       tipoId: tipoId ?? this.tipoId,
@@ -415,10 +403,6 @@ class FerramentaTable extends _i1.Table<int?> {
     );
     patrimonio = _i1.ColumnString(
       'patrimonio',
-      this,
-    );
-    quantidade = _i1.ColumnInt(
-      'quantidade',
       this,
     );
     emUso = _i1.ColumnBool(
@@ -470,8 +454,6 @@ class FerramentaTable extends _i1.Table<int?> {
   late final _i1.ColumnString descricao;
 
   late final _i1.ColumnString patrimonio;
-
-  late final _i1.ColumnInt quantidade;
 
   late final _i1.ColumnBool emUso;
 
@@ -575,7 +557,6 @@ class FerramentaTable extends _i1.Table<int?> {
         codigoSap,
         descricao,
         patrimonio,
-        quantidade,
         emUso,
         divisao,
         tipoId,

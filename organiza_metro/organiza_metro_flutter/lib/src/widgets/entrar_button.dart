@@ -7,10 +7,13 @@ class GetStartedButton extends StatefulWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
 
+  final void Function(String? errorMessage)? onError;
+
   const GetStartedButton({
     super.key,
     required this.emailController,
     required this.passwordController,
+    this.onError, 
   });
 
   @override
@@ -22,7 +25,16 @@ class _GetStartedButtonState extends State<GetStartedButton> {
   String? _error;
   double elementsOpacity = 1;
 
-  Future<void> _signIn() async {
+    Future<void> _signIn() async {
+    final email = widget.emailController.text.trim();
+    final pass = widget.passwordController.text.trim();
+
+    // Validação rápida antes de chamar o servidor
+    if (email.isEmpty || pass.isEmpty) {
+      _triggerError("Preencha todos os campos.");
+      return;
+    }
+
     setState(() {
       _loading = true;
       _error = null;
@@ -30,20 +42,19 @@ class _GetStartedButtonState extends State<GetStartedButton> {
 
     try {
       final emailauth = EmailAuthController(client.modules.auth);
-      final session = await emailauth.signIn(
-          widget.emailController.text, widget.passwordController.text);
+      final session = await emailauth.signIn(email, pass);
 
       if (session == null) {
-        setState(() => _error = "Falha ao autenticar");
+        _triggerError("Usuário ou senha inválidos.");
       } else {
-        // Aqui você já pode navegar para a Home, por exemplo
         if (mounted) {
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const homePage()));
+            MaterialPageRoute(builder: (context) => const homePage()),
+          );
         }
       }
     } catch (e) {
-      setState(() => _error = "Erro: $e");
+      _triggerError("Erro ao autenticar.");
     } finally {
       if (mounted) {
         setState(() => _loading = false);
@@ -51,14 +62,16 @@ class _GetStartedButtonState extends State<GetStartedButton> {
     }
   }
 
+   void _triggerError(String message) {
+    setState(() => _error = message);
+    if (widget.onError != null) widget.onError!(message);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 300),
-      tween: Tween(begin: 1, end: elementsOpacity),
-      builder: (_, value, __) => Opacity(
-        opacity: value,
-        child: SizedBox(
+    return Column(
+      children: [
+        SizedBox(
           width: 230,
           height: 75,
           child: ElevatedButton(
@@ -94,7 +107,24 @@ class _GetStartedButtonState extends State<GetStartedButton> {
                   ),
           ),
         ),
-      ),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          child: _error == null
+              ? const SizedBox.shrink()
+              : Padding(
+                  key: ValueKey(_error),
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Text(
+                    _error!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+        ),
+      ],
     );
   }
 }

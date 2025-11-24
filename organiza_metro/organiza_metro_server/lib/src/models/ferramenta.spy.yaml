@@ -2,18 +2,17 @@ class: Ferramenta
 table: ferramenta
 fields:
   nome: String? #por enquanto vai poder ser null para fim de debug
-  codigoSap: int # Corrigido
+  codigoSap: int 
   descricao: String
   
   patrimonio: String?
   
-  quantidade: int?
-  emUso: bool # Corrigido
+  emUso: bool 
   divisao: String
   tipo: TipoMaterial?, relation
   status: String
-  dataAquisicao: DateTime # Corrigido
-  dataUltimaMovimentacao: DateTime? # Corrigido
+  dataAquisicao: DateTime 
+  dataUltimaMovimentacao: DateTime? 
 
   unidadeMedida: UnidadeMedida?, relation
 

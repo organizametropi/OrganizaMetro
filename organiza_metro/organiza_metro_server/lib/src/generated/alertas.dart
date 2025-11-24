@@ -21,8 +21,8 @@ import 'ferramenta.dart' as _i6;
 abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Alerta._({
     this.id,
-    this.usuarioIdId,
     this.usuarioId,
+    this.usuario,
     required this.tipo,
     required this.titulo,
     required this.mensagem,
@@ -45,8 +45,8 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   factory Alerta({
     int? id,
-    int? usuarioIdId,
-    _i2.UserInfo? usuarioId,
+    int? usuarioId,
+    _i2.UserInfo? usuario,
     required String tipo,
     required String titulo,
     required String mensagem,
@@ -67,11 +67,11 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   factory Alerta.fromJson(Map<String, dynamic> jsonSerialization) {
     return Alerta(
       id: jsonSerialization['id'] as int?,
-      usuarioIdId: jsonSerialization['usuarioIdId'] as int?,
-      usuarioId: jsonSerialization['usuarioId'] == null
+      usuarioId: jsonSerialization['usuarioId'] as int?,
+      usuario: jsonSerialization['usuario'] == null
           ? null
           : _i2.UserInfo.fromJson(
-              (jsonSerialization['usuarioId'] as Map<String, dynamic>)),
+              (jsonSerialization['usuario'] as Map<String, dynamic>)),
       tipo: jsonSerialization['tipo'] as String,
       titulo: jsonSerialization['titulo'] as String,
       mensagem: jsonSerialization['mensagem'] as String,
@@ -110,9 +110,9 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   int? id;
 
-  int? usuarioIdId;
+  int? usuarioId;
 
-  _i2.UserInfo? usuarioId;
+  _i2.UserInfo? usuario;
 
   String tipo;
 
@@ -152,8 +152,8 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @_i1.useResult
   Alerta copyWith({
     int? id,
-    int? usuarioIdId,
-    _i2.UserInfo? usuarioId,
+    int? usuarioId,
+    _i2.UserInfo? usuario,
     String? tipo,
     String? titulo,
     String? mensagem,
@@ -174,8 +174,8 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (usuarioIdId != null) 'usuarioIdId': usuarioIdId,
-      if (usuarioId != null) 'usuarioId': usuarioId?.toJson(),
+      if (usuarioId != null) 'usuarioId': usuarioId,
+      if (usuario != null) 'usuario': usuario?.toJson(),
       'tipo': tipo,
       'titulo': titulo,
       'mensagem': mensagem,
@@ -198,8 +198,8 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      if (usuarioIdId != null) 'usuarioIdId': usuarioIdId,
-      if (usuarioId != null) 'usuarioId': usuarioId?.toJsonForProtocol(),
+      if (usuarioId != null) 'usuarioId': usuarioId,
+      if (usuario != null) 'usuario': usuario?.toJsonForProtocol(),
       'tipo': tipo,
       'titulo': titulo,
       'mensagem': mensagem,
@@ -220,14 +220,14 @@ abstract class Alerta implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   }
 
   static AlertaInclude include({
-    _i2.UserInfoInclude? usuarioId,
+    _i2.UserInfoInclude? usuario,
     _i3.CalibracaoInclude? calibracao,
     _i4.MovimentacaoInclude? movimentacao,
     _i5.MaterialInclude? material,
     _i6.FerramentaInclude? ferramenta,
   }) {
     return AlertaInclude._(
-      usuarioId: usuarioId,
+      usuario: usuario,
       calibracao: calibracao,
       movimentacao: movimentacao,
       material: material,
@@ -266,8 +266,8 @@ class _Undefined {}
 class _AlertaImpl extends Alerta {
   _AlertaImpl({
     int? id,
-    int? usuarioIdId,
-    _i2.UserInfo? usuarioId,
+    int? usuarioId,
+    _i2.UserInfo? usuario,
     required String tipo,
     required String titulo,
     required String mensagem,
@@ -285,8 +285,8 @@ class _AlertaImpl extends Alerta {
     bool? ativo,
   }) : super._(
           id: id,
-          usuarioIdId: usuarioIdId,
           usuarioId: usuarioId,
+          usuario: usuario,
           tipo: tipo,
           titulo: titulo,
           mensagem: mensagem,
@@ -310,8 +310,8 @@ class _AlertaImpl extends Alerta {
   @override
   Alerta copyWith({
     Object? id = _Undefined,
-    Object? usuarioIdId = _Undefined,
     Object? usuarioId = _Undefined,
+    Object? usuario = _Undefined,
     String? tipo,
     String? titulo,
     String? mensagem,
@@ -330,9 +330,8 @@ class _AlertaImpl extends Alerta {
   }) {
     return Alerta(
       id: id is int? ? id : this.id,
-      usuarioIdId: usuarioIdId is int? ? usuarioIdId : this.usuarioIdId,
-      usuarioId:
-          usuarioId is _i2.UserInfo? ? usuarioId : this.usuarioId?.copyWith(),
+      usuarioId: usuarioId is int? ? usuarioId : this.usuarioId,
+      usuario: usuario is _i2.UserInfo? ? usuario : this.usuario?.copyWith(),
       tipo: tipo ?? this.tipo,
       titulo: titulo ?? this.titulo,
       mensagem: mensagem ?? this.mensagem,
@@ -363,8 +362,8 @@ class _AlertaImpl extends Alerta {
 
 class AlertaTable extends _i1.Table<int?> {
   AlertaTable({super.tableRelation}) : super(tableName: 'alertas') {
-    usuarioIdId = _i1.ColumnInt(
-      'usuarioIdId',
+    usuarioId = _i1.ColumnInt(
+      'usuarioId',
       this,
     );
     tipo = _i1.ColumnString(
@@ -417,9 +416,9 @@ class AlertaTable extends _i1.Table<int?> {
     );
   }
 
-  late final _i1.ColumnInt usuarioIdId;
+  late final _i1.ColumnInt usuarioId;
 
-  _i2.UserInfoTable? _usuarioId;
+  _i2.UserInfoTable? _usuario;
 
   late final _i1.ColumnString tipo;
 
@@ -451,17 +450,17 @@ class AlertaTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool ativo;
 
-  _i2.UserInfoTable get usuarioId {
-    if (_usuarioId != null) return _usuarioId!;
-    _usuarioId = _i1.createRelationTable(
-      relationFieldName: 'usuarioId',
-      field: Alerta.t.usuarioIdId,
+  _i2.UserInfoTable get usuario {
+    if (_usuario != null) return _usuario!;
+    _usuario = _i1.createRelationTable(
+      relationFieldName: 'usuario',
+      field: Alerta.t.usuarioId,
       foreignField: _i2.UserInfo.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
           _i2.UserInfoTable(tableRelation: foreignTableRelation),
     );
-    return _usuarioId!;
+    return _usuario!;
   }
 
   _i3.CalibracaoTable get calibracao {
@@ -519,7 +518,7 @@ class AlertaTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
-        usuarioIdId,
+        usuarioId,
         tipo,
         titulo,
         mensagem,
@@ -535,8 +534,8 @@ class AlertaTable extends _i1.Table<int?> {
 
   @override
   _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'usuarioId') {
-      return usuarioId;
+    if (relationField == 'usuario') {
+      return usuario;
     }
     if (relationField == 'calibracao') {
       return calibracao;
@@ -556,20 +555,20 @@ class AlertaTable extends _i1.Table<int?> {
 
 class AlertaInclude extends _i1.IncludeObject {
   AlertaInclude._({
-    _i2.UserInfoInclude? usuarioId,
+    _i2.UserInfoInclude? usuario,
     _i3.CalibracaoInclude? calibracao,
     _i4.MovimentacaoInclude? movimentacao,
     _i5.MaterialInclude? material,
     _i6.FerramentaInclude? ferramenta,
   }) {
-    _usuarioId = usuarioId;
+    _usuario = usuario;
     _calibracao = calibracao;
     _movimentacao = movimentacao;
     _material = material;
     _ferramenta = ferramenta;
   }
 
-  _i2.UserInfoInclude? _usuarioId;
+  _i2.UserInfoInclude? _usuario;
 
   _i3.CalibracaoInclude? _calibracao;
 
@@ -581,7 +580,7 @@ class AlertaInclude extends _i1.IncludeObject {
 
   @override
   Map<String, _i1.Include?> get includes => {
-        'usuarioId': _usuarioId,
+        'usuario': _usuario,
         'calibracao': _calibracao,
         'movimentacao': _movimentacao,
         'material': _material,
@@ -839,24 +838,24 @@ class AlertaAttachRowRepository {
   const AlertaAttachRowRepository._();
 
   /// Creates a relation between the given [Alerta] and [UserInfo]
-  /// by setting the [Alerta]'s foreign key `usuarioIdId` to refer to the [UserInfo].
-  Future<void> usuarioId(
+  /// by setting the [Alerta]'s foreign key `usuarioId` to refer to the [UserInfo].
+  Future<void> usuario(
     _i1.Session session,
     Alerta alerta,
-    _i2.UserInfo usuarioId, {
+    _i2.UserInfo usuario, {
     _i1.Transaction? transaction,
   }) async {
     if (alerta.id == null) {
       throw ArgumentError.notNull('alerta.id');
     }
-    if (usuarioId.id == null) {
-      throw ArgumentError.notNull('usuarioId.id');
+    if (usuario.id == null) {
+      throw ArgumentError.notNull('usuario.id');
     }
 
-    var $alerta = alerta.copyWith(usuarioIdId: usuarioId.id);
+    var $alerta = alerta.copyWith(usuarioId: usuario.id);
     await session.db.updateRow<Alerta>(
       $alerta,
-      columns: [Alerta.t.usuarioIdId],
+      columns: [Alerta.t.usuarioId],
       transaction: transaction,
     );
   }
@@ -957,12 +956,12 @@ class AlertaAttachRowRepository {
 class AlertaDetachRowRepository {
   const AlertaDetachRowRepository._();
 
-  /// Detaches the relation between this [Alerta] and the [UserInfo] set in `usuarioId`
-  /// by setting the [Alerta]'s foreign key `usuarioIdId` to `null`.
+  /// Detaches the relation between this [Alerta] and the [UserInfo] set in `usuario`
+  /// by setting the [Alerta]'s foreign key `usuarioId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
-  Future<void> usuarioId(
+  Future<void> usuario(
     _i1.Session session,
     Alerta alerta, {
     _i1.Transaction? transaction,
@@ -971,10 +970,10 @@ class AlertaDetachRowRepository {
       throw ArgumentError.notNull('alerta.id');
     }
 
-    var $alerta = alerta.copyWith(usuarioIdId: null);
+    var $alerta = alerta.copyWith(usuarioId: null);
     await session.db.updateRow<Alerta>(
       $alerta,
-      columns: [Alerta.t.usuarioIdId],
+      columns: [Alerta.t.usuarioId],
       transaction: transaction,
     );
   }

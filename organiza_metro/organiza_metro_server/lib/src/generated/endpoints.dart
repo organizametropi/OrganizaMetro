@@ -18,10 +18,13 @@ import '../endpoints/material_endpoint.dart' as _i6;
 import '../endpoints/movimentacao_endpoint.dart' as _i7;
 import '../endpoints/relatorios_endpoint.dart' as _i8;
 import '../endpoints/user_data_endpoint.dart' as _i9;
-import '../greeting_endpoint.dart' as _i10;
-import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
+import 'package:organiza_metro_server/src/generated/material_edit_dto.dart'
+    as _i10;
+import 'package:organiza_metro_server/src/generated/ferramenta_edit_dto.dart'
     as _i11;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i12;
+import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
+    as _i12;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i13;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -75,17 +78,171 @@ class Endpoints extends _i1.EndpointDispatch {
           'userData',
           null,
         ),
-      'greeting': _i10.GreetingEndpoint()
-        ..initialize(
-          server,
-          'greeting',
-          null,
-        ),
     };
     connectors['admin'] = _i1.EndpointConnector(
       name: 'admin',
       endpoint: endpoints['admin']!,
       methodConnectors: {
+        'addMaterial': _i1.MethodConnector(
+          name: 'addMaterial',
+          params: {
+            'dto': _i1.ParameterDescription(
+              name: 'dto',
+              type: _i1.getType<_i10.MaterialEditDto>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).addMaterial(
+            session,
+            params['dto'],
+          ),
+        ),
+        'addFerramenta': _i1.MethodConnector(
+          name: 'addFerramenta',
+          params: {
+            'dto': _i1.ParameterDescription(
+              name: 'dto',
+              type: _i1.getType<_i11.FerramentaEditDto>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).addFerramenta(
+            session,
+            params['dto'],
+          ),
+        ),
+        'addEmployee': _i1.MethodConnector(
+          name: 'addEmployee',
+          params: {
+            'nome': _i1.ParameterDescription(
+              name: 'nome',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'email': _i1.ParameterDescription(
+              name: 'email',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'senha': _i1.ParameterDescription(
+              name: 'senha',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'registro': _i1.ParameterDescription(
+              name: 'registro',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'telefone': _i1.ParameterDescription(
+              name: 'telefone',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'area': _i1.ParameterDescription(
+              name: 'area',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'isAdmin': _i1.ParameterDescription(
+              name: 'isAdmin',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).addEmployee(
+            session,
+            params['nome'],
+            params['email'],
+            params['senha'],
+            params['registro'],
+            params['telefone'],
+            params['area'],
+            params['isAdmin'],
+          ),
+        ),
+        'getTodasFerramentas': _i1.MethodConnector(
+          name: 'getTodasFerramentas',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getTodasFerramentas(session),
+        ),
+        'getFerramentasPaginadas': _i1.MethodConnector(
+          name: 'getFerramentasPaginadas',
+          params: {
+            'offset': _i1.ParameterDescription(
+              name: 'offset',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).getFerramentasPaginadas(
+            session,
+            params['offset'],
+            params['limit'],
+          ),
+        ),
+        'updateFerramenta': _i1.MethodConnector(
+          name: 'updateFerramenta',
+          params: {
+            'update': _i1.ParameterDescription(
+              name: 'update',
+              type: _i1.getType<_i11.FerramentaEditDto>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).updateFerramenta(
+            session,
+            params['update'],
+          ),
+        ),
+        'deleteFerramenta': _i1.MethodConnector(
+          name: 'deleteFerramenta',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).deleteFerramenta(
+            session,
+            params['id'],
+          ),
+        ),
         'getAdminAlerts': _i1.MethodConnector(
           name: 'getAdminAlerts',
           params: {},
@@ -94,7 +251,211 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['admin'] as _i2.AdminEndpoint).getAdminAlerts(session),
-        )
+        ),
+        'updateMaterial': _i1.MethodConnector(
+          name: 'updateMaterial',
+          params: {
+            'update': _i1.ParameterDescription(
+              name: 'update',
+              type: _i1.getType<_i10.MaterialEditDto>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).updateMaterial(
+            session,
+            params['update'],
+          ),
+        ),
+        'deleteMaterial': _i1.MethodConnector(
+          name: 'deleteMaterial',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).deleteMaterial(
+            session,
+            params['id'],
+          ),
+        ),
+        'getTodosMateriais': _i1.MethodConnector(
+          name: 'getTodosMateriais',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getTodosMateriais(session),
+        ),
+        'getTiposMateriais': _i1.MethodConnector(
+          name: 'getTiposMateriais',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getTiposMateriais(session),
+        ),
+        'getUnidadesMedida': _i1.MethodConnector(
+          name: 'getUnidadesMedida',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getUnidadesMedida(session),
+        ),
+        'getBases': _i1.MethodConnector(
+          name: 'getBases',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).getBases(session),
+        ),
+        'getVeiculos': _i1.MethodConnector(
+          name: 'getVeiculos',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).getVeiculos(session),
+        ),
+        'getFerramentasComPatrimonio': _i1.MethodConnector(
+          name: 'getFerramentasComPatrimonio',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getFerramentasComPatrimonio(session),
+        ),
+        'getCalibracoesAtivas': _i1.MethodConnector(
+          name: 'getCalibracoesAtivas',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getCalibracoesAtivas(session),
+        ),
+        'addCalibracao': _i1.MethodConnector(
+          name: 'addCalibracao',
+          params: {
+            'ferramentaId': _i1.ParameterDescription(
+              name: 'ferramentaId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'dataCalibracao': _i1.ParameterDescription(
+              name: 'dataCalibracao',
+              type: _i1.getType<DateTime>(),
+              nullable: false,
+            ),
+            'validadeCalibracao': _i1.ParameterDescription(
+              name: 'validadeCalibracao',
+              type: _i1.getType<DateTime>(),
+              nullable: false,
+            ),
+            'status': _i1.ParameterDescription(
+              name: 'status',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).addCalibracao(
+            session,
+            params['ferramentaId'],
+            params['dataCalibracao'],
+            params['validadeCalibracao'],
+            params['status'],
+          ),
+        ),
+        'removeCalibracao': _i1.MethodConnector(
+          name: 'removeCalibracao',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).removeCalibracao(
+            session,
+            params['id'],
+          ),
+        ),
+        'getAllEmployees': _i1.MethodConnector(
+          name: 'getAllEmployees',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint)
+                  .getAllEmployees(session),
+        ),
+        'getAuthUsersByIds': _i1.MethodConnector(
+          name: 'getAuthUsersByIds',
+          params: {
+            'ids': _i1.ParameterDescription(
+              name: 'ids',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).getAuthUsersByIds(
+            session,
+            params['ids'],
+          ),
+        ),
+        'removeEmployee': _i1.MethodConnector(
+          name: 'removeEmployee',
+          params: {
+            'localUserInfoId': _i1.ParameterDescription(
+              name: 'localUserInfoId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).removeEmployee(
+            session,
+            params['localUserInfoId'],
+          ),
+        ),
       },
     );
     connectors['authUtils'] = _i1.EndpointConnector(
@@ -162,6 +523,16 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['ferramenta'] as _i5.FerramentaEndpoint)
                   .getMinhasFerramentas(session),
         ),
+        'getDisponiveis': _i1.MethodConnector(
+          name: 'getDisponiveis',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['ferramenta'] as _i5.FerramentaEndpoint)
+                  .getDisponiveis(session),
+        ),
       },
     );
     connectors['material'] = _i1.EndpointConnector(
@@ -177,7 +548,32 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['material'] as _i6.MaterialEndpoint)
                   .getEstoque(session),
-        )
+        ),
+        'getMateriaisByLocation': _i1.MethodConnector(
+          name: 'getMateriaisByLocation',
+          params: {
+            'baseId': _i1.ParameterDescription(
+              name: 'baseId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+            'veiculoId': _i1.ParameterDescription(
+              name: 'veiculoId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['material'] as _i6.MaterialEndpoint)
+                  .getMateriaisByLocation(
+            session,
+            baseId: params['baseId'],
+            veiculoId: params['veiculoId'],
+          ),
+        ),
       },
     );
     connectors['movimentacao'] = _i1.EndpointConnector(
@@ -189,7 +585,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'itens': _i1.ParameterDescription(
               name: 'itens',
-              type: _i1.getType<List<_i11.RequisicaoItem>>(),
+              type: _i1.getType<List<_i12.RequisicaoItem>>(),
               nullable: false,
             ),
             'modalidadeEntrega': _i1.ParameterDescription(
@@ -386,6 +782,25 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
                   .getInstrumentosEmUso(session),
         ),
+        'getLocalUserInfosByUserIds': _i1.MethodConnector(
+          name: 'getLocalUserInfosByUserIds',
+          params: {
+            'userIds': _i1.ParameterDescription(
+              name: 'userIds',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getLocalUserInfosByUserIds(
+            session,
+            params['userIds'],
+          ),
+        ),
         'getConsumoDetalhadoPorPeriodo': _i1.MethodConnector(
           name: 'getConsumoDetalhadoPorPeriodo',
           params: {
@@ -410,6 +825,26 @@ class Endpoints extends _i1.EndpointDispatch {
             dataInicio: params['dataInicio'],
             dataFim: params['dataFim'],
           ),
+        ),
+        'getMovimentacoes': _i1.MethodConnector(
+          name: 'getMovimentacoes',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getMovimentacoes(session),
+        ),
+        'getCalibracoesVencidas': _i1.MethodConnector(
+          name: 'getCalibracoesVencidas',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['relatorios'] as _i8.RelatoriosEndpoint)
+                  .getCalibracoesVencidas(session),
         ),
       },
     );
@@ -439,30 +874,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    connectors['greeting'] = _i1.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
-      methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
-          params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['greeting'] as _i10.GreetingEndpoint).hello(
-            session,
-            params['name'],
-          ),
-        )
-      },
-    );
-    modules['serverpod_auth'] = _i12.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i13.Endpoints()..initializeEndpoints(server);
   }
 }

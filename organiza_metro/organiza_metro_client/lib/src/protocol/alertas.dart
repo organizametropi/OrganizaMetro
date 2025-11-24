@@ -19,8 +19,8 @@ import 'ferramenta.dart' as _i6;
 abstract class Alerta implements _i1.SerializableModel {
   Alerta._({
     this.id,
-    this.usuarioIdId,
     this.usuarioId,
+    this.usuario,
     required this.tipo,
     required this.titulo,
     required this.mensagem,
@@ -43,8 +43,8 @@ abstract class Alerta implements _i1.SerializableModel {
 
   factory Alerta({
     int? id,
-    int? usuarioIdId,
-    _i2.UserInfo? usuarioId,
+    int? usuarioId,
+    _i2.UserInfo? usuario,
     required String tipo,
     required String titulo,
     required String mensagem,
@@ -65,11 +65,11 @@ abstract class Alerta implements _i1.SerializableModel {
   factory Alerta.fromJson(Map<String, dynamic> jsonSerialization) {
     return Alerta(
       id: jsonSerialization['id'] as int?,
-      usuarioIdId: jsonSerialization['usuarioIdId'] as int?,
-      usuarioId: jsonSerialization['usuarioId'] == null
+      usuarioId: jsonSerialization['usuarioId'] as int?,
+      usuario: jsonSerialization['usuario'] == null
           ? null
           : _i2.UserInfo.fromJson(
-              (jsonSerialization['usuarioId'] as Map<String, dynamic>)),
+              (jsonSerialization['usuario'] as Map<String, dynamic>)),
       tipo: jsonSerialization['tipo'] as String,
       titulo: jsonSerialization['titulo'] as String,
       mensagem: jsonSerialization['mensagem'] as String,
@@ -106,9 +106,9 @@ abstract class Alerta implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int? usuarioIdId;
+  int? usuarioId;
 
-  _i2.UserInfo? usuarioId;
+  _i2.UserInfo? usuario;
 
   String tipo;
 
@@ -145,8 +145,8 @@ abstract class Alerta implements _i1.SerializableModel {
   @_i1.useResult
   Alerta copyWith({
     int? id,
-    int? usuarioIdId,
-    _i2.UserInfo? usuarioId,
+    int? usuarioId,
+    _i2.UserInfo? usuario,
     String? tipo,
     String? titulo,
     String? mensagem,
@@ -167,8 +167,8 @@ abstract class Alerta implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (usuarioIdId != null) 'usuarioIdId': usuarioIdId,
-      if (usuarioId != null) 'usuarioId': usuarioId?.toJson(),
+      if (usuarioId != null) 'usuarioId': usuarioId,
+      if (usuario != null) 'usuario': usuario?.toJson(),
       'tipo': tipo,
       'titulo': titulo,
       'mensagem': mensagem,
@@ -198,8 +198,8 @@ class _Undefined {}
 class _AlertaImpl extends Alerta {
   _AlertaImpl({
     int? id,
-    int? usuarioIdId,
-    _i2.UserInfo? usuarioId,
+    int? usuarioId,
+    _i2.UserInfo? usuario,
     required String tipo,
     required String titulo,
     required String mensagem,
@@ -217,8 +217,8 @@ class _AlertaImpl extends Alerta {
     bool? ativo,
   }) : super._(
           id: id,
-          usuarioIdId: usuarioIdId,
           usuarioId: usuarioId,
+          usuario: usuario,
           tipo: tipo,
           titulo: titulo,
           mensagem: mensagem,
@@ -242,8 +242,8 @@ class _AlertaImpl extends Alerta {
   @override
   Alerta copyWith({
     Object? id = _Undefined,
-    Object? usuarioIdId = _Undefined,
     Object? usuarioId = _Undefined,
+    Object? usuario = _Undefined,
     String? tipo,
     String? titulo,
     String? mensagem,
@@ -262,9 +262,8 @@ class _AlertaImpl extends Alerta {
   }) {
     return Alerta(
       id: id is int? ? id : this.id,
-      usuarioIdId: usuarioIdId is int? ? usuarioIdId : this.usuarioIdId,
-      usuarioId:
-          usuarioId is _i2.UserInfo? ? usuarioId : this.usuarioId?.copyWith(),
+      usuarioId: usuarioId is int? ? usuarioId : this.usuarioId,
+      usuario: usuario is _i2.UserInfo? ? usuario : this.usuario?.copyWith(),
       tipo: tipo ?? this.tipo,
       titulo: titulo ?? this.titulo,
       mensagem: mensagem ?? this.mensagem,

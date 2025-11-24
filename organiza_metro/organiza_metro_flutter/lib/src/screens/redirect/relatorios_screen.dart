@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:organiza_metro_flutter/src/page_subtitle.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/relatorios/relatorios_parts.dart';
 import 'package:provider/provider.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
@@ -21,16 +22,14 @@ class relatoriosPage extends StatelessWidget { // Transformado em StatelessWidge
           return Scaffold(
             appBar: const MyAppBar(),
             body: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Relatórios e Dashboards 📊',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                  ),
-                  const SizedBox(height: 20),
+                 PageSubtitleBar(title: 'Relatórios e Análises'),
 
+                  const SizedBox(height: 20),
+    
                   // 🚨 1. SELECTOR PRINCIPAL (Dashboard vs Gerencial)
                   MainSelector(controller: controller),
                   const SizedBox(height: 20),

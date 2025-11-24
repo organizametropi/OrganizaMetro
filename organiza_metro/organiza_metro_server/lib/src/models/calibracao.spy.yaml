@@ -3,6 +3,6 @@ table: calibracao
 fields:
   ferramenta: Ferramenta?, relation
     
-  dataCalibracao: DateTime # Corrigido para camelCase
-  validadeCalibracao: DateTime # Corrigido para camelCase
+  dataCalibracao: DateTime 
+  validadeCalibracao: DateTime 
   status: String

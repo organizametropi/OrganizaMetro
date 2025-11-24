@@ -12,38 +12,47 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
-import 'greeting.dart' as _i4;
-import 'alertas.dart' as _i5;
-import 'base.dart' as _i6;
-import 'calibracao.dart' as _i7;
-import 'consumo_mensal.dart' as _i8;
-import 'consumo_periodo_detalhado.dart' as _i9;
-import 'ferramenta.dart' as _i10;
+import 'alertas.dart' as _i4;
+import 'base.dart' as _i5;
+import 'calibracao.dart' as _i6;
+import 'consumo_mensal.dart' as _i7;
+import 'consumo_periodo_detalhado.dart' as _i8;
+import 'ferramenta.dart' as _i9;
+import 'ferramenta_edit_dto.dart' as _i10;
 import 'material.dart' as _i11;
-import 'movimentacao.dart' as _i12;
-import 'requisicao_items.dart' as _i13;
-import 'tipo_material.dart' as _i14;
-import 'unidade_medida.dart' as _i15;
-import 'user_info.dart' as _i16;
-import 'veiculo.dart' as _i17;
-import 'package:organiza_metro_server/src/generated/alertas.dart' as _i18;
+import 'material_edit_dto.dart' as _i12;
+import 'movimentacao.dart' as _i13;
+import 'requisicao_items.dart' as _i14;
+import 'tipo_material.dart' as _i15;
+import 'unidade_medida.dart' as _i16;
+import 'user_info.dart' as _i17;
+import 'veiculo.dart' as _i18;
 import 'package:organiza_metro_server/src/generated/ferramenta.dart' as _i19;
-import 'package:organiza_metro_server/src/generated/material.dart' as _i20;
-import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
-    as _i21;
-import 'package:organiza_metro_server/src/generated/consumo_mensal.dart'
-    as _i22;
-import 'package:organiza_metro_server/src/generated/consumo_periodo_detalhado.dart'
+import 'package:organiza_metro_server/src/generated/alertas.dart' as _i20;
+import 'package:organiza_metro_server/src/generated/material.dart' as _i21;
+import 'package:organiza_metro_server/src/generated/tipo_material.dart' as _i22;
+import 'package:organiza_metro_server/src/generated/unidade_medida.dart'
     as _i23;
-import 'package:organiza_metro_server/src/generated/movimentacao.dart' as _i24;
-export 'greeting.dart';
+import 'package:organiza_metro_server/src/generated/base.dart' as _i24;
+import 'package:organiza_metro_server/src/generated/veiculo.dart' as _i25;
+import 'package:organiza_metro_server/src/generated/calibracao.dart' as _i26;
+import 'package:organiza_metro_server/src/generated/user_info.dart' as _i27;
+import 'package:organiza_metro_server/src/generated/requisicao_items.dart'
+    as _i28;
+import 'package:organiza_metro_server/src/generated/consumo_mensal.dart'
+    as _i29;
+import 'package:organiza_metro_server/src/generated/consumo_periodo_detalhado.dart'
+    as _i30;
+import 'package:organiza_metro_server/src/generated/movimentacao.dart' as _i31;
 export 'alertas.dart';
 export 'base.dart';
 export 'calibracao.dart';
 export 'consumo_mensal.dart';
 export 'consumo_periodo_detalhado.dart';
 export 'ferramenta.dart';
+export 'ferramenta_edit_dto.dart';
 export 'material.dart';
+export 'material_edit_dto.dart';
 export 'movimentacao.dart';
 export 'requisicao_items.dart';
 export 'tipo_material.dart';
@@ -73,7 +82,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'alertas_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'usuarioIdId',
+          name: 'usuarioId',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
@@ -152,7 +161,7 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'alertas_fk_0',
-          columns: ['usuarioIdId'],
+          columns: ['usuarioId'],
           referenceTable: 'serverpod_user_info',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
@@ -388,12 +397,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'quantidade',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'emUso',
@@ -1187,121 +1190,160 @@ class Protocol extends _i1.SerializationManagerServer {
     Type? t,
   ]) {
     t ??= T;
-    if (t == _i4.Greeting) {
-      return _i4.Greeting.fromJson(data) as T;
+    if (t == _i4.Alerta) {
+      return _i4.Alerta.fromJson(data) as T;
     }
-    if (t == _i5.Alerta) {
-      return _i5.Alerta.fromJson(data) as T;
+    if (t == _i5.Base) {
+      return _i5.Base.fromJson(data) as T;
     }
-    if (t == _i6.Base) {
-      return _i6.Base.fromJson(data) as T;
+    if (t == _i6.Calibracao) {
+      return _i6.Calibracao.fromJson(data) as T;
     }
-    if (t == _i7.Calibracao) {
-      return _i7.Calibracao.fromJson(data) as T;
+    if (t == _i7.ConsumoMensal) {
+      return _i7.ConsumoMensal.fromJson(data) as T;
     }
-    if (t == _i8.ConsumoMensal) {
-      return _i8.ConsumoMensal.fromJson(data) as T;
+    if (t == _i8.ConsumoPeriodoDetalhado) {
+      return _i8.ConsumoPeriodoDetalhado.fromJson(data) as T;
     }
-    if (t == _i9.ConsumoPeriodoDetalhado) {
-      return _i9.ConsumoPeriodoDetalhado.fromJson(data) as T;
+    if (t == _i9.Ferramenta) {
+      return _i9.Ferramenta.fromJson(data) as T;
     }
-    if (t == _i10.Ferramenta) {
-      return _i10.Ferramenta.fromJson(data) as T;
+    if (t == _i10.FerramentaEditDto) {
+      return _i10.FerramentaEditDto.fromJson(data) as T;
     }
     if (t == _i11.Material) {
       return _i11.Material.fromJson(data) as T;
     }
-    if (t == _i12.Movimentacao) {
-      return _i12.Movimentacao.fromJson(data) as T;
+    if (t == _i12.MaterialEditDto) {
+      return _i12.MaterialEditDto.fromJson(data) as T;
     }
-    if (t == _i13.RequisicaoItem) {
-      return _i13.RequisicaoItem.fromJson(data) as T;
+    if (t == _i13.Movimentacao) {
+      return _i13.Movimentacao.fromJson(data) as T;
     }
-    if (t == _i14.TipoMaterial) {
-      return _i14.TipoMaterial.fromJson(data) as T;
+    if (t == _i14.RequisicaoItem) {
+      return _i14.RequisicaoItem.fromJson(data) as T;
     }
-    if (t == _i15.UnidadeMedida) {
-      return _i15.UnidadeMedida.fromJson(data) as T;
+    if (t == _i15.TipoMaterial) {
+      return _i15.TipoMaterial.fromJson(data) as T;
     }
-    if (t == _i16.LocalUserInfo) {
-      return _i16.LocalUserInfo.fromJson(data) as T;
+    if (t == _i16.UnidadeMedida) {
+      return _i16.UnidadeMedida.fromJson(data) as T;
     }
-    if (t == _i17.Veiculo) {
-      return _i17.Veiculo.fromJson(data) as T;
+    if (t == _i17.LocalUserInfo) {
+      return _i17.LocalUserInfo.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i4.Greeting?>()) {
-      return (data != null ? _i4.Greeting.fromJson(data) : null) as T;
+    if (t == _i18.Veiculo) {
+      return _i18.Veiculo.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.Alerta?>()) {
-      return (data != null ? _i5.Alerta.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.Alerta?>()) {
+      return (data != null ? _i4.Alerta.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.Base?>()) {
-      return (data != null ? _i6.Base.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.Base?>()) {
+      return (data != null ? _i5.Base.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Calibracao?>()) {
-      return (data != null ? _i7.Calibracao.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.Calibracao?>()) {
+      return (data != null ? _i6.Calibracao.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.ConsumoMensal?>()) {
-      return (data != null ? _i8.ConsumoMensal.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.ConsumoMensal?>()) {
+      return (data != null ? _i7.ConsumoMensal.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.ConsumoPeriodoDetalhado?>()) {
-      return (data != null ? _i9.ConsumoPeriodoDetalhado.fromJson(data) : null)
+    if (t == _i1.getType<_i8.ConsumoPeriodoDetalhado?>()) {
+      return (data != null ? _i8.ConsumoPeriodoDetalhado.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i10.Ferramenta?>()) {
-      return (data != null ? _i10.Ferramenta.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.Ferramenta?>()) {
+      return (data != null ? _i9.Ferramenta.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i10.FerramentaEditDto?>()) {
+      return (data != null ? _i10.FerramentaEditDto.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i11.Material?>()) {
       return (data != null ? _i11.Material.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.Movimentacao?>()) {
-      return (data != null ? _i12.Movimentacao.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i12.MaterialEditDto?>()) {
+      return (data != null ? _i12.MaterialEditDto.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i13.RequisicaoItem?>()) {
-      return (data != null ? _i13.RequisicaoItem.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i13.Movimentacao?>()) {
+      return (data != null ? _i13.Movimentacao.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i14.TipoMaterial?>()) {
-      return (data != null ? _i14.TipoMaterial.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i14.RequisicaoItem?>()) {
+      return (data != null ? _i14.RequisicaoItem.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i15.UnidadeMedida?>()) {
-      return (data != null ? _i15.UnidadeMedida.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.TipoMaterial?>()) {
+      return (data != null ? _i15.TipoMaterial.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.LocalUserInfo?>()) {
-      return (data != null ? _i16.LocalUserInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.UnidadeMedida?>()) {
+      return (data != null ? _i16.UnidadeMedida.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.Veiculo?>()) {
-      return (data != null ? _i17.Veiculo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.LocalUserInfo?>()) {
+      return (data != null ? _i17.LocalUserInfo.fromJson(data) : null) as T;
     }
-    if (t == List<_i18.Alerta>) {
-      return (data as List).map((e) => deserialize<_i18.Alerta>(e)).toList()
-          as T;
+    if (t == _i1.getType<_i18.Veiculo?>()) {
+      return (data != null ? _i18.Veiculo.fromJson(data) : null) as T;
     }
     if (t == List<_i19.Ferramenta>) {
       return (data as List).map((e) => deserialize<_i19.Ferramenta>(e)).toList()
           as T;
     }
-    if (t == List<_i20.Material>) {
-      return (data as List).map((e) => deserialize<_i20.Material>(e)).toList()
+    if (t == List<_i20.Alerta>) {
+      return (data as List).map((e) => deserialize<_i20.Alerta>(e)).toList()
           as T;
     }
-    if (t == List<_i21.RequisicaoItem>) {
+    if (t == List<_i21.Material>) {
+      return (data as List).map((e) => deserialize<_i21.Material>(e)).toList()
+          as T;
+    }
+    if (t == List<_i22.TipoMaterial>) {
       return (data as List)
-          .map((e) => deserialize<_i21.RequisicaoItem>(e))
+          .map((e) => deserialize<_i22.TipoMaterial>(e))
           .toList() as T;
     }
-    if (t == List<_i22.ConsumoMensal>) {
+    if (t == List<_i23.UnidadeMedida>) {
       return (data as List)
-          .map((e) => deserialize<_i22.ConsumoMensal>(e))
+          .map((e) => deserialize<_i23.UnidadeMedida>(e))
           .toList() as T;
     }
-    if (t == List<_i23.ConsumoPeriodoDetalhado>) {
+    if (t == List<_i24.Base>) {
+      return (data as List).map((e) => deserialize<_i24.Base>(e)).toList() as T;
+    }
+    if (t == List<_i25.Veiculo>) {
+      return (data as List).map((e) => deserialize<_i25.Veiculo>(e)).toList()
+          as T;
+    }
+    if (t == List<_i26.Calibracao>) {
+      return (data as List).map((e) => deserialize<_i26.Calibracao>(e)).toList()
+          as T;
+    }
+    if (t == List<_i27.LocalUserInfo>) {
       return (data as List)
-          .map((e) => deserialize<_i23.ConsumoPeriodoDetalhado>(e))
+          .map((e) => deserialize<_i27.LocalUserInfo>(e))
           .toList() as T;
     }
-    if (t == List<_i24.Movimentacao>) {
+    if (t == List<_i3.UserInfo>) {
+      return (data as List).map((e) => deserialize<_i3.UserInfo>(e)).toList()
+          as T;
+    }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
+    if (t == List<_i28.RequisicaoItem>) {
       return (data as List)
-          .map((e) => deserialize<_i24.Movimentacao>(e))
+          .map((e) => deserialize<_i28.RequisicaoItem>(e))
+          .toList() as T;
+    }
+    if (t == List<_i29.ConsumoMensal>) {
+      return (data as List)
+          .map((e) => deserialize<_i29.ConsumoMensal>(e))
+          .toList() as T;
+    }
+    if (t == List<_i30.ConsumoPeriodoDetalhado>) {
+      return (data as List)
+          .map((e) => deserialize<_i30.ConsumoPeriodoDetalhado>(e))
+          .toList() as T;
+    }
+    if (t == List<_i31.Movimentacao>) {
+      return (data as List)
+          .map((e) => deserialize<_i31.Movimentacao>(e))
           .toList() as T;
     }
     try {
@@ -1317,46 +1359,49 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i4.Greeting) {
-      return 'Greeting';
-    }
-    if (data is _i5.Alerta) {
+    if (data is _i4.Alerta) {
       return 'Alerta';
     }
-    if (data is _i6.Base) {
+    if (data is _i5.Base) {
       return 'Base';
     }
-    if (data is _i7.Calibracao) {
+    if (data is _i6.Calibracao) {
       return 'Calibracao';
     }
-    if (data is _i8.ConsumoMensal) {
+    if (data is _i7.ConsumoMensal) {
       return 'ConsumoMensal';
     }
-    if (data is _i9.ConsumoPeriodoDetalhado) {
+    if (data is _i8.ConsumoPeriodoDetalhado) {
       return 'ConsumoPeriodoDetalhado';
     }
-    if (data is _i10.Ferramenta) {
+    if (data is _i9.Ferramenta) {
       return 'Ferramenta';
+    }
+    if (data is _i10.FerramentaEditDto) {
+      return 'FerramentaEditDto';
     }
     if (data is _i11.Material) {
       return 'Material';
     }
-    if (data is _i12.Movimentacao) {
+    if (data is _i12.MaterialEditDto) {
+      return 'MaterialEditDto';
+    }
+    if (data is _i13.Movimentacao) {
       return 'Movimentacao';
     }
-    if (data is _i13.RequisicaoItem) {
+    if (data is _i14.RequisicaoItem) {
       return 'RequisicaoItem';
     }
-    if (data is _i14.TipoMaterial) {
+    if (data is _i15.TipoMaterial) {
       return 'TipoMaterial';
     }
-    if (data is _i15.UnidadeMedida) {
+    if (data is _i16.UnidadeMedida) {
       return 'UnidadeMedida';
     }
-    if (data is _i16.LocalUserInfo) {
+    if (data is _i17.LocalUserInfo) {
       return 'LocalUserInfo';
     }
-    if (data is _i17.Veiculo) {
+    if (data is _i18.Veiculo) {
       return 'Veiculo';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1376,47 +1421,50 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
-    if (dataClassName == 'Greeting') {
-      return deserialize<_i4.Greeting>(data['data']);
-    }
     if (dataClassName == 'Alerta') {
-      return deserialize<_i5.Alerta>(data['data']);
+      return deserialize<_i4.Alerta>(data['data']);
     }
     if (dataClassName == 'Base') {
-      return deserialize<_i6.Base>(data['data']);
+      return deserialize<_i5.Base>(data['data']);
     }
     if (dataClassName == 'Calibracao') {
-      return deserialize<_i7.Calibracao>(data['data']);
+      return deserialize<_i6.Calibracao>(data['data']);
     }
     if (dataClassName == 'ConsumoMensal') {
-      return deserialize<_i8.ConsumoMensal>(data['data']);
+      return deserialize<_i7.ConsumoMensal>(data['data']);
     }
     if (dataClassName == 'ConsumoPeriodoDetalhado') {
-      return deserialize<_i9.ConsumoPeriodoDetalhado>(data['data']);
+      return deserialize<_i8.ConsumoPeriodoDetalhado>(data['data']);
     }
     if (dataClassName == 'Ferramenta') {
-      return deserialize<_i10.Ferramenta>(data['data']);
+      return deserialize<_i9.Ferramenta>(data['data']);
+    }
+    if (dataClassName == 'FerramentaEditDto') {
+      return deserialize<_i10.FerramentaEditDto>(data['data']);
     }
     if (dataClassName == 'Material') {
       return deserialize<_i11.Material>(data['data']);
     }
+    if (dataClassName == 'MaterialEditDto') {
+      return deserialize<_i12.MaterialEditDto>(data['data']);
+    }
     if (dataClassName == 'Movimentacao') {
-      return deserialize<_i12.Movimentacao>(data['data']);
+      return deserialize<_i13.Movimentacao>(data['data']);
     }
     if (dataClassName == 'RequisicaoItem') {
-      return deserialize<_i13.RequisicaoItem>(data['data']);
+      return deserialize<_i14.RequisicaoItem>(data['data']);
     }
     if (dataClassName == 'TipoMaterial') {
-      return deserialize<_i14.TipoMaterial>(data['data']);
+      return deserialize<_i15.TipoMaterial>(data['data']);
     }
     if (dataClassName == 'UnidadeMedida') {
-      return deserialize<_i15.UnidadeMedida>(data['data']);
+      return deserialize<_i16.UnidadeMedida>(data['data']);
     }
     if (dataClassName == 'LocalUserInfo') {
-      return deserialize<_i16.LocalUserInfo>(data['data']);
+      return deserialize<_i17.LocalUserInfo>(data['data']);
     }
     if (dataClassName == 'Veiculo') {
-      return deserialize<_i17.Veiculo>(data['data']);
+      return deserialize<_i18.Veiculo>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -1444,28 +1492,28 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i5.Alerta:
-        return _i5.Alerta.t;
-      case _i6.Base:
-        return _i6.Base.t;
-      case _i7.Calibracao:
-        return _i7.Calibracao.t;
-      case _i10.Ferramenta:
-        return _i10.Ferramenta.t;
+      case _i4.Alerta:
+        return _i4.Alerta.t;
+      case _i5.Base:
+        return _i5.Base.t;
+      case _i6.Calibracao:
+        return _i6.Calibracao.t;
+      case _i9.Ferramenta:
+        return _i9.Ferramenta.t;
       case _i11.Material:
         return _i11.Material.t;
-      case _i12.Movimentacao:
-        return _i12.Movimentacao.t;
-      case _i13.RequisicaoItem:
-        return _i13.RequisicaoItem.t;
-      case _i14.TipoMaterial:
-        return _i14.TipoMaterial.t;
-      case _i15.UnidadeMedida:
-        return _i15.UnidadeMedida.t;
-      case _i16.LocalUserInfo:
-        return _i16.LocalUserInfo.t;
-      case _i17.Veiculo:
-        return _i17.Veiculo.t;
+      case _i13.Movimentacao:
+        return _i13.Movimentacao.t;
+      case _i14.RequisicaoItem:
+        return _i14.RequisicaoItem.t;
+      case _i15.TipoMaterial:
+        return _i15.TipoMaterial.t;
+      case _i16.UnidadeMedida:
+        return _i16.UnidadeMedida.t;
+      case _i17.LocalUserInfo:
+        return _i17.LocalUserInfo.t;
+      case _i18.Veiculo:
+        return _i18.Veiculo.t;
     }
     return null;
   }

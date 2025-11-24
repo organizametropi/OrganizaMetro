@@ -16,7 +16,7 @@ enum RelatorioType {
 enum BaseOrVeiculo { base, veiculo }
 
 class RelatoriosController extends ChangeNotifier {
-  // Variáveis para navegação da página 
+  // Variáveis para navegação da página
   RelatorioMode _mode = RelatorioMode.dashboard;
   ItemType _itemType = ItemType.material;
   RelatorioType _relatorioAtivo = RelatorioType.movimentacoes;
@@ -47,18 +47,23 @@ class RelatoriosController extends ChangeNotifier {
   List<cli.Material> _materiaisEstoque = [];
   List<cli.Movimentacao> _movimentacoes = [];
   List<cli.Ferramenta> _ferramentasEstoque = [];
+  List<cli.Calibracao> _calibracoesVencidas = [];
 
+  List<cli.Calibracao> get calibracoesVencidas => _calibracoesVencidas;
   List<cli.Material> get materiaisEstoque => _materiaisEstoque;
   List<cli.Movimentacao> get movimentacoes => _movimentacoes;
   List<cli.Ferramenta> get ferramentas => _ferramentasEstoque;
   List<cli.ConsumoMensal> get topConsumidosMaterial => _topConsumidosMaterial;
-  List<cli.ConsumoMensal> get topConsumidosFerramenta => _topConsumidosFerramenta;
+  List<cli.ConsumoMensal> get topConsumidosFerramenta =>
+      _topConsumidosFerramenta;
 
   List<cli.ConsumoPeriodoDetalhado> _consumoPeriodoDetalhado = [];
-  List<cli.ConsumoPeriodoDetalhado> get consumoPeriodoDetalhado => _consumoPeriodoDetalhado;
+  List<cli.ConsumoPeriodoDetalhado> get consumoPeriodoDetalhado =>
+      _consumoPeriodoDetalhado;
   DateTime dataFiltroInicio = DateTime.now().subtract(const Duration(days: 30));
   DateTime dataFiltroFim = DateTime.now();
-
+  Map<int, cli.LocalUserInfo> _localUsersMap = {};
+  Map<int, cli.LocalUserInfo> get localUsersMap => _localUsersMap;
 
   RelatoriosController() {
     fetchData();
@@ -102,14 +107,14 @@ class RelatoriosController extends ChangeNotifier {
   }
 
   void setDataFiltroInicio(DateTime date) {
-        dataFiltroInicio = date;
-        fetchData(); 
-    }
+    dataFiltroInicio = date;
+    fetchData();
+  }
 
-    void setDataFiltroFim(DateTime date) {
-        dataFiltroFim = date;
-        fetchData();
-    }
+  void setDataFiltroFim(DateTime date) {
+    dataFiltroFim = date;
+    fetchData();
+  }
 
   Future<void> fetchData() async {
     _isLoading = true;
@@ -120,31 +125,54 @@ class RelatoriosController extends ChangeNotifier {
       if (_mode == RelatorioMode.dashboard) {
         if (_itemType == ItemType.material) {
           // PBI 3.1.1
-          _materiaisEstoque =
-              (await client.material.getEstoque()).cast<cli.Material>();
+          _materiaisEstoque = await client.admin.getTodosMateriais();
           // TODO: MOCK/Buscar os 10 mais consumidos
         } else if (_itemType == ItemType.ferramenta) {
           // PBI 3.1.3 (Busca de ferramentas em geral para filtrar no front)
-          // _ferramentas = await client.movimentacao.getFerramentasDisponiveis();
+          _ferramentasEstoque = await client.admin.getTodasFerramentas();
           // TODO: Mudar para endpoint que filtra calibração
         }
       } else {
         // RelatorioMode.gerencial
         // Seção Gerencial: Busca dados conforme o relatório ativo
         if (_relatorioAtivo == RelatorioType.movimentacoes) {
-          // TODO: Buscar movimentações com filtros de data
-          _movimentacoes = [];
+          // Buscar movimentações via endpoint
+          _movimentacoes = await client.relatorios.getMovimentacoes();
         }
         if (_relatorioAtivo == RelatorioType.calibracoesVencidas) {
-          // TODO: Buscar ferramentas com calibração vencida/próxima
-          _ferramentasEstoque = [];
+          // Buscar calibrações vencidas
+          _calibracoesVencidas =
+              await client.relatorios.getCalibracoesVencidas();
+        }
+        if (_relatorioAtivo == RelatorioType.instrumentosEmUso) {
+          // Buscar instrumentos em uso (retorna Ferramenta com empenhadoPara incluído)
+          _ferramentasEstoque = await client.relatorios.getInstrumentosEmUso();
+          // Também trazemos as movimentações para compor o histórico por ferramenta
+          _movimentacoes = await client.relatorios.getMovimentacoes();
+
+          final Set<int> userIds = {};
+          for (final f in _ferramentasEstoque) {
+            if (f.empenhadoPara?.id != null) userIds.add(f.empenhadoPara!.id!);
+          }
+          for (final m in _movimentacoes) {
+            if (m.usuario?.id != null) userIds.add(m.usuario!.id!);
+          }
+          final localUsers = await client.relatorios
+              .getLocalUserInfosByUserIds(userIds.toList());
+
+          final Map<int, cli.LocalUserInfo> localUsersMap = {
+            for (var u in localUsers) u.userInfoId: u
+          };
+
+          _localUsersMap = localUsersMap;
         }
         if (_relatorioAtivo == RelatorioType.consumo) {
-                // 🚨 Chamada ao novo endpoint
-                _consumoPeriodoDetalhado = await client.relatorios.getConsumoDetalhadoPorPeriodo(
-                    dataInicio: dataFiltroInicio,
-                    dataFim: dataFiltroFim,
-                );
+          // 🚨 Chamada ao novo endpoint
+          _consumoPeriodoDetalhado =
+              await client.relatorios.getConsumoDetalhadoPorPeriodo(
+            dataInicio: dataFiltroInicio,
+            dataFim: dataFiltroFim,
+          );
         }
       }
     } catch (e) {
@@ -180,10 +208,12 @@ class RelatoriosController extends ChangeNotifier {
     try {
       if (_itemType == ItemType.material) {
         _consumoPorBase = await client.relatorios.getConsmuoMaterialClBase();
-        _consumoPorVeiculo = await client.relatorios.getConsmuoMaterialClVeiculo();
+        _consumoPorVeiculo =
+            await client.relatorios.getConsmuoMaterialClVeiculo();
       } else if (_itemType == ItemType.ferramenta) {
         _consumoPorBase = await client.relatorios.getConsmuoFerramentaClBase();
-        _consumoPorVeiculo = await client.relatorios.getConsmuoFerramentaClVeiculo();
+        _consumoPorVeiculo =
+            await client.relatorios.getConsmuoFerramentaClVeiculo();
       }
     } catch (e) {
       print('Erro ao buscar Top Consumidos: $e');

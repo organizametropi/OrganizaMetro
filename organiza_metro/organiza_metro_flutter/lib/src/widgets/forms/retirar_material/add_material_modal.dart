@@ -6,8 +6,11 @@ import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
 class AddMaterialModal extends StatefulWidget {
   final Function(List<Map<String, dynamic>>) onMaterialsSelected;
+  final int? baseId;
+  final int? veiculoId;
 
-  const AddMaterialModal({required this.onMaterialsSelected});
+  const AddMaterialModal(
+      {required this.onMaterialsSelected, this.baseId, this.veiculoId});
 
   @override
   State<AddMaterialModal> createState() => __AddMaterialModalState();
@@ -34,6 +37,7 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
       return {
         "id": m.id,
         "codigoSap": m.codigoSap,
+        "nome": m.nome,
         "descricao": m.descricao,
         "quantidade": m.quantidade,
         "unidadeMedida": m.unidadeMedida?.codigo,
@@ -48,7 +52,16 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
   _mockPullData() async {
     setState(() => _isLoading = true);
     try {
-      final List<Material> materiais = await client.material.getEstoque();
+      final baseId = widget.baseId;
+      final veiculoId = widget.veiculoId;
+
+      List<Material> materiais;
+      if (baseId != null || veiculoId != null) {
+        materiais = await client.material
+            .getMateriaisByLocation(baseId: baseId, veiculoId: veiculoId);
+      } else {
+        materiais = await client.material.getEstoque();
+      }
 
       _sourceOriginal.clear();
       _sourceOriginal.addAll(_convertMateriasToMap(materiais));
@@ -72,13 +85,8 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
   void initState() {
     super.initState();
 
-    //setHeaders
     _headers = [
-      DatatableHeader(
-          text: "ID",
-          value: "id",
-          show: false,
-          sortable: false), // Adicionado sortable
+      DatatableHeader(text: "ID", value: "id", show: false, sortable: false),
       DatatableHeader(
           text: "CÓDIGO SAP",
           value: "codigoSap",
@@ -86,11 +94,25 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
           sortable: false,
           flex: 1),
       DatatableHeader(
+        text: "NOME",
+        value: "nome",
+        show: true,
+      ),
+      DatatableHeader(
           text: "DESCRIÇÃO",
           value: "descricao",
           show: true,
           flex: 2,
-          sortable: false),
+          sortable: true,
+          sourceBuilder: (value, row) {
+            return Expanded(
+              child: Text(
+                value ?? '',
+                maxLines: 20,
+                softWrap: true,
+              ),
+            );
+          }),
       DatatableHeader(
           text: "QTD", value: "quantidade", show: true, sortable: true),
       DatatableHeader(
@@ -100,67 +122,94 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
     _initializeData();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Selecionar Materiais Disponíveis'),
       content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.7,
-        height: MediaQuery.of(context).size.height * 0.7,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
             Expanded(
-              child: _source.isEmpty
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ResponsiveDatatable(
-                      headers: _headers,
-                      source: _source,
-                      selecteds: _selecteds,
-                      showSelect: true,
-                      autoHeight: false,
-                      onSelect: (value, item) {
-                        setState(() {
-                          if (item == null) {
-                            _selecteds = value! ? List.from(_source) : [];
-                          } else if (value!) {
-                            _selecteds.add(item);
-                          } else {
-                            _selecteds
-                                .removeWhere((map) => map["id"] == item["id"]);
-                          }
-                        });
-                      },
-                      onSort: (value) {
-                        setState(() => _isLoading = true);
+              child: (() {
+                if (widget.baseId == null && widget.veiculoId == null) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Text(
+                        'Selecione um Centro Logístico (Base ou Veículo) antes de adicionar materiais.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
 
-                        setState(() {
-                          _sortColumn = value;
-                          _sortAscending = !_sortAscending;
-                          if (_sortAscending) {
-                            _sourceFiltered.sort((a, b) =>
-                                b["$_sortColumn"].compareTo(a["$_sortColumn"]));
-                          } else {
-                            _sourceFiltered.sort((a, b) =>
-                                a["$_sortColumn"].compareTo(b["$_sortColumn"]));
-                          }
-                          var _rangeTop =
-                              _currentPerPage! < _sourceFiltered.length
-                                  ? _currentPage!
-                                  : _sourceFiltered.length;
-                          _source =
-                              _sourceFiltered.getRange(0, _rangeTop).toList();
-                          _searchKey = value;
+                if (_isLoading) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.blueGrey,
+                  ));
+                }
 
-                          _isLoading = false;
-                        });
-                      },
-                      expanded: _expanded,
-                      footers: [
-                        Text('Total de ${_total} materiais.'),
-                      ]),
+                if (_source.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Text(
+                        'Nenhum material disponível neste local.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+
+                return ResponsiveDatatable(
+                  headers: _headers,
+                  source: _source,
+                  selecteds: _selecteds,
+                  showSelect: true,
+                  autoHeight: false,
+                  onSelect: (value, item) {
+                    setState(() {
+                      if (item == null) {
+                        _selecteds = value! ? List.from(_source) : [];
+                      } else if (value!) {
+                        _selecteds.add(item);
+                      } else {
+                        _selecteds
+                            .removeWhere((map) => map["id"] == item["id"]);
+                      }
+                    });
+                  },
+                  onSort: (value) {
+                    setState(() => _isLoading = true);
+
+                    setState(() {
+                      _sortColumn = value;
+                      _sortAscending = !_sortAscending;
+                      if (_sortAscending) {
+                        _sourceFiltered.sort((a, b) =>
+                            b["$_sortColumn"].compareTo(a["$_sortColumn"]));
+                      } else {
+                        _sourceFiltered.sort((a, b) =>
+                            a["$_sortColumn"].compareTo(b["$_sortColumn"]));
+                      }
+                      var _rangeTop = _currentPerPage! < _sourceFiltered.length
+                          ? _currentPage!
+                          : _sourceFiltered.length;
+                      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+                      _searchKey = value;
+
+                      _isLoading = false;
+                    });
+                  },
+                  expanded: _expanded,
+                  footers: [
+                    Text('Total de ${_total} materiais.'),
+                  ],
+                );
+              })(),
             ),
           ],
         ),
@@ -171,7 +220,6 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
           child: const Text('Cancelar'),
         ),
         ElevatedButton(
-          // Botão que chama o callback e retorna os dados
           onPressed: _selecteds.isEmpty
               ? null
               : () => widget.onMaterialsSelected(_selecteds),

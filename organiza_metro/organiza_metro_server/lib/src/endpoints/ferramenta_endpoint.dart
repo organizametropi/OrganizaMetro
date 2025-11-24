@@ -21,4 +21,11 @@ class FerramentaEndpoint extends Endpoint {
         where: (t) => t.empenhadoParaId.equals(userId) & t.emUso.equals(true),
         include: Ferramenta.include(empenhadoPara: UserInfo.include()));
   }
+
+  Future<List<Ferramenta>> getDisponiveis(Session session) async {
+    final ferramentas = await Ferramenta.db.find(session,
+        where: (t) => t.emUso.equals(false) & t.status.equals('Disponível'),
+        include: Ferramenta.include(tipo: TipoMaterial.include(), base: Base.include(), veiculo: Veiculo.include()));
+    return ferramentas;
+  }
 }

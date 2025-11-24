@@ -22,7 +22,6 @@ class _HomePageState extends State<homePage> {
 
   bool _isAdmin = false;
   String? _userName;
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -39,7 +38,6 @@ class _HomePageState extends State<homePage> {
     setState(() {
       _isAdmin = isAdmin;
       _userName = userName;
-      _isLoading = false;
     });
   }
 
@@ -60,7 +58,6 @@ class _HomePageState extends State<homePage> {
               bool isWide = constraints.maxWidth > 600;
 
               final welcomeText = Text(
-                // 🚨 Usa o nome carregado
                 'Bem-Vindo ${_userName ?? ""}!',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -68,32 +65,26 @@ class _HomePageState extends State<homePage> {
                     color: Colors.black54),
               );
 
-              // 3. Define os botões de Admin que serão usados nos dois layouts
               final adminButtons = [
-                // 🚨 Botão Relatórios (visível SOMENTE para Admin)
-
                 Container(
                   height: 160,
                   margin: const EdgeInsets.all(8),
                   child: ButtonHomeTemplate(
                     labelText: "Relatórios",
                     goToPage: (context) => relatoriosPage(),
-                    color: const Color.fromRGBO(255, 199, 44, 1),
+                    color: Color.fromRGBO(125, 85, 199, 1),
                     assetImage: 'lib/assets/images/dataChart.png',
                   ),
                 ),
-
-                // 🚨 Botão Administração (visível SOMENTE para Admin)
-
                 Container(
                   height: 160,
                   margin: const EdgeInsets.all(8),
                   child: ButtonHomeTemplate(
-                    labelText: "Administração",
-                    goToPage: (context) =>
-                        const AdminPage(), // Altere para a tela de admin correta
-                    color: const Color.fromRGBO(0, 26, 144, 1),
-                  ),
+                      labelText: "Administração",
+                      goToPage: (context) => const AdminPage(),
+                      color: const Color.fromRGBO(0, 26, 144, 1),
+                      assetImage:
+                          'lib/assets/images/admin-settings-male-removebg-preview.png'),
                 ),
               ];
 
@@ -114,6 +105,7 @@ class _HomePageState extends State<homePage> {
                               labelText: "Retirar Materiais",
                               goToPage: (context) => retirarMaterialPage(),
                               color: Color.fromRGBO(239, 51, 64, 1),
+                              assetImage: 'lib/assets/images/8256654.png',
                             ),
                           ),
                         ),
@@ -122,10 +114,10 @@ class _HomePageState extends State<homePage> {
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Estoque",
-                              goToPage: (context) => estoquePage(),
-                              color: Color.fromRGBO(0, 52, 28, 1),
-                            ),
+                                labelText: "Ferramentas e Instrumentos",
+                                goToPage: (context) => const FerramentaPage(),
+                                color: const Color.fromRGBO(255, 199, 44, 1),
+                                assetImage: 'lib/assets/images/1935672.png'),
                           ),
                         ),
                       ],
@@ -138,10 +130,11 @@ class _HomePageState extends State<homePage> {
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                                labelText: "Instrumentos Técnicos",
-                                goToPage: (context) => const FerramentaPage(),
-                                color: Color.fromRGBO(229, 110, 51, 1),
-                                assetImage: 'lib/assets/images/dataChart.png'),
+                              labelText: "Estoque",
+                              goToPage: (context) => estoquePage(),
+                              color: Color.fromRGBO(0, 52, 28, 1),
+                              assetImage: 'lib/assets/images/storage-files-icon-outline-storage-files-vector-icon-color-flat-isolated_96318-114906-removebg-preview.png',
+                            ),
                           ),
                         ),
                         Expanded(
@@ -149,14 +142,15 @@ class _HomePageState extends State<homePage> {
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Meu Histórico",
+                              labelText: "Histórico",
                               goToPage: (context) => historicoPage(),
-                              color: Color.fromRGBO(125, 85, 199, 1),
+                              color: Color.fromRGBO(229, 110, 51, 1),
+                              assetImage: 'lib/assets/images/download-digital-book-icon-color-outline-vector-removebg-preview.png',
                             ),
                           ),
                         ),
                       ],
-                    ), // A partir daqui apenas para admins
+                    ),
                     if (_isAdmin)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -187,7 +181,7 @@ class _HomePageState extends State<homePage> {
                       SizedBox(
                         height: 15,
                       ),
-                      UserNotificationsArea(), 
+                      UserNotificationsArea(),
                       SizedBox(
                         height: 25,
                       )
@@ -210,7 +204,17 @@ class _HomePageState extends State<homePage> {
                         labelText: "Retirar Materiais",
                         goToPage: (context) => retirarMaterialPage(),
                         color: Color.fromRGBO(239, 51, 64, 1),
+                        assetImage: 'lib/assets/images/8256654.png',
                       ),
+                    ),
+                    Container(
+                      height: 160,
+                      margin: const EdgeInsets.all(8),
+                      child: ButtonHomeTemplate(
+                          labelText: "Ferramentas e Instrumentos",
+                          goToPage: (context) => const FerramentaPage(),
+                          color: const Color.fromRGBO(255, 199, 44, 1),
+                          assetImage: 'lib/assets/images/1935672.png'),
                     ),
                     Container(
                       height: 160,
@@ -219,36 +223,29 @@ class _HomePageState extends State<homePage> {
                         labelText: "Estoque",
                         goToPage: (context) => estoquePage(),
                         color: Color.fromRGBO(0, 52, 28, 1),
+                        assetImage: 'lib/assets/images/storage-files-icon-outline-storage-files-vector-icon-color-flat-isolated_96318-114906-removebg-preview.png',
                       ),
                     ),
                     Container(
                       height: 160,
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
-                          labelText: "Instrumentos Técnicos",
-                          goToPage: (context) => const FerramentaPage(),
-                          color: Color.fromRGBO(229, 110, 51, 1),
-                          assetImage: 'lib/assets/images/dataChart.png'),
-                    ),
-                    Container(
-                      height: 160,
-                      margin: const EdgeInsets.all(8),
-                      child: ButtonHomeTemplate(
-                        labelText: "Meu Histórico",
+                        labelText: "Histórico",
                         goToPage: (context) => historicoPage(),
-                        color: Color.fromRGBO(125, 85, 199, 1),
+                        color: Color.fromRGBO(229, 110, 51, 1),
+                        assetImage: 'lib/assets/images/download-digital-book-icon-color-outline-vector-removebg-preview.png',
                       ),
-                    ), // A partir daqui apenas para admins
+                    ),
                     if (_isAdmin) ...[
                       Container(
                         height: 160,
                         margin: const EdgeInsets.all(8),
-                        child: adminButtons[0].child, // Relatórios
+                        child: adminButtons[0].child,
                       ),
                       Container(
                         height: 160,
                         margin: const EdgeInsets.all(8),
-                        child: adminButtons[1].child, // Administração
+                        child: adminButtons[1].child,
                       ),
                     ],
                     Row(

@@ -19,10 +19,9 @@ class MaterialsSelectedList extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         
-        // Mapeia cada material para um MaterialEditableRow
+  
         ...materials.map((material) => 
           MaterialEditableRow(
-            // Key é importante para o Flutter gerenciar a lista
             key: ValueKey(material['id']), 
             material: material,
           )
@@ -32,23 +31,21 @@ class MaterialsSelectedList extends StatelessWidget {
   }
 }
 
-// ===========================================================================
-// WIDGET PARA CADA LINHA DE MATERIAL (Editável e com Lixeira)
-// ===========================================================================
+
 
 class MaterialEditableRow extends StatelessWidget {
   final Map<String, dynamic> material;
 
   const MaterialEditableRow({super.key, required this.material});
   
-  // Função que exibe o modal de confirmação de exclusão
+
   void _showDeleteConfirmation(BuildContext context, RetirarMaterialController controller) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirmar Remoção"),
-          content: Text("Deseja realmente remover o item '${material['descricao'] ?? 'Item'}' da requisição?"),
+          content: Text("Deseja realmente remover o item '${material['nome'] ?? 'Item'}' da requisição?"),
           actions: [
             TextButton(
               child: const Text("Cancelar"),
@@ -58,7 +55,7 @@ class MaterialEditableRow extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text("Remover", style: TextStyle(color: Colors.white)),
               onPressed: () {
-                controller.removeItem(material['id'] as int); // Chama a lógica do Controller
+                controller.removeItem(material['id'] as int); 
                 Navigator.of(context).pop();
               },
             ),
@@ -72,7 +69,7 @@ class MaterialEditableRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = context.read<RetirarMaterialController>();
     final itemId = material['id'] as int;
-    // Lógica para determinar se é ferramenta (e a quantidade deve ser fixa 1)
+
     final isFerramenta = material['ferramentaId'] != null || material['tipo'] == 'ferramenta'; 
     final initialQuantity = '1'; 
 
@@ -81,14 +78,13 @@ class MaterialEditableRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 1. ÍCONE E DESCRIÇÃO
           Expanded(
             child: ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
               leading: Icon(isFerramenta ? Icons.construction : Icons.inventory_2, size: 20, color: Colors.blueGrey),
               title: Text(
-                material['descricao'] ?? 'Item sem descrição', 
+                material['nome'] ?? 'Item sem nome', 
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)
               ),
               subtitle: Text(
@@ -100,7 +96,6 @@ class MaterialEditableRow extends StatelessWidget {
           
           const SizedBox(width: 10),
 
-          // 2. CAMPO DE QUANTIDADE EDITÁVEL
           Container(
             width: 80,
             alignment: Alignment.center,
@@ -108,7 +103,7 @@ class MaterialEditableRow extends StatelessWidget {
             child: TextFormField(
               initialValue: initialQuantity,
               textAlign: TextAlign.center,
-              enabled: !isFerramenta, // Desabilita edição se for ferramenta
+              enabled: true, 
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               style: TextStyle(fontWeight: isFerramenta ? FontWeight.bold : FontWeight.normal),
               decoration: InputDecoration(
@@ -119,19 +114,19 @@ class MaterialEditableRow extends StatelessWidget {
                 filled: true,
               ),
               onChanged: (value) {
-                // Remove vírgulas e tenta parsear para double
+          
                 final double? newQuantity = double.tryParse(value.replaceAll(',', '.'));
                 if (newQuantity != null && newQuantity > 0) {
                   controller.updateItemQuantity(itemId, newQuantity);
                 } else if (newQuantity == 0.0) {
-                  // Se o usuário digitar 0, trata como se quisesse remover
+                  
                   _showDeleteConfirmation(context, controller); 
                 }
               },
             ),
           ),
           
-          // 3. BOTÃO DE EXCLUSÃO (LIXEIRA)
+
           IconButton(
             icon: const Icon(Icons.delete_outline, color: Colors.red),
             onPressed: () => _showDeleteConfirmation(context, controller),

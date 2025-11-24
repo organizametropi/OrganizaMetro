@@ -54,7 +54,6 @@ class RelatoriosEndpoint extends Endpoint {
     }).toList();
   }
 
-
   // --- PBI 3.1.2 (Ferramentas): Gráfico das 10 ferramentas mais empenhadas no último mês ---
   Future<List<ConsumoMensal>> getTopConsumidosFerramenta(
       Session session, int LIMIT) async {
@@ -135,7 +134,8 @@ ORDER BY
     }).toList();
   }
 
-  Future<List<ConsumoMensal>> getConsmuoMaterialClVeiculo(Session session) async {
+  Future<List<ConsumoMensal>> getConsmuoMaterialClVeiculo(
+      Session session) async {
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
     }
@@ -167,7 +167,8 @@ ORDER BY
     }).toList();
   }
 
-    Future<List<ConsumoMensal>> getConsmuoFerramentaClBase(Session session) async {
+  Future<List<ConsumoMensal>> getConsmuoFerramentaClBase(
+      Session session) async {
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
     }
@@ -199,7 +200,8 @@ ORDER BY
     }).toList();
   }
 
-  Future<List<ConsumoMensal>> getConsmuoFerramentaClVeiculo(Session session) async {
+  Future<List<ConsumoMensal>> getConsmuoFerramentaClVeiculo(
+      Session session) async {
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
     }
@@ -291,10 +293,7 @@ ORDER BY
     // Busca ferramentas em uso, incluindo o usuário empenhado
     return await Ferramenta.db.find(
       session,
-      where: (t) =>
-          t.emUso.equals(true) &
-          t.divisao
-              .equals('Instrumento'), // 🚨 Ajustado para usar o campo 'divisao'
+      where: (t) => t.emUso.equals(true),
       include: Ferramenta.include(
         empenhadoPara:
             auth.UserInfo.include(), // Busca o usuário do módulo auth
@@ -302,14 +301,25 @@ ORDER BY
     );
   }
 
+  Future<List<LocalUserInfo>> getLocalUserInfosByUserIds(
+      Session session, List<int> userIds) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    if (userIds.isEmpty) return [];
+
+    return await LocalUserInfo.db.find(session);
+  }
+
   // Dentro de class RelatoriosEndpoint extends Endpoint { ... }
 
-/// PBI 3.2.2: Retorna o consumo total de Materiais e Ferramentas agrupado por dia.
-Future<List<ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo(
+  /// PBI 3.2.2: Retorna o consumo total de Materiais e Ferramentas agrupado por dia.
+  Future<List<ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo(
     Session session, {
     required DateTime dataInicio,
     required DateTime dataFim,
-}) async {
+  }) async {
     // 🚨 Validação de segurança
     if (await Auth.isAdmin(session) == false) {
       throw Exception('Acesso negado. Apenas administradores.');
@@ -319,7 +329,7 @@ Future<List<ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo(
       'dataInicio': dataInicio.toUtc(),
       'dataFim': dataFim.toUtc(),
     });
-    
+
     // TRUNC DATE para agrupar por dia (day)
     final sql = """
       SELECT
@@ -342,10 +352,8 @@ Future<List<ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo(
           data;
     """;
 
-    final List<List<dynamic>> result = await session.db.unsafeQuery(
-      sql, 
-      parameters: parameters
-    );
+    final List<List<dynamic>> result =
+        await session.db.unsafeQuery(sql, parameters: parameters);
 
     return result.map((row) {
       return ConsumoPeriodoDetalhado(
@@ -354,5 +362,44 @@ Future<List<ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo(
         totalFerramenta: (row[2] as num).toDouble(),
       );
     }).toList();
-}
+  }
+
+  /// Retorna todas as movimentações (com includes de relações importantes)
+  Future<List<Movimentacao>> getMovimentacoes(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    return await Movimentacao.db.find(
+      session,
+      include: Movimentacao.include(
+        usuario: auth.UserInfo.include(),
+        material: Material.include(),
+        ferramenta: Ferramenta.include(),
+        origemBase: Base.include(),
+        destinoBase: Base.include(),
+        origemVeiculo: Veiculo.include(),
+        destinoVeiculo: Veiculo.include(),
+      ),
+      orderBy: (t) => t.dataMovimentacao,
+    );
+  }
+
+  /// Retorna calibrações vencidas (ou já expiradas) com include da ferramenta
+  Future<List<Calibracao>> getCalibracoesVencidas(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final now = DateTime.now().toUtc();
+
+    return await Calibracao.db.find(
+      session,
+      where: (t) => t.validadeCalibracao <= (now),
+      include: Calibracao.include(
+        ferramenta: Ferramenta.include(),
+      ),
+      orderBy: (t) => t.validadeCalibracao,
+    );
+  }
 }

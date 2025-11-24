@@ -46,6 +46,7 @@ class MovimentacaoEndpoint extends Endpoint {
               modalidadeEntrega,
               observacao,
               dataDaMovimentacao,
+              dataDevolucao,
               destinoBaseId,
               destinoVeiculoId,
               alertas);
@@ -92,6 +93,7 @@ class MovimentacaoEndpoint extends Endpoint {
     String modalidadeEntrega,
     String? observacao,
     DateTime dataDaMovimentacao,
+    DateTime? datataDevolucao,
     int? destinoBaseId,
     int? destinoVeiculoId,
     List<String> alertas,
@@ -141,6 +143,7 @@ class MovimentacaoEndpoint extends Endpoint {
       tipoMovimentacao: tipoMovimentacao,
       dataRequisicao: DateTime.now(),
       dataMovimentacao: dataDaMovimentacao,
+      dataDevolucao: datataDevolucao, 
       modalidadeEntrega: modalidadeEntrega,
       observacao: observacao,
 
@@ -150,7 +153,6 @@ class MovimentacaoEndpoint extends Endpoint {
       origemVeiculo: material.veiculo,
       destinoBaseId: destinoBaseId, // Usa o destino (se fornecido)
       destinoVeiculoId: destinoVeiculoId, // Usa o destino (se fornecido)
-      dataDevolucao: null, // Não se aplica
     );
     await proto.Movimentacao.db
         .insertRow(session, movimentacao, transaction: transactionSession);

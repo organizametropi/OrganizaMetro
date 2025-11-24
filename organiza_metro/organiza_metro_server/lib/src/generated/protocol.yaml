@@ -1,5 +1,26 @@
 admin:
+  - addMaterial:
+  - addFerramenta:
+  - addEmployee:
+  - getTodasFerramentas:
+  - getFerramentasPaginadas:
+  - updateFerramenta:
+  - deleteFerramenta:
   - getAdminAlerts:
+  - updateMaterial:
+  - deleteMaterial:
+  - getTodosMateriais:
+  - getTiposMateriais:
+  - getUnidadesMedida:
+  - getBases:
+  - getVeiculos:
+  - getFerramentasComPatrimonio:
+  - getCalibracoesAtivas:
+  - addCalibracao:
+  - removeCalibracao:
+  - getAllEmployees:
+  - getAuthUsersByIds:
+  - removeEmployee:
 authUtils:
   - isAdmin:
   - getUserName:
@@ -8,8 +29,10 @@ cron:
 ferramenta:
   - getEstoque:
   - getMinhasFerramentas:
+  - getDisponiveis:
 material:
   - getEstoque:
+  - getMateriaisByLocation:
 movimentacao:
   - criarRequisicaoSaida:
   - processarDevolucaoFerramenta:
@@ -22,9 +45,10 @@ relatorios:
   - getConsmuoFerramentaClVeiculo:
   - getInstrumentosCalibracao:
   - getInstrumentosEmUso:
+  - getLocalUserInfosByUserIds:
   - getConsumoDetalhadoPorPeriodo:
+  - getMovimentacoes:
+  - getCalibracoesVencidas:
 userData:
   - getMyAlerts:
   - getMyHistory:
-greeting:
-  - hello:

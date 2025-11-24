@@ -16,12 +16,7 @@ class retirarMaterialForm2 extends StatefulWidget {
 }
 
 class _raForm2State extends State<retirarMaterialForm2> {
-  List<DropdownMenuItem<String>> _dropdownItems = [
-    const DropdownMenuItem(value: 'option1', child: Text('Opção A')),
-    const DropdownMenuItem(value: 'option2', child: Text('Opção B')),
-  ];
-
-  String? _selectedValue; // Estado local do Dropdown
+  String? _selectedValue; // Estado local do centroLogistico Dropdown
 
   String? _requiredValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -80,8 +75,8 @@ class _raForm2State extends State<retirarMaterialForm2> {
                           value == null ? 'Selecione a data' : null,
                     ),
                   );
-                  
-                   Widget dataField2 = SizedBox(
+
+                  Widget dataField2 = SizedBox(
                     height: 50,
                     width: isWide ? 300 : 268,
                     child: DateTimeFormField(
@@ -100,15 +95,22 @@ class _raForm2State extends State<retirarMaterialForm2> {
                     ),
                   );
 
-
-
                   Widget centroCustoField = SizedBox(
                     height: 50,
                     width: isWide ? 300 : 268,
-                    child: TextFormField(
-                      onChanged:
-                          controller.updateCentroCusto, // 🚨 Sink de dados
-                      validator: _requiredValidator,
+                    child: DropdownButtonFormField<String>(
+                      value: controller.centroTipo,
+                      items: const [
+                        DropdownMenuItem(value: 'Bases', child: Text('Bases')),
+                        DropdownMenuItem(
+                            value: 'Veiculos', child: Text('Veículos')),
+                      ],
+                      onChanged: (String? newValue) {
+                        if (newValue == null) return;
+                        controller.setCentroTipo(newValue);
+                        // Reset selection
+                        setState(() => _selectedValue = null);
+                      },
                       decoration: const InputDecoration(
                         labelText: "Centro de Custo",
                         border: OutlineInputBorder(),
@@ -122,25 +124,39 @@ class _raForm2State extends State<retirarMaterialForm2> {
                   Widget centroLogisticoField = SizedBox(
                     height: 50,
                     width: isWide ? 300 : 268,
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedValue,
-                      items: _dropdownItems,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedValue = newValue;
-                        });
-                        controller.updateCentroLogistico(
-                            newValue); // 🚨 Sink de dados
-                      },
-                      validator: _dropdownValidator,
-                      decoration: const InputDecoration(
-                        labelText: "Centro Logístico",
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2.0)),
-                      ),
-                    ),
+                    child: Builder(builder: (ctx) {
+                      final tipo = controller.centroTipo;
+                      final items = tipo == 'Bases'
+                          ? controller.bases
+                              .map((b) => DropdownMenuItem<String>(
+                                  value: b.id.toString(), child: Text(b.nome)))
+                              .toList()
+                          : controller.veiculos
+                              .map((v) => DropdownMenuItem<String>(
+                                  value: v.id.toString(),
+                                  child: Text(v.codigo)))
+                              .toList();
+
+                      return DropdownButtonFormField<String>(
+                        value: _selectedValue,
+                        items: items,
+                        onChanged: (String? newValue) {
+                          setState(() => _selectedValue = newValue);
+                          // Keep the string label in the form data
+                          controller.updateCentroLogistico(newValue);
+                          // Parse & set the numeric selectedCentroId and fetch materials
+                          controller.updateCentroLogisticoById(newValue);
+                        },
+                        validator: _dropdownValidator,
+                        decoration: const InputDecoration(
+                          labelText: "Centro Logístico",
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 2.0)),
+                        ),
+                      );
+                    }),
                   );
 
                   return isWide
@@ -149,7 +165,7 @@ class _raForm2State extends State<retirarMaterialForm2> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             dataField,
-                            dataField2, 
+                            dataField2,
                             centroCustoField,
                             centroLogisticoField,
                           ],
@@ -177,7 +193,21 @@ class _raForm2State extends State<retirarMaterialForm2> {
                 },
               ),
             ),
-            // ... (Label 'Dados da requisição:') ...
+            Positioned(
+              top: -15,
+              left: -8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: const Text(
+                  'Dados da requisição:',
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ],
         ));
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:organiza_metro_flutter/src/page_subtitle.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
 import 'package:organiza_metro_flutter/src/widgets/tables/estoque_ferramenta_table.dart';
 import 'package:organiza_metro_flutter/src/widgets/tables/estoque_material_table.dart';
@@ -27,38 +28,7 @@ class _estoquePageState extends State<estoquePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              constraints: BoxConstraints(minHeight: 95),
-              color: const Color.fromRGBO(0, 20, 137, 0.7),
-              child: SizedBox(
-                  child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0, left: 16.0),
-                    child: Text(
-                      'Estoque 🗄️',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 42,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(1.5, 1.5),
-                              blurRadius: 3.0,
-                              color: Colors.black45,
-                            ),
-                            Shadow(
-                              offset: Offset(-1.0, -1.0),
-                              blurRadius: 2.0,
-                              color: Colors.black26,
-                            ),
-                          ]),
-                    ),
-                  )
-                ],
-              )),
-            ),
+            PageSubtitleBar(title: 'Estoque Geral de Materiais e Ferramentas'),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
