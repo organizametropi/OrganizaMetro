@@ -592,7 +592,7 @@ class RelatorioDetalheWidget extends StatelessWidget {
     if ((dados.isEmpty) && relatorioType != RelatorioType.instrumentosEmUso) {
       return const Center(
           child: Text(
-              "Nenhum dado encontrado para o período/filtro selecionado."));
+              "Nenhum dado encontrado."));
     }
 
     return switch (relatorioType.name) {
@@ -643,7 +643,7 @@ class _EstoqueMaterialTableState extends State<EstoqueMaterialTable> {
       DatatableHeader(
           text: "CÓD. SAP", value: "codigoSap", show: true, flex: 1),
       DatatableHeader(
-          text: "NOME", value: "nome", show: true, editable: true, flex: 2),
+          text: "NOME", value: "nome", show: true, editable: true, flex: 1),
       DatatableHeader(
           text: "DESCRIÇÃO",
           value: "descricao",
@@ -662,9 +662,9 @@ class _EstoqueMaterialTableState extends State<EstoqueMaterialTable> {
       DatatableHeader(text: "QTD", value: "quantidade", show: true),
       DatatableHeader(text: "MÍN", value: "estoqueMinimo", show: true),
       DatatableHeader(text: "UNIDADE", value: "unidadeMedida", show: true),
-      DatatableHeader(text: "TIPO", value: "tipo", show: true),
-      DatatableHeader(text: "BASE", value: "base", show: true),
-      DatatableHeader(text: "VEÍCULO", value: "veiculo", show: true),
+      DatatableHeader(text: "TIPO", value: "tipo", show: true, flex: 2),
+      DatatableHeader(text: "BASE", value: "base", show: true, flex: 2),
+      DatatableHeader(text: "VEÍCULO", value: "veiculo", show: true, flex: 2),
     ];
   }
 
@@ -737,110 +737,223 @@ class _EstoqueMaterialTableState extends State<EstoqueMaterialTable> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.materiais.isEmpty) {
-      return const Center(
-          child: Text("Sem dados de estoque para o inventário."));
-    }
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 500),
-      child: Card(
-        child: SingleChildScrollView(
-          child: ResponsiveDatatable(
-            headers: _headers,
-            source: _source,
-            selecteds: _selecteds,
-            autoHeight: true,
-            showSelect: false,
-            expanded: _expanded,
-            onSort: (value) {
-              setState(() => _isLoadingLocal = true);
+    return _isLoadingLocal
+        ? SizedBox(
+            height: 700,
+            child: const Center(
+                child: CircularProgressIndicator(color: Colors.blueGrey)))
+        : LayoutBuilder(builder: (context, constraints) {
+            final screenWidth = constraints.maxWidth;
+            final bool isLargeScreen = screenWidth > 800;
 
-              setState(() {
-                _sortColumn = value;
-                _sortAscending = !_sortAscending;
-                if (_sortAscending) {
-                  _sourceFiltered.sort(
-                      (a, b) => b["$_sortColumn"].compareTo(a["$_sortColumn"]));
-                } else {
-                  _sourceFiltered.sort(
-                      (a, b) => a["$_sortColumn"].compareTo(b["$_sortColumn"]));
-                }
-                var _rangeTop = _currentPerPage! < _sourceFiltered.length
-                    ? _currentPage!
-                    : _sourceFiltered.length;
-                _source = _sourceFiltered.getRange(0, _rangeTop).toList();
-                _searchKey = value;
+            if (isLargeScreen) {
+              final double baseColWidth = 120.0;
+              final visibleHeaders =
+                  _headers.where((h) => h.show == true).toList();
+              final double checkboxWidth = 60.0;
+              final double minWidth = visibleHeaders.fold<double>(
+                      0.0,
+                      (sum, h) =>
+                          sum + ((h.flex <= 0 ? 1 : h.flex) * baseColWidth)) +
+                  checkboxWidth;
 
-                _isLoadingLocal = false;
-              });
-            },
-            footers: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Text("Rows per page"),
-              ),
-              if (_perPages.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: DropdownButton<int>(
-                    value: _currentPerPage,
-                    items: _perPages
-                        .map((e) => DropdownMenuItem<int>(
-                              value: e,
-                              child: Text("$e"),
-                            ))
-                        .toList(),
-                    onChanged: (dynamic value) {
-                      setState(() {
-                        _currentPerPage = value;
-                        _currentPage = 1;
-                        _resetData();
-                      });
-                    },
-                    isExpanded: false,
+              final maxTableHeight = MediaQuery.of(context).size.height;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: minWidth,
+                  ),
+                  child: SizedBox(
+                    width: minWidth,
+                    child: Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: maxTableHeight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DefaultTextStyle(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(fontSize: 12),
+                            child: ResponsiveDatatable(
+                              headers: _headers,
+                              source: _source,
+                              selecteds: _selecteds,
+                              showSelect: false,
+                              autoHeight: false,
+                              onChangedRow: (value, header) {},
+                              onSubmittedRow: (value, header) {},
+                              onTabRow: (data) {},
+                              onSort: (value) {
+                                setState(() => _isLoadingLocal = true);
+
+                                setState(() {
+                                  _sortColumn = value;
+                                  _sortAscending = !_sortAscending;
+                                  if (_sortAscending) {
+                                    _sourceFiltered.sort((a, b) =>
+                                        b["$_sortColumn"]
+                                            .compareTo(a["$_sortColumn"]));
+                                  } else {
+                                    _sourceFiltered.sort((a, b) =>
+                                        a["$_sortColumn"]
+                                            .compareTo(b["$_sortColumn"]));
+                                  }
+                                  var _rangeTop =
+                                      _currentPerPage! < _sourceFiltered.length
+                                          ? _currentPage!
+                                          : _sourceFiltered.length;
+                                  _source = _sourceFiltered
+                                      .getRange(0, _rangeTop)
+                                      .toList();
+                                  _searchKey = value;
+
+                                  _isLoadingLocal = false;
+                                });
+                              },
+                              expanded: _expanded,
+                              sortAscending: _sortAscending,
+                              sortColumn: _sortColumn,
+                              isLoading: _isLoadingLocal,
+                              onSelect: (value, item) {
+                                if (value!) {
+                                  setState(() => _selecteds = _source
+                                      .map((entry) => entry)
+                                      .toList()
+                                      .cast());
+                                } else {
+                                  setState(() => _selecteds.clear());
+                                }
+                              },
+                              footers: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text("Rows per page"),
+                                ),
+                                if (_perPages.isNotEmpty)
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    child: DropdownButton<int>(
+                                      value: _currentPerPage,
+                                      items: _perPages
+                                          .map((e) => DropdownMenuItem<int>(
+                                                value: e,
+                                                child: Text("$e"),
+                                              ))
+                                          .toList(),
+                                      onChanged: (dynamic value) {
+                                        setState(() {
+                                          _currentPerPage = value;
+                                          _currentPage = 1;
+                                          _resetData();
+                                        });
+                                      },
+                                      isExpanded: false,
+                                    ),
+                                  ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text(
+                                      "$_currentPage - $_currentPerPage of $_total"),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    size: 16,
+                                  ),
+                                  onPressed: _currentPage == 1
+                                      ? null
+                                      : () {
+                                          var _nextSet =
+                                              _currentPage - _currentPerPage!;
+                                          setState(() {
+                                            _currentPage =
+                                                _nextSet > 1 ? _nextSet : 1;
+                                            _resetData(start: _currentPage - 1);
+                                          });
+                                        },
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.arrow_forward_ios, size: 16),
+                                  onPressed: _currentPage +
+                                              _currentPerPage! -
+                                              1 >
+                                          _total
+                                      ? null
+                                      : () {
+                                          var _nextSet =
+                                              _currentPage + _currentPerPage!;
+
+                                          setState(() {
+                                            _currentPage = _nextSet < _total
+                                                ? _nextSet
+                                                : _total - _currentPerPage!;
+                                            _resetData(start: _nextSet - 1);
+                                          });
+                                        },
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Text("$_currentPage - $_currentPerPage of $_total"),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: 16,
-                ),
-                onPressed: _currentPage == 1
-                    ? null
-                    : () {
-                        var _nextSet = _currentPage - _currentPerPage!;
-                        setState(() {
-                          _currentPage = _nextSet > 1 ? _nextSet : 1;
-                          _resetData(start: _currentPage - 1);
-                        });
-                      },
-                padding: EdgeInsets.symmetric(horizontal: 15),
-              ),
-              IconButton(
-                icon: Icon(Icons.arrow_forward_ios, size: 16),
-                onPressed: _currentPage + _currentPerPage! - 1 > _total
-                    ? null
-                    : () {
-                        var _nextSet = _currentPage + _currentPerPage!;
+              );
+            } else {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ResponsiveDatatable(
+                    headers: _headers,
+                    source: _source,
+                    autoHeight: true,
+                    showSelect: true,
+                    isLoading: _isLoadingLocal,
+                    selecteds: _selecteds,
+                    expanded: _expanded,
+                    onSort: (value) {
+                      setState(() => _isLoadingLocal = true);
 
-                        setState(() {
-                          _currentPage = _nextSet < _total
-                              ? _nextSet
-                              : _total - _currentPerPage!;
-                          _resetData(start: _nextSet - 1);
-                        });
-                      },
-                padding: EdgeInsets.symmetric(horizontal: 15),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+                      setState(() {
+                        _sortColumn = value;
+                        _sortAscending = !_sortAscending;
+                        if (_sortAscending) {
+                          _sourceFiltered.sort((a, b) =>
+                              b["$_sortColumn"].compareTo(a["$_sortColumn"]));
+                        } else {
+                          _sourceFiltered.sort((a, b) =>
+                              a["$_sortColumn"].compareTo(b["$_sortColumn"]));
+                        }
+                        var _rangeTop =
+                            _currentPerPage! < _sourceFiltered.length
+                                ? _currentPage!
+                                : _sourceFiltered.length;
+                        _source =
+                            _sourceFiltered.getRange(0, _rangeTop).toList();
+
+                        _isLoadingLocal = false;
+                      });
+                    },
+                    footers: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Total: ${_source.length} registros'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          });
   }
 }
 
@@ -955,115 +1068,225 @@ class _EstoqueFerramentaTableState extends State<EstoqueFerramentaTable> {
     });
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
-    if (widget.ferramenta.isEmpty) {
-      return const Center(
-          child: Text("Sem dados de estoque para o inventário."));
-    }
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 500, minWidth: 1050),
-      child: Card(
-        child: SingleChildScrollView(
-          child: ResponsiveDatatable(
-            headers: _headers,
-            source: _source,
-            selecteds: _selecteds,
-            autoHeight: true,
-            showSelect: false,
-            expanded: _expanded,
-            rowTextStyle: const TextStyle(fontSize: 10),
-            headerTextStyle: const TextStyle(fontSize: 11),
-            isExpandRows: false,
-            onSort: (value) {
-              setState(() => _isLoadingLocal = true);
+    return _isLoadingLocal
+        ? SizedBox(
+            height: 700,
+            child: const Center(
+                child: CircularProgressIndicator(color: Colors.blueGrey)))
+        : LayoutBuilder(builder: (context, constraints) {
+            final screenWidth = constraints.maxWidth;
+            final bool isLargeScreen = screenWidth > 800;
 
-              setState(() {
-                _sortColumn = value;
-                _sortAscending = !_sortAscending;
-                if (_sortAscending) {
-                  _sourceFiltered.sort(
-                      (a, b) => b["$_sortColumn"].compareTo(a["$_sortColumn"]));
-                } else {
-                  _sourceFiltered.sort(
-                      (a, b) => a["$_sortColumn"].compareTo(b["$_sortColumn"]));
-                }
-                var _rangeTop = _currentPerPage! < _sourceFiltered.length
-                    ? _currentPage!
-                    : _sourceFiltered.length;
-                _source = _sourceFiltered.getRange(0, _rangeTop).toList();
-                _searchKey = value;
+            if (isLargeScreen) {
+              final double baseColWidth = 120.0;
+              final visibleHeaders =
+                  _headers.where((h) => h.show == true).toList();
+              final double checkboxWidth = 60.0;
+              final double minWidth = visibleHeaders.fold<double>(
+                      0.0,
+                      (sum, h) =>
+                          sum + ((h.flex <= 0 ? 1 : h.flex) * baseColWidth)) +
+                  checkboxWidth;
 
-                _isLoadingLocal = false;
-              });
-            },
-            footers: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Text("Rows per page"),
-              ),
-              if (_perPages.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: DropdownButton<int>(
-                    value: _currentPerPage,
-                    items: _perPages
-                        .map((e) => DropdownMenuItem<int>(
-                              value: e,
-                              child: Text("$e"),
-                            ))
-                        .toList(),
-                    onChanged: (dynamic value) {
-                      setState(() {
-                        _currentPerPage = value;
-                        _currentPage = 1;
-                        _resetData();
-                      });
-                    },
-                    isExpanded: false,
+              final maxTableHeight = MediaQuery.of(context).size.height;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: minWidth,
+                  ),
+                  child: SizedBox(
+                    width: minWidth,
+                    child: Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: maxTableHeight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DefaultTextStyle(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(fontSize: 12),
+                            child: ResponsiveDatatable(
+                              headers: _headers,
+                              source: _source,
+                              selecteds: _selecteds,
+                              showSelect: false,
+                              autoHeight: false,
+                              onChangedRow: (value, header) {},
+                              onSubmittedRow: (value, header) {},
+                              onTabRow: (data) {},
+                              onSort: (value) {
+                                setState(() => _isLoadingLocal = true);
+
+                                setState(() {
+                                  _sortColumn = value;
+                                  _sortAscending = !_sortAscending;
+                                  if (_sortAscending) {
+                                    _sourceFiltered.sort((a, b) =>
+                                        b["$_sortColumn"]
+                                            .compareTo(a["$_sortColumn"]));
+                                  } else {
+                                    _sourceFiltered.sort((a, b) =>
+                                        a["$_sortColumn"]
+                                            .compareTo(b["$_sortColumn"]));
+                                  }
+                                  var _rangeTop =
+                                      _currentPerPage! < _sourceFiltered.length
+                                          ? _currentPage!
+                                          : _sourceFiltered.length;
+                                  _source = _sourceFiltered
+                                      .getRange(0, _rangeTop)
+                                      .toList();
+                                  _searchKey = value;
+
+                                  _isLoadingLocal = false;
+                                });
+                              },
+                              expanded: _expanded,
+                              sortAscending: _sortAscending,
+                              sortColumn: _sortColumn,
+                              isLoading: _isLoadingLocal,
+                              onSelect: (value, item) {
+                                if (value!) {
+                                  setState(() => _selecteds = _source
+                                      .map((entry) => entry)
+                                      .toList()
+                                      .cast());
+                                } else {
+                                  setState(() => _selecteds.clear());
+                                }
+                              },
+                              footers: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text("Rows per page"),
+                                ),
+                                if (_perPages.isNotEmpty)
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    child: DropdownButton<int>(
+                                      value: _currentPerPage,
+                                      items: _perPages
+                                          .map((e) => DropdownMenuItem<int>(
+                                                value: e,
+                                                child: Text("$e"),
+                                              ))
+                                          .toList(),
+                                      onChanged: (dynamic value) {
+                                        setState(() {
+                                          _currentPerPage = value;
+                                          _currentPage = 1;
+                                          _resetData();
+                                        });
+                                      },
+                                      isExpanded: false,
+                                    ),
+                                  ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text(
+                                      "$_currentPage - $_currentPerPage of $_total"),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    size: 16,
+                                  ),
+                                  onPressed: _currentPage == 1
+                                      ? null
+                                      : () {
+                                          var _nextSet =
+                                              _currentPage - _currentPerPage!;
+                                          setState(() {
+                                            _currentPage =
+                                                _nextSet > 1 ? _nextSet : 1;
+                                            _resetData(start: _currentPage - 1);
+                                          });
+                                        },
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.arrow_forward_ios, size: 16),
+                                  onPressed: _currentPage +
+                                              _currentPerPage! -
+                                              1 >
+                                          _total
+                                      ? null
+                                      : () {
+                                          var _nextSet =
+                                              _currentPage + _currentPerPage!;
+
+                                          setState(() {
+                                            _currentPage = _nextSet < _total
+                                                ? _nextSet
+                                                : _total - _currentPerPage!;
+                                            _resetData(start: _nextSet - 1);
+                                          });
+                                        },
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Text("$_currentPage - $_currentPerPage of $_total"),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: 16,
-                ),
-                onPressed: _currentPage == 1
-                    ? null
-                    : () {
-                        var _nextSet = _currentPage - _currentPerPage!;
-                        setState(() {
-                          _currentPage = _nextSet > 1 ? _nextSet : 1;
-                          _resetData(start: _currentPage - 1);
-                        });
-                      },
-                padding: EdgeInsets.symmetric(horizontal: 15),
-              ),
-              IconButton(
-                icon: Icon(Icons.arrow_forward_ios, size: 16),
-                onPressed: _currentPage + _currentPerPage! - 1 > _total
-                    ? null
-                    : () {
-                        var _nextSet = _currentPage + _currentPerPage!;
+              );
+            } else {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ResponsiveDatatable(
+                    headers: _headers,
+                    source: _source,
+                    autoHeight: true,
+                    showSelect: true,
+                    isLoading: _isLoadingLocal,
+                    selecteds: _selecteds,
+                    expanded: _expanded,
+                    onSort: (value) {
+                      setState(() => _isLoadingLocal = true);
 
-                        setState(() {
-                          _currentPage = _nextSet < _total
-                              ? _nextSet
-                              : _total - _currentPerPage!;
-                          _resetData(start: _nextSet - 1);
-                        });
-                      },
-                padding: EdgeInsets.symmetric(horizontal: 15),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+                      setState(() {
+                        _sortColumn = value;
+                        _sortAscending = !_sortAscending;
+                        if (_sortAscending) {
+                          _sourceFiltered.sort((a, b) =>
+                              b["$_sortColumn"].compareTo(a["$_sortColumn"]));
+                        } else {
+                          _sourceFiltered.sort((a, b) =>
+                              a["$_sortColumn"].compareTo(b["$_sortColumn"]));
+                        }
+                        var _rangeTop =
+                            _currentPerPage! < _sourceFiltered.length
+                                ? _currentPage!
+                                : _sourceFiltered.length;
+                        _source =
+                            _sourceFiltered.getRange(0, _rangeTop).toList();
+
+                        _isLoadingLocal = false;
+                      });
+                    },
+                    footers: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Total: ${_source.length} registros'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          });
   }
 }
 
