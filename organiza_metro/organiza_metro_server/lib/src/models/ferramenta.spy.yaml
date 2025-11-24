@@ -1,0 +1,29 @@
+class: Ferramenta
+table: ferramenta
+fields:
+  nome: String? #por enquanto vai poder ser null para fim de debug
+  codigoSap: int 
+  descricao: String
+  
+  patrimonio: String?
+  
+  emUso: bool 
+  divisao: String
+  tipo: TipoMaterial?, relation
+  status: String
+  dataAquisicao: DateTime 
+  dataUltimaMovimentacao: DateTime? 
+
+  unidadeMedida: UnidadeMedida?, relation
+
+  
+  base: Base?, relation(optional)
+  
+  veiculo: Veiculo?, relation(optional)
+  
+  empenhadoPara: module:auth:UserInfo?, relation(optional)
+indexes:
+  ferramenta_patrimonio_idx:
+    fields: patrimonio
+    unique: true
+

@@ -1,0 +1,5 @@
+class: ConsumoPeriodoDetalhado
+fields:
+  data: DateTime
+  totalMaterial: double
+  totalFerramenta: double

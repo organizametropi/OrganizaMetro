@@ -1,11 +1,11 @@
-// lib/src/controllers/retirar_material_controller.dart
 import 'package:flutter/material.dart';
-import 'package:organiza_metro_client/organiza_metro_client.dart';
+import 'package:organiza_metro_client/organiza_metro_client.dart' as cli;
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
 // 1. Dados da Requisição
 class RetiradaFormData {
-  DateTime? dataRequisicao;
+  late DateTime dataRequisicao;
+  DateTime? dataDevolucao;
   String? centroCusto;
   String? centroLogistico;
   String? modalidadeEntrega; // Ex: 'Balcão', 'Veículo'
@@ -32,20 +32,94 @@ class RetirarMaterialController extends ChangeNotifier {
     notifyListeners(); // Notifica os widgets para reconstruir (ex: a lista)
   }
 
+  // Bases / Veículos (para dropdowns)
+  List<cli.Base> _bases = [];
+  List<cli.Veiculo> _veiculos = [];
+  String _centroTipo = 'Bases'; // 'Bases' ou 'Veiculos'
+  int? _selectedCentroId;
+
+  List<cli.Base> get bases => _bases;
+  List<cli.Veiculo> get veiculos => _veiculos;
+  String get centroTipo => _centroTipo;
+  int? get selectedCentroId => _selectedCentroId;
+
+  // Materiais disponíveis na localização selecionada (para o modal)
+  List<cli.Material> _materiaisDisponiveis = [];
+  List<cli.Material> get materiaisDisponiveis => _materiaisDisponiveis;
+
+  Future<void> fetchBasesVeiculos() async {
+    try {
+      _bases = await client.admin.getBases();
+      _veiculos = await client.admin.getVeiculos();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Erro ao buscar bases/veiculos: $e');
+    }
+  }
+
+  void setCentroTipo(String tipo) {
+    _centroTipo = tipo;
+    // reset selected centro when changing type
+    _selectedCentroId = null;
+    notifyListeners();
+  }
+
+  void setSelectedCentroId(int? id) {
+    _selectedCentroId = id;
+    // When a centro is selected, fetch the materials for that location
+    fetchMateriaisByLocation();
+    notifyListeners();
+  }
+
+  // Busca materiais disponíveis para a base/veículo selecionado
+  Future<void> fetchMateriaisByLocation() async {
+    try {
+      _materiaisDisponiveis = [];
+      notifyListeners();
+      if (_centroTipo == 'Bases' && _selectedCentroId != null) {
+        _materiaisDisponiveis = await client.material
+            .getMateriaisByLocation(baseId: _selectedCentroId);
+      } else if (_centroTipo == 'Veiculos' && _selectedCentroId != null) {
+        _materiaisDisponiveis = await client.material
+            .getMateriaisByLocation(veiculoId: _selectedCentroId);
+      } else {
+        _materiaisDisponiveis = await client.material.getEstoque();
+      }
+    } catch (e) {
+      debugPrint('Erro ao buscar materiais por localização: $e');
+    }
+    notifyListeners();
+
+    print('Centro id: $selectedCentroId');
+    print('Centro tipo: $centroTipo');
+  }
+
+  void updateCentroLogisticoById(dynamic v) {
+    // v can be String id or int
+    if (v == null) return;
+    int? parsed;
+    if (v is String) {
+      parsed = int.tryParse(v);
+    } else if (v is int) {
+      parsed = v;
+    }
+    if (parsed != null) {
+      setSelectedCentroId(parsed);
+    }
+  }
+
   void updateItemQuantity(int itemId, double newQuantity) {
     final index = _materialsToAdd.indexWhere((item) => item['id'] == itemId);
     if (index != -1) {
       if (newQuantity > 0) {
         _materialsToAdd[index]['quantidade'] = newQuantity;
       } else {
-        // Se a quantidade for zero ou negativa, removemos (opcional, mas limpa)
         _materialsToAdd.removeAt(index);
       }
       notifyListeners();
     }
   }
 
-  // 🚨 NOVO: Remove um item específico
   void removeItem(int itemId) {
     _materialsToAdd.removeWhere((item) => item['id'] == itemId);
     notifyListeners();
@@ -56,9 +130,13 @@ class RetirarMaterialController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Sinks/Atualizadores de Formulário (Lógica de BINDING)
+
   void updateDataRequisicao(DateTime? date) {
-    formData.dataRequisicao = date;
+    formData.dataRequisicao = date!; 
+  }
+
+  void updateDataDevolucao(DateTime? date) {
+    formData.dataDevolucao = date!;
   }
 
   void updateCentroCusto(String? value) {
@@ -78,31 +156,25 @@ class RetirarMaterialController extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<RequisicaoItem> _mapItemsToDto() {
+  List<cli.RequisicaoItem> _mapItemsToDto() {
     return _materialsToAdd.map((item) {
-      // Assumimos que o map tem os campos 'id' (do material/ferramenta) e 'quantidade'
-      final materialId = item['materialId'] as int?;
-      final ferramentaId = item['ferramentaId'] as int?;
 
-      // Se você está usando 'id' genérico no Map:
-      final itemId = item['id'] as int;
-
-      return RequisicaoItem(
-        materialId: itemId,
+      return cli.RequisicaoItem(
+        materialId: item['id'],
         ferramentaId: null,
         quantidade: (item['quantidade'] as double),
       );
     }).toList();
   }
 
-  // Envio final dos dados
+
   Future<bool> submitRequest(BuildContext context) async {
     if (_materialsToAdd.isEmpty || formData.modalidadeEntrega == null) {
-      // Exibe um alerta visual se o contexto estiver disponível
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text(
-                'Por favor, selecione os materiais e a modalidade de entrega.')),
+                'Por favor, selecione os materiais e a modalidade de entrega.', style: TextStyle(color: Colors.white),), backgroundColor: Colors.yellow,),
       );
       return false;
     }
@@ -113,31 +185,30 @@ class RetirarMaterialController extends ChangeNotifier {
 
     try {
       final itensDto = _mapItemsToDto();
+      print(itensDto);
 
-      // 🚨 CHAMADA FINAL AO ENDPOINT
+      
       sucesso = await client.movimentacao.criarRequisicaoSaida(
         itens: itensDto,
         modalidadeEntrega: formData.modalidadeEntrega!,
         observacao: formData.justificativa,
+        dataDaMovimentacao: formData.dataRequisicao,
+        dataDevolucao: formData.dataDevolucao,
 
-        // 🚨 Os campos de ORIGEM devem ser buscados no material (lógica do endpoint)
-        // 🚨 Assumindo que a ORIGEM é sempre a Base 1 para fins de teste de FK.
-
-        // Destino
+        
         destinoBaseId: formData.destinoBaseId,
         destinoVeiculoId: formData.destinoVeiculoId,
       );
 
       if (sucesso) {
         clearMaterials();
-        // Mostrar sucesso
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('✅ Requisição enviada com sucesso!')),
+          const SnackBar(content: Text('Requisição enviada com sucesso!', style: TextStyle(color: Colors.white)),backgroundColor: Colors.green,),
         );
       } else {
-        // Mostrar falha
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('❌ Falha no envio da requisição.')),
+          const SnackBar(content: Text('Falha no envio da requisição.', style: TextStyle(color: Colors.white)), backgroundColor: Colors.red),
         );
       }
     } on Exception catch (e) {

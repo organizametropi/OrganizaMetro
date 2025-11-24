@@ -4,11 +4,13 @@ import 'package:responsive_table/responsive_table.dart';
 import 'package:organiza_metro_client/organiza_metro_client.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 
-
 class AddMaterialModal extends StatefulWidget {
   final Function(List<Map<String, dynamic>>) onMaterialsSelected;
+  final int? baseId;
+  final int? veiculoId;
 
-  const AddMaterialModal({required this.onMaterialsSelected});
+  const AddMaterialModal(
+      {required this.onMaterialsSelected, this.baseId, this.veiculoId});
 
   @override
   State<AddMaterialModal> createState() => __AddMaterialModalState();
@@ -17,50 +19,107 @@ class AddMaterialModal extends StatefulWidget {
 class __AddMaterialModalState extends State<AddMaterialModal> {
   // Variáveis de estado para a tabela no modal
   List<DatatableHeader> _headers = [];
+  List<Map<String, dynamic>> _sourceOriginal = [];
+  List<Map<String, dynamic>> _sourceFiltered = [];
   List<Map<String, dynamic>> _source = [];
   List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
   int _total = 0;
+  String? _sortColumn;
+  bool _sortAscending = true;
+  String? _searchKey = "id";
+  int? _currentPerPage = 100;
+  int _currentPage = 1;
+  List<bool>? _expanded;
+
+  List<Map<String, dynamic>> _convertMateriasToMap(List<Material> materiais) {
+    return materiais.map((m) {
+      return {
+        "id": m.id,
+        "codigoSap": m.codigoSap,
+        "nome": m.nome,
+        "descricao": m.descricao,
+        "quantidade": m.quantidade,
+        "unidadeMedida": m.unidadeMedida?.codigo,
+      };
+    }).toList();
+  }
+
+  _initializeData() async {
+    _mockPullData();
+  }
+
+  _mockPullData() async {
+    setState(() => _isLoading = true);
+    try {
+      final baseId = widget.baseId;
+      final veiculoId = widget.veiculoId;
+
+      List<Material> materiais;
+      if (baseId != null || veiculoId != null) {
+        materiais = await client.material
+            .getMateriaisByLocation(baseId: baseId, veiculoId: veiculoId);
+      } else {
+        materiais = await client.material.getEstoque();
+      }
+
+      _sourceOriginal.clear();
+      _sourceOriginal.addAll(_convertMateriasToMap(materiais));
+
+      _sourceFiltered = _sourceOriginal;
+      _total = _sourceOriginal.length;
+
+      var _rangeTop = _currentPerPage! < _sourceFiltered.length
+          ? _sourceFiltered.length - (_sourceFiltered.length - _currentPerPage!)
+          : _sourceFiltered.length;
+      _expanded = List.generate(_rangeTop, (index) => false);
+      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+    } catch (e) {
+      print("Erro ao buscar os dados no estoque: $e");
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _setHeaders();
-    _loadAvailableMaterials();
-  }
 
-  void _setHeaders() {
     _headers = [
-      DatatableHeader(text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true),
-      DatatableHeader(text: "DESCRIÇÃO", value: "descricao", show: true, flex: 2, sortable: true),
-      DatatableHeader(text: "QTD", value: "quantidade", show: true, sortable: true),
+      DatatableHeader(text: "ID", value: "id", show: false, sortable: false),
+      DatatableHeader(
+          text: "CÓDIGO SAP",
+          value: "codigoSap",
+          show: true,
+          sortable: false,
+          flex: 1),
+      DatatableHeader(
+        text: "NOME",
+        value: "nome",
+        show: true,
+      ),
+      DatatableHeader(
+          text: "DESCRIÇÃO",
+          value: "descricao",
+          show: true,
+          flex: 2,
+          sortable: true,
+          sourceBuilder: (value, row) {
+            return Expanded(
+              child: Text(
+                value ?? '',
+                maxLines: 20,
+                softWrap: true,
+              ),
+            );
+          }),
+      DatatableHeader(
+          text: "QTD", value: "quantidade", show: true, sortable: true),
+      DatatableHeader(
+          text: "UNIDADE", value: "unidadeMedida", show: true, sortable: true),
     ];
-  }
 
-  Future<void> _loadAvailableMaterials() async {
-    setState(() => _isLoading = true);
-    try {
-      // 🚨 CHAMADA AO SERVERPOD (usando o cliente global)
-      final List<Material> materials = await client.material.getEstoque(); 
-      
-      // Converte objetos Serverpod para o formato Map
-      _source = materials.map((m) => {
-        "id": m.id,
-        "codigoSap": m.codigoSap,
-        "descricao": m.descricao,
-        "quantidade": m.quantidade,
-      }).toList();
-
-      _total = _source.length;
-
-      print(_source);
-
-    } catch (e) {
-      // Adicione um feedback visual para o usuário em caso de erro real
-      print("Erro ao carregar materiais para o modal: $e");
-    } finally {
-      setState(() => _isLoading = false);
-    }
+    _initializeData();
   }
 
   @override
@@ -68,19 +127,49 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
     return AlertDialog(
       title: const Text('Selecionar Materiais Disponíveis'),
       content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.7, 
-        height: MediaQuery.of(context).size.height * 0.7,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
-              SizedBox(
-                height: 300,
-                width: 300,
-                child: ResponsiveDatatable(
+            Expanded(
+              child: (() {
+                if (widget.baseId == null && widget.veiculoId == null) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Text(
+                        'Selecione um Centro Logístico (Base ou Veículo) antes de adicionar materiais.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+
+                if (_isLoading) {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.blueGrey,
+                  ));
+                }
+
+                if (_source.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Text(
+                        'Nenhum material disponível neste local.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
+
+                return ResponsiveDatatable(
                   headers: _headers,
                   source: _source,
                   selecteds: _selecteds,
-                  showSelect: true, 
-                  isLoading: _isLoading,
+                  showSelect: true,
+                  autoHeight: false,
                   onSelect: (value, item) {
                     setState(() {
                       if (item == null) {
@@ -88,16 +177,40 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
                       } else if (value!) {
                         _selecteds.add(item);
                       } else {
-                        _selecteds.removeWhere((map) => map["id"] == item["id"]);
+                        _selecteds
+                            .removeWhere((map) => map["id"] == item["id"]);
                       }
                     });
                   },
+                  onSort: (value) {
+                    setState(() => _isLoading = true);
+
+                    setState(() {
+                      _sortColumn = value;
+                      _sortAscending = !_sortAscending;
+                      if (_sortAscending) {
+                        _sourceFiltered.sort((a, b) =>
+                            b["$_sortColumn"].compareTo(a["$_sortColumn"]));
+                      } else {
+                        _sourceFiltered.sort((a, b) =>
+                            a["$_sortColumn"].compareTo(b["$_sortColumn"]));
+                      }
+                      var _rangeTop = _currentPerPage! < _sourceFiltered.length
+                          ? _currentPage!
+                          : _sourceFiltered.length;
+                      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+                      _searchKey = value;
+
+                      _isLoading = false;
+                    });
+                  },
+                  expanded: _expanded,
                   footers: [
                     Text('Total de ${_total} materiais.'),
-                  ]
-                ),
-              ),
-            
+                  ],
+                );
+              })(),
+            ),
           ],
         ),
       ),
@@ -107,12 +220,12 @@ class __AddMaterialModalState extends State<AddMaterialModal> {
           child: const Text('Cancelar'),
         ),
         ElevatedButton(
-          // Botão que chama o callback e retorna os dados
           onPressed: _selecteds.isEmpty
               ? null
               : () => widget.onMaterialsSelected(_selecteds),
           style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-          child: Text('Adicionar (${_selecteds.length})', style: const TextStyle(color: Colors.white)),
+          child: Text('Adicionar (${_selecteds.length})',
+              style: const TextStyle(color: Colors.white)),
         ),
       ],
     );

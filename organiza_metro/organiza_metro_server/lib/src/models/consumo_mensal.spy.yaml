@@ -1,0 +1,4 @@
+class: ConsumoMensal
+fields:
+  nome: String
+  total: double

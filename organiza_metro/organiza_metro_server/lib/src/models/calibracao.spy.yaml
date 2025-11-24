@@ -1,0 +1,8 @@
+class: Calibracao
+table: calibracao
+fields:
+  ferramenta: Ferramenta?, relation
+    
+  dataCalibracao: DateTime 
+  validadeCalibracao: DateTime 
+  status: String

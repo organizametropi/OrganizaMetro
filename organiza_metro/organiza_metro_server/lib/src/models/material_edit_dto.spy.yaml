@@ -1,0 +1,12 @@
+class: MaterialEditDto
+fields:
+  id: int
+  descricao: String?
+  codigoSap: int?
+  quantidade: double?
+  estoqueMinimo: double?
+  unidadeMedidaId: int?
+  tipoMaterialId: int?
+  baseId: int?
+  veiculoId: int?
+  nome: String?

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:organiza_metro_flutter/src/controllers/admin_controller.dart';
+import 'package:organiza_metro_flutter/src/controllers/relatorios_controller.dart';
 import 'package:organiza_metro_flutter/src/serverpod_client.dart';
 import 'package:organiza_metro_flutter/src/screens/dashboard/home_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
 import 'package:intl/intl_standalone.dart'
     if (dart.library.html) 'package:intl/intl_browser.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +17,10 @@ void main() async {
   await findSystemLocale();
   await initializeDateFormatting('pt_BR');
 
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => AdminController()..fetchAllData()),
+    ChangeNotifierProvider(create: (_) => RelatoriosController()..fetchData()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +46,6 @@ class MyApp extends StatelessWidget {
     ));
   }
 }
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
@@ -49,22 +54,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+
+  void _onSessionChanged() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
+    sessionManager.addListener(_onSessionChanged);
+  }
 
-    sessionManager.addListener(() {
-      print('🔄 Estado de login mudou: ${sessionManager.isSignedIn}');
-      setState(
-        () {},
-      );
-    });
+  @override
+  void dispose() {
+    sessionManager.removeListener(_onSessionChanged);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return (Scaffold(
+    return Scaffold(
       body: sessionManager.isSignedIn ? const homePage() : loginPage(),
-    ));
+    );
   }
 }

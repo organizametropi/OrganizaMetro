@@ -4,10 +4,16 @@ class PasswordField extends StatefulWidget {
   final TextEditingController passwordController;
   final bool fadePassword;
 
-  const PasswordField(
-      {super.key,
-      required this.passwordController,
-      required this.fadePassword});
+  final bool hasError;
+  final void Function()? onChangedResetError;
+
+  const PasswordField({
+    super.key,
+    required this.passwordController,
+    required this.fadePassword,
+    this.hasError = false,
+    this.onChangedResetError,
+  });
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
@@ -16,29 +22,16 @@ class PasswordField extends StatefulWidget {
 class _PasswordFieldState extends State<PasswordField> {
   double bottomAnimationValue = 0;
   double opacityAnimationValue = 0;
-  late TextEditingController passwordController;
   bool obscure = true;
+
   FocusNode node = FocusNode();
+
   @override
   void initState() {
-    passwordController = widget.passwordController;
     node.addListener(() {
-      if (!node.hasFocus) {
-        setState(() {
-          bottomAnimationValue = 0;
-          opacityAnimationValue = 0;
-        });
-      } else {
-        setState(() {
-          bottomAnimationValue = 1;
-          opacityAnimationValue = 1;
-        });
-        if (passwordController.text.isEmpty) {
-          setState(() {
-            bottomAnimationValue = 1;
-          });
-        }
-      }
+      setState(() {
+        bottomAnimationValue = node.hasFocus ? 1 : 0;
+      });
     });
     super.initState();
   }
@@ -46,61 +39,73 @@ class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     final double fieldWidth = 500.0;
+
     return Stack(
       children: [
         TweenAnimationBuilder<double>(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           tween: Tween(begin: 0, end: widget.fadePassword ? 0 : 1),
-          builder: ((_, value, __) => Opacity(
-                opacity: value,
-                child: SizedBox(
-                  width: fieldWidth,
-                  child: TextFormField(
-                    controller: passwordController,
-                    focusNode: node,
-                    decoration: InputDecoration(hintText: "Password"),
-                    obscureText: obscure,
-                    onChanged: (value) {
-                      if (value.isEmpty) {
-                        setState(() {
-                          bottomAnimationValue = 0;
-                          opacityAnimationValue = 1;
-                        });
-                      } else {
-                        if (bottomAnimationValue == 0) {
-                          setState(() {
-                            bottomAnimationValue = 1;
-                            opacityAnimationValue = 1;
-                          });
-                        }
-                      }
-                    },
+          builder: (_, value, __) => Opacity(
+            opacity: value,
+            child: SizedBox(
+              width: fieldWidth,
+              child: TextFormField(
+                controller: widget.passwordController,
+                focusNode: node,
+                obscureText: obscure,
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: widget.hasError ? Colors.red : Colors.transparent,
+                      width: 2,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: widget.hasError ? Colors.red : Colors.blue,
+                      width: 2,
+                    ),
                   ),
                 ),
-              )),
-        ),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 500),
-              width: widget.fadePassword ? 0 : fieldWidth,
-              child: TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: bottomAnimationValue),
-                curve: Curves.easeIn,
-                duration: Duration(milliseconds: 500),
-                builder: ((context, value, child) => SizedBox(
-                      height: 2, // espessura fina da linha
-                      child: LinearProgressIndicator(
-                        value: value,
-                        backgroundColor: Colors.white.withOpacity(0.5),
-                        color: Colors.blue[800],
-                      ),
-                    )),
+                onChanged: (value) {
+                  if (widget.onChangedResetError != null) {
+                    widget.onChangedResetError!();
+                  }
+
+                  setState(() {
+                    bottomAnimationValue = value.isEmpty ? 0 : 1;
+                  });
+                },
               ),
             ),
           ),
         ),
+
+
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              width: widget.fadePassword ? 0 : fieldWidth,
+              child: TweenAnimationBuilder(
+                tween: Tween(begin: 0.0, end: bottomAnimationValue),
+                duration: const Duration(milliseconds: 500),
+                builder: (_, value, __) => SizedBox(
+                  height: 2,
+                  child: LinearProgressIndicator(
+                    value: value,
+                    backgroundColor: Colors.white.withOpacity(0.5),
+                    color:
+                        widget.hasError ? Colors.red : Colors.blue[800],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
         Positioned.fill(
           child: Align(
             alignment: Alignment.centerRight,
@@ -115,12 +120,12 @@ class _PasswordFieldState extends State<PasswordField> {
                 child: Icon(
                   obscure ? Icons.visibility : Icons.visibility_off,
                   size: 27,
-                  color: Colors.white,
+                  color: widget.hasError ? Colors.red : Colors.white,
                 ),
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

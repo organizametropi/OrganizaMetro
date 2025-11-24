@@ -1,0 +1,17 @@
+class: Material
+table: material
+fields:
+  nome: String? #por enquanto vai poder ser null para fim de debug
+  codigoSap: int 
+  descricao: String
+  quantidade: double?
+  estoqueMinimo: double? 
+  dataUltimaMovimentacao: DateTime? 
+
+  tipo: TipoMaterial?, relation
+
+  unidadeMedida: UnidadeMedida?, relation
+  
+  base: Base?, relation(optional)
+  
+  veiculo: Veiculo?, relation(optional)

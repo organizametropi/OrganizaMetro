@@ -1,0 +1,405 @@
+import '../utils/auth.utils.dart';
+import 'package:serverpod/serverpod.dart';
+import 'package:organiza_metro_server/src/generated/protocol.dart';
+import 'package:serverpod_auth_server/module.dart' as auth;
+
+class RelatoriosEndpoint extends Endpoint {
+  @override
+  bool get requireLogin => true;
+
+  AuthUtils Auth = AuthUtils();
+
+  // --- PBI 3.1.2: Gráfico dos 10 materiais mais consumidos no último mês ---
+  Future<List<ConsumoMensal>> getTopConsumidosMaterial(
+      Session session, int LIMIT) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final now = DateTime.now().toUtc();
+    final oneMonthAgo = DateTime(now.year, now.month - 1, 1).toUtc();
+    final startOfCurrentMonth = DateTime(now.year, now.month, 1).toUtc();
+    final limite = LIMIT;
+
+    final parameters = QueryParameters.named({
+      // 'oneMonthAgo': oneMonthAgo,
+      // 'startOfCurrentMonth': startOfCurrentMonth,
+      'limite': limite
+    });
+
+    // 🚨 QUERY SQL NATIVO - Material
+    final sql = """
+      SELECT
+          m.descricao AS materialDescricao,
+          SUM(mov.quantidade) AS totalConsumido
+      FROM movimentacao mov
+      JOIN material m ON mov."materialId" = m.id
+      WHERE 
+          mov."tipoMovimentacao" = 'Saída' 
+      GROUP BY
+          m.descricao
+      ORDER BY
+          totalConsumido DESC
+      LIMIT @limite;
+    """;
+
+    final List<List<dynamic>> result =
+        await session.db.unsafeQuery(sql, parameters: parameters);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  // --- PBI 3.1.2 (Ferramentas): Gráfico das 10 ferramentas mais empenhadas no último mês ---
+  Future<List<ConsumoMensal>> getTopConsumidosFerramenta(
+      Session session, int LIMIT) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final now = DateTime.now().toUtc();
+    final oneMonthAgo = DateTime(now.year, now.month - 1, 1).toUtc();
+    final startOfCurrentMonth = DateTime(now.year, now.month, 1).toUtc();
+    final limite = LIMIT;
+
+    // Parâmetros (reutilizamos os parâmetros de data do ConsumoMensal)
+    final parameters = QueryParameters.named({
+      // 'oneMonthAgo': oneMonthAgo,
+      // 'startOfCurrentMonth': startOfCurrentMonth,
+      'limite': limite
+    });
+
+    // 🚨 QUERY SQL NATIVO - Ferramenta
+    final sql = """
+      SELECT
+          f.descricao AS ferramentaDescricao,
+          COUNT(mov.id) AS totalUsos 
+      FROM movimentacao mov
+      JOIN ferramenta f ON mov."ferramentaId"= f.id
+      WHERE 
+          mov."tipoMovimentacao" = 'Saída'  
+      GROUP BY
+          f.descricao
+      ORDER BY
+          totalUsos DESC
+      LIMIT @limite;
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result =
+        await session.db.unsafeQuery(sql, parameters: parameters);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  Future<List<ConsumoMensal>> getConsmuoMaterialClBase(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final sql = """
+     SELECT
+  b.nome AS nome_base,
+  COUNT(mov."origemBaseId") AS aparicoes
+FROM movimentacao mov
+JOIN base b ON mov."origemBaseId" = b.id
+WHERE 
+  mov."tipoMovimentacao" = 'Saída' AND
+  mov."materialId" IS NOT NULL
+GROUP BY
+  b.nome
+ORDER BY
+  aparicoes DESC
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result = await session.db.unsafeQuery(sql);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  Future<List<ConsumoMensal>> getConsmuoMaterialClVeiculo(
+      Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final sql = """
+     SELECT
+  v.descricao AS desc_veiculo,
+  COUNT(mov."origemVeiculoId") AS aparicoes
+FROM movimentacao mov
+JOIN veiculo v ON mov."origemVeiculoId" = v.id
+WHERE 
+  mov."tipoMovimentacao" = 'Saída' AND
+  mov."materialId" IS NOT NULL
+GROUP BY
+  v.descricao
+ORDER BY
+  aparicoes DESC
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result = await session.db.unsafeQuery(sql);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  Future<List<ConsumoMensal>> getConsmuoFerramentaClBase(
+      Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final sql = """
+     SELECT
+  b.nome AS nome_base,
+  COUNT(mov."origemBaseId") AS aparicoes
+FROM movimentacao mov
+JOIN base b ON mov."origemBaseId" = b.id
+WHERE 
+  mov."tipoMovimentacao" = 'Saída' AND
+  mov."ferramentaId" IS NOT NULL
+GROUP BY
+  b.nome
+ORDER BY
+  aparicoes DESC
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result = await session.db.unsafeQuery(sql);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  Future<List<ConsumoMensal>> getConsmuoFerramentaClVeiculo(
+      Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final sql = """
+     SELECT
+  v.descricao AS desc_veiculo,
+  COUNT(mov."origemVeiculoId") AS aparicoes
+FROM movimentacao mov
+JOIN veiculo v ON mov."origemVeiculoId" = v.id
+WHERE 
+  mov."tipoMovimentacao" = 'Saída' AND
+  mov."ferramentaId" IS NOT NULL
+GROUP BY
+  v.descricao
+ORDER BY
+  aparicoes DESC
+    """;
+
+    // Executa a query e mapeia o resultado
+    final List<List<dynamic>> result = await session.db.unsafeQuery(sql);
+
+    return result.map((row) {
+      return ConsumoMensal(
+        nome: row[0] as String,
+        // COUNT retorna BIGINT no PostgreSQL, que é mapeado para int ou num/double
+        total: (row[1] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  // --- PBI 3.1.3 e 3.2.4: Painel de Instrumentos com Calibração Vencida/A Vencer ---
+  Future<List<Ferramenta>> getInstrumentosCalibracao(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final today = DateTime.now().toUtc();
+    final soonToExpire = today.add(const Duration(days: 30)).toUtc();
+
+    // 1. Encontra a última calibração válida/vencida para cada instrumento.
+    // 🚨 Usamos a tabela Calibracao para filtrar as datas diretamente no banco.
+    final List<Calibracao> calibracoesRelevantes = await Calibracao.db.find(
+      session,
+      // Filtra por calibrações que VENCERAM OU VENCEM NOS PRÓXIMOS 30 DIAS
+      where: (t) => t.validadeCalibracao > (soonToExpire),
+      // Inclui a Ferramenta para ter todos os dados necessários no objeto retornado
+      include: Calibracao.include(
+        ferramenta: Ferramenta.include(), // Inclui a Ferramenta completa
+      ),
+      // Ordena pela data de validade para priorizar as mais antigas/vencidas
+      orderBy: (t) => t.validadeCalibracao,
+    );
+
+    // 2. Processamento e Remoção de Duplicatas
+    // O filtro acima pode trazer múltiplas calibrações (antigas e novas) para a mesma ferramenta.
+    // Precisamos garantir que apenas a calibração MAIS RECENTE seja considerada.
+
+    final Map<int, Calibracao> latestCalibrations = {};
+
+    for (final calib in calibracoesRelevantes) {
+      final ferramentaId = calib.ferramenta?.id;
+      if (ferramentaId == null) continue;
+
+      if (!latestCalibrations.containsKey(ferramentaId) ||
+          calib.dataCalibracao
+              .isAfter(latestCalibrations[ferramentaId]!.dataCalibracao)) {
+        latestCalibrations[ferramentaId] = calib;
+      }
+    }
+
+    // 3. Filtro Final no Dart para garantir que só Instrumentos sejam retornados
+    final List<Ferramenta> instrumentosComAlerta = latestCalibrations.values
+        .where((calib) => calib.ferramenta != null)
+        .map((calib) => calib.ferramenta!)
+        .toList();
+
+    // 4. Se a calibração mais recente (já filtrada pelo loop) for a que atende
+    // ao critério de tempo, retornamos o objeto Ferramenta.
+    return instrumentosComAlerta;
+  }
+
+  // --- PBI 3.2.3: Relatório de instrumentos em uso e responsáveis ---
+  Future<List<Ferramenta>> getInstrumentosEmUso(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    // Busca ferramentas em uso, incluindo o usuário empenhado
+    return await Ferramenta.db.find(
+      session,
+      where: (t) => t.emUso.equals(true),
+      include: Ferramenta.include(
+        empenhadoPara:
+            auth.UserInfo.include(), // Busca o usuário do módulo auth
+      ),
+    );
+  }
+
+  Future<List<LocalUserInfo>> getLocalUserInfosByUserIds(
+      Session session, List<int> userIds) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    if (userIds.isEmpty) return [];
+
+    return await LocalUserInfo.db.find(session);
+  }
+
+  // Dentro de class RelatoriosEndpoint extends Endpoint { ... }
+
+  /// PBI 3.2.2: Retorna o consumo total de Materiais e Ferramentas agrupado por dia.
+  Future<List<ConsumoPeriodoDetalhado>> getConsumoDetalhadoPorPeriodo(
+    Session session, {
+    required DateTime dataInicio,
+    required DateTime dataFim,
+  }) async {
+    // 🚨 Validação de segurança
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final parameters = QueryParameters.named({
+      'dataInicio': dataInicio.toUtc(),
+      'dataFim': dataFim.toUtc(),
+    });
+
+    // TRUNC DATE para agrupar por dia (day)
+    final sql = """
+      SELECT
+          DATE_TRUNC('day', mov."dataMovimentacao") AS data,
+          
+          -- Soma de Materiais (somente se materialId NÃO for NULL)
+          SUM(CASE WHEN mov."materialId" IS NOT NULL THEN mov.quantidade ELSE 0 END) AS totalMaterial,
+          
+          -- Soma de Ferramentas (somente se ferramentaId NÃO for NULL)
+          SUM(CASE WHEN mov."ferramentaId" IS NOT NULL THEN mov.quantidade ELSE 0 END) AS totalFerramenta
+          
+      FROM movimentacao mov
+      WHERE 
+          mov."tipoMovimentacao" = 'Saída' AND
+          mov."dataMovimentacao" >= @dataInicio AND 
+          mov."dataMovimentacao" <= @dataFim
+      GROUP BY
+          DATE_TRUNC('day', mov."dataMovimentacao")
+      ORDER BY
+          data;
+    """;
+
+    final List<List<dynamic>> result =
+        await session.db.unsafeQuery(sql, parameters: parameters);
+
+    return result.map((row) {
+      return ConsumoPeriodoDetalhado(
+        data: (row[0] as DateTime).toLocal(),
+        totalMaterial: (row[1] as num).toDouble(),
+        totalFerramenta: (row[2] as num).toDouble(),
+      );
+    }).toList();
+  }
+
+  /// Retorna todas as movimentações (com includes de relações importantes)
+  Future<List<Movimentacao>> getMovimentacoes(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    return await Movimentacao.db.find(
+      session,
+      include: Movimentacao.include(
+        usuario: auth.UserInfo.include(),
+        material: Material.include(),
+        ferramenta: Ferramenta.include(),
+        origemBase: Base.include(),
+        destinoBase: Base.include(),
+        origemVeiculo: Veiculo.include(),
+        destinoVeiculo: Veiculo.include(),
+      ),
+      orderBy: (t) => t.dataMovimentacao,
+    );
+  }
+
+  /// Retorna calibrações vencidas (ou já expiradas) com include da ferramenta
+  Future<List<Calibracao>> getCalibracoesVencidas(Session session) async {
+    if (await Auth.isAdmin(session) == false) {
+      throw Exception('Acesso negado. Apenas administradores.');
+    }
+
+    final now = DateTime.now().toUtc();
+
+    return await Calibracao.db.find(
+      session,
+      where: (t) => t.validadeCalibracao <= (now),
+      include: Calibracao.include(
+        ferramenta: Ferramenta.include(),
+      ),
+      orderBy: (t) => t.validadeCalibracao,
+    );
+  }
+}

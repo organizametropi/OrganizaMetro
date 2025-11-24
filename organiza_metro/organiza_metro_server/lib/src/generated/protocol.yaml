@@ -1,11 +1,54 @@
+admin:
+  - addMaterial:
+  - addFerramenta:
+  - addEmployee:
+  - getTodasFerramentas:
+  - getFerramentasPaginadas:
+  - updateFerramenta:
+  - deleteFerramenta:
+  - getAdminAlerts:
+  - updateMaterial:
+  - deleteMaterial:
+  - getTodosMateriais:
+  - getTiposMateriais:
+  - getUnidadesMedida:
+  - getBases:
+  - getVeiculos:
+  - getFerramentasComPatrimonio:
+  - getCalibracoesAtivas:
+  - addCalibracao:
+  - removeCalibracao:
+  - getAllEmployees:
+  - getAuthUsersByIds:
+  - removeEmployee:
 authUtils:
   - isAdmin:
   - getUserName:
+cron:
+  - verificarAlertas:
 ferramenta:
   - getEstoque:
+  - getMinhasFerramentas:
+  - getDisponiveis:
 material:
   - getEstoque:
+  - getMateriaisByLocation:
 movimentacao:
   - criarRequisicaoSaida:
-greeting:
-  - hello:
+  - processarDevolucaoFerramenta:
+relatorios:
+  - getTopConsumidosMaterial:
+  - getTopConsumidosFerramenta:
+  - getConsmuoMaterialClBase:
+  - getConsmuoMaterialClVeiculo:
+  - getConsmuoFerramentaClBase:
+  - getConsmuoFerramentaClVeiculo:
+  - getInstrumentosCalibracao:
+  - getInstrumentosEmUso:
+  - getLocalUserInfosByUserIds:
+  - getConsumoDetalhadoPorPeriodo:
+  - getMovimentacoes:
+  - getCalibracoesVencidas:
+userData:
+  - getMyAlerts:
+  - getMyHistory:

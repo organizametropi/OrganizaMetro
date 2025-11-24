@@ -19,7 +19,6 @@ class AuthService {
   /// Retorna true se o usuário for admin
   Future<bool> getIsAdmin() async {
     isAdmin ??= await client.authUtils.isAdmin();
-    print('Admin encontrado: $isAdmin'); 
     return isAdmin!;
   }
 

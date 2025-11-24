@@ -17,6 +17,9 @@ class _tlogin extends State<loginPage> {
   double _elementsOpacity = 1;
   bool loadingBallAppear = false;
   double loadingBallSize = 1;
+  bool loginError = false;
+  String? loginMessage;
+
   @override
   void initState() {
     emailController = TextEditingController();
@@ -89,18 +92,32 @@ class _tlogin extends State<loginPage> {
                           ),
                           const SizedBox(height: 20),
                           EmailField(
-                            fadeEmail: _elementsOpacity == 0,
                             emailController: emailController,
+                            fadeEmail: false,
+                            hasError: loginError,
+                            onChangedResetError: () {
+                              setState(() => loginError = false);
+                            },
                           ),
                           const SizedBox(height: 20),
                           PasswordField(
-                            fadePassword: _elementsOpacity == 0,
                             passwordController: passwordController,
+                            fadePassword: false,
+                            hasError: loginError,
+                            onChangedResetError: () {
+                              setState(() => loginError = false);
+                            },
                           ),
                           const SizedBox(height: 30),
                           GetStartedButton(
                             emailController: emailController,
                             passwordController: passwordController,
+                            onError: (msg) {
+                              setState(() {
+                                loginError = true;
+                                loginMessage = msg;
+                              });
+                            },
                           ),
                         ],
                       ),

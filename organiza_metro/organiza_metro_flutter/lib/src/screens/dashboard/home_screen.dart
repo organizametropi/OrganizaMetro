@@ -1,48 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:organiza_metro_flutter/src/screens/redirect/admin_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/estoque_screen.dart';
+import 'package:organiza_metro_flutter/src/screens/redirect/ferramenta_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/historico_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/relatorios_screen.dart';
 import 'package:organiza_metro_flutter/src/screens/redirect/retirar_material_screen.dart';
-import 'package:organiza_metro_flutter/src/serverpod_client.dart';
-import 'package:organiza_metro_flutter/src/services/auth_service.dart';
 import 'package:organiza_metro_flutter/src/widgets/button_home.dart';
+import 'package:organiza_metro_flutter/src/widgets/cards/user_notifications_home.dart';
 import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
-import 'package:organiza_metro_flutter/src/screens/auth/login_screen.dart';
+import 'package:organiza_metro_flutter/src/services/auth_service.dart';
 
 class homePage extends StatefulWidget {
   const homePage({super.key});
 
- @override
+  @override
   State<homePage> createState() => _HomePageState();
 }
 
+class _HomePageState extends State<homePage> {
+  final AuthService _auth = AuthService();
 
-class _HomePageState extends State<homePage>{
-bool _isAdmin = false;
+  bool _isAdmin = false;
   String? _userName;
 
   @override
   void initState() {
     super.initState();
-    _loadUserInfo();
+    _loadUserData();
   }
 
-  Future<void> _loadUserInfo() async {
-    
-    try {
-      final isAdmin = await client.authUtils.isAdmin();
-      final name = await client.authUtils.getUserName();
-      setState(() {
-        _isAdmin = isAdmin;
-        _userName = name ?? 'Usuário';
-      });
-    } catch (e) {
-      print('Erro ao buscar info: $e');
-    }
+  Future<void> _loadUserData() async {
+    final isAdmin = await _auth.getIsAdmin();
+    final userName = await _auth.getUserName();
+
+    if (!mounted) return;
+
+    setState(() {
+      _isAdmin = isAdmin;
+      _userName = userName;
+    });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
-  
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
@@ -52,52 +55,45 @@ bool _isAdmin = false;
           padding: const EdgeInsets.all(16.0),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              bool isWide =
-                  constraints.maxWidth > 600; 
+              bool isWide = constraints.maxWidth > 600;
 
               final welcomeText = Text(
-                // 🚨 Usa o nome carregado
-                'Bem-Vindo $_userName!', 
+                'Bem-Vindo ${_userName ?? ""}!',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: isWide ? 20 : 18,
                     color: Colors.black54),
               );
-              
-              // 3. Define os botões de Admin que serão usados nos dois layouts
+
               final adminButtons = [
-                // 🚨 Botão Relatórios (visível SOMENTE para Admin)
-                Expanded(
-                  child: Container(
-                    height: 160,
-                    margin: const EdgeInsets.all(8),
-                    child: ButtonHomeTemplate(
-                      labelText: "Relatórios",
-                      goToPage: (context) => relatoriosPage(),
-                      color: const Color.fromRGBO(255, 199, 44, 1),
-                      assetImage: 'lib/assets/images/dataChart.png',
-                    ),
+                Container(
+                  height: 160,
+                  margin: const EdgeInsets.all(8),
+                  child: ButtonHomeTemplate(
+                    labelText: "Relatórios",
+                    goToPage: (context) => relatoriosPage(),
+                    color: Color.fromRGBO(125, 85, 199, 1),
+                    assetImage: 'lib/assets/images/dataChart.png',
                   ),
                 ),
-                
-                // 🚨 Botão Administração (visível SOMENTE para Admin)
-                Expanded(
-                  child: Container(
-                    height: 160,
-                    margin: const EdgeInsets.all(8),
-                    child: ButtonHomeTemplate(
+                Container(
+                  height: 160,
+                  margin: const EdgeInsets.all(8),
+                  child: ButtonHomeTemplate(
                       labelText: "Administração",
-                      goToPage: (context) => const loginPage(), // Altere para a tela de admin correta
+                      goToPage: (context) => const AdminPage(),
                       color: const Color.fromRGBO(0, 26, 144, 1),
-                    ),
-                  ),
+                      assetImage:
+                          'lib/assets/images/admin-settings-male-removebg-preview.png'),
                 ),
               ];
-              
+
               if (isWide) {
                 return Column(
                   children: [
-                    Row(children: [welcomeText]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [welcomeText]),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -109,6 +105,7 @@ bool _isAdmin = false;
                               labelText: "Retirar Materiais",
                               goToPage: (context) => retirarMaterialPage(),
                               color: Color.fromRGBO(239, 51, 64, 1),
+                              assetImage: 'lib/assets/images/8256654.png',
                             ),
                           ),
                         ),
@@ -117,10 +114,10 @@ bool _isAdmin = false;
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Estoque",
-                              goToPage: (context) => estoquePage(),
-                              color: Color.fromRGBO(0,52,28,1),
-                            ),
+                                labelText: "Ferramentas e Instrumentos",
+                                goToPage: (context) => const FerramentaPage(),
+                                color: const Color.fromRGBO(255, 199, 44, 1),
+                                assetImage: 'lib/assets/images/1935672.png'),
                           ),
                         ),
                       ],
@@ -133,10 +130,11 @@ bool _isAdmin = false;
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                                labelText: "Instrumentos Técnicos",
-                                goToPage: (context) => const loginPage(),
-                                color: Color.fromRGBO(229,110,51,1),
-                                assetImage: 'lib/assets/images/dataChart.png'),
+                              labelText: "Estoque",
+                              goToPage: (context) => estoquePage(),
+                              color: Color.fromRGBO(0, 52, 28, 1),
+                              assetImage: 'lib/assets/images/storage-files-icon-outline-storage-files-vector-icon-color-flat-isolated_96318-114906-removebg-preview.png',
+                            ),
                           ),
                         ),
                         Expanded(
@@ -144,18 +142,21 @@ bool _isAdmin = false;
                             height: 160,
                             margin: const EdgeInsets.all(8),
                             child: ButtonHomeTemplate(
-                              labelText: "Meu Histórico",
+                              labelText: "Histórico",
                               goToPage: (context) => historicoPage(),
-                              color: Color.fromRGBO(125, 85, 199, 1),
+                              color: Color.fromRGBO(229, 110, 51, 1),
+                              assetImage: 'lib/assets/images/download-digital-book-icon-color-outline-vector-removebg-preview.png',
                             ),
                           ),
                         ),
                       ],
-                    ), // A partir daqui apenas para admins
+                    ),
                     if (_isAdmin)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: adminButtons,
+                        children: adminButtons
+                            .map((btn) => Expanded(child: btn))
+                            .toList(),
                       ),
                     Row(
                       children: [
@@ -178,19 +179,11 @@ bool _isAdmin = false;
                         ],
                       ),
                       SizedBox(
-                        height: 105,
+                        height: 15,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Sem alertas/notificações no momento', //caso Vazio
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.black38)),
-                        ],
-                      ),
-                       SizedBox(
-                        height: 105,
+                      UserNotificationsArea(),
+                      SizedBox(
+                        height: 25,
                       )
                     ])
                   ],
@@ -198,7 +191,12 @@ bool _isAdmin = false;
               } else {
                 return Column(
                   children: [
-                    welcomeText,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        welcomeText,
+                      ],
+                    ),
                     Container(
                       height: 160,
                       margin: const EdgeInsets.all(8),
@@ -206,7 +204,17 @@ bool _isAdmin = false;
                         labelText: "Retirar Materiais",
                         goToPage: (context) => retirarMaterialPage(),
                         color: Color.fromRGBO(239, 51, 64, 1),
+                        assetImage: 'lib/assets/images/8256654.png',
                       ),
+                    ),
+                    Container(
+                      height: 160,
+                      margin: const EdgeInsets.all(8),
+                      child: ButtonHomeTemplate(
+                          labelText: "Ferramentas e Instrumentos",
+                          goToPage: (context) => const FerramentaPage(),
+                          color: const Color.fromRGBO(255, 199, 44, 1),
+                          assetImage: 'lib/assets/images/1935672.png'),
                     ),
                     Container(
                       height: 160,
@@ -214,37 +222,30 @@ bool _isAdmin = false;
                       child: ButtonHomeTemplate(
                         labelText: "Estoque",
                         goToPage: (context) => estoquePage(),
-                        color: Color.fromRGBO(0,52,28,1),
+                        color: Color.fromRGBO(0, 52, 28, 1),
+                        assetImage: 'lib/assets/images/storage-files-icon-outline-storage-files-vector-icon-color-flat-isolated_96318-114906-removebg-preview.png',
                       ),
                     ),
                     Container(
                       height: 160,
                       margin: const EdgeInsets.all(8),
                       child: ButtonHomeTemplate(
-                          labelText: "Instrumentos Técnicos",
-                          goToPage: (context) => const loginPage(),
-                          color: Color.fromRGBO(229,110,51,1),
-                          assetImage: 'lib/assets/images/dataChart.png'),
-                    ),
-                    Container(
-                      height: 160,
-                      margin: const EdgeInsets.all(8),
-                      child: ButtonHomeTemplate(
-                        labelText: "Meu Histórico",
+                        labelText: "Histórico",
                         goToPage: (context) => historicoPage(),
-                        color:Color.fromRGBO(125, 85, 199, 1),
+                        color: Color.fromRGBO(229, 110, 51, 1),
+                        assetImage: 'lib/assets/images/download-digital-book-icon-color-outline-vector-removebg-preview.png',
                       ),
-                    ), // A partir daqui apenas para admins
+                    ),
                     if (_isAdmin) ...[
                       Container(
                         height: 160,
                         margin: const EdgeInsets.all(8),
-                        child: adminButtons[0].child, // Relatórios
+                        child: adminButtons[0].child,
                       ),
                       Container(
                         height: 160,
                         margin: const EdgeInsets.all(8),
-                        child: adminButtons[1].child, // Administração
+                        child: adminButtons[1].child,
                       ),
                     ],
                     Row(
@@ -255,7 +256,7 @@ bool _isAdmin = false;
                         ),
                       ],
                     ),
-                     Column(children: [
+                    Column(children: [
                       Row(
                         children: [
                           Text(
@@ -268,19 +269,11 @@ bool _isAdmin = false;
                         ],
                       ),
                       SizedBox(
-                        height: 52,
+                        height: 15,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Sem alertas/notificações no momento', //caso Vazio
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.black38)),
-                        ],
-                      ),
-                       SizedBox(
-                        height: 52,
+                      UserNotificationsArea(),
+                      SizedBox(
+                        height: 25,
                       )
                     ])
                   ],
@@ -293,4 +286,3 @@ bool _isAdmin = false;
     ));
   }
 }
-

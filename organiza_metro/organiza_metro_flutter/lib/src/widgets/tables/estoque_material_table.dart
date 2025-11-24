@@ -15,7 +15,7 @@ class _estoqueTableState extends State<estoque_table_material> {
 
   List<int> _perPages = [10, 20, 50, 100];
   int _total = 100;
-  int? _currentPerPage = 10;
+  int? _currentPerPage = 20;
   List<bool>? _expanded;
   String? _searchKey = "id";
 
@@ -31,15 +31,17 @@ class _estoqueTableState extends State<estoque_table_material> {
   bool _isLoading = true;
   bool _showSelected = false;
 
-
   List<Map<String, dynamic>> _convertMateriasToMap(List<Material> materiais) {
     return materiais.map((m) {
       return {
         "id": m.id,
         "codigoSap": m.codigoSap,
+        "nome": m.nome,
         "descricao": m.descricao,
         "quantidade": m.quantidade,
-        "unidadeMedidaId": m.unidadeMedidaId,
+        "unidadeMedida": m.unidadeMedida?.codigo,
+        "base": m.base?.nome ?? "-",
+        "veiculo": m.veiculo?.descricao ?? "-",
       };
     }).toList();
   }
@@ -51,17 +53,17 @@ class _estoqueTableState extends State<estoque_table_material> {
   _mockPullData() async {
     setState(() => _isLoading = true);
     try {
-      final List<Material> materiais = await client.material.getEstoque(); 
+      final List<Material> materiais = await client.material.getEstoque();
 
       _sourceOriginal.clear();
       _sourceOriginal.addAll(_convertMateriasToMap(materiais));
 
       _sourceFiltered = _sourceOriginal;
+      _total = _sourceFiltered.length;
 
       var _rangeTop = _currentPerPage! < _sourceFiltered.length
-          ? _currentPage!
+          ? _sourceFiltered.length - (_sourceFiltered.length - _currentPerPage!)
           : _sourceFiltered.length;
-
       _expanded = List.generate(_rangeTop, (index) => false);
       _source = _sourceFiltered.getRange(0, _rangeTop).toList();
     } catch (e) {
@@ -113,12 +115,125 @@ class _estoqueTableState extends State<estoque_table_material> {
     super.initState();
 
     //setHeaders
-  _headers = [
-      DatatableHeader(text: "ID", value: "id", show: true, sortable: true), // Adicionado sortable
-      DatatableHeader(text: "CÓDIGO SAP", value: "codigoSap", show: true, sortable: true, flex: 1),
-      DatatableHeader(text: "DESCRIÇÃO", value: "descricao", show: true, flex: 2, sortable: true),
-      DatatableHeader(text: "QTD", value: "quantidade", show: true, sortable: true),
-      DatatableHeader(text: "UNIDADE", value: "unidadeMedidaId", show: true, sortable: false),
+    _headers = [
+      DatatableHeader(text: "ID", value: "id", show: false, sortable: true),
+      DatatableHeader(
+          text: "CÓDIGO SAP",
+          value: "codigoSap",
+          show: true,
+          sortable: true,
+          flex: 1),
+      DatatableHeader(
+          text: "NOME",
+          value: "nome",
+          show: true,
+          sortable: true,
+          flex: 2,
+          sourceBuilder: (value, row) {
+            return Align(
+              alignment: Alignment.center,
+              child: Text(
+                value ?? '',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            );
+          }),
+      DatatableHeader(
+          text: "DESCRIÇÃO",
+          value: "descricao",
+          show: true,
+          flex: 3,
+          sortable: true,
+          sourceBuilder: (value, row) {
+            return Expanded(
+              child: Text(
+                value ?? '',
+                maxLines: 20,
+                softWrap: true,
+              ),
+            );
+          }),
+      DatatableHeader(
+          text: "QTD",
+          value: "quantidade",
+          show: true,
+          sortable: true,
+          sourceBuilder: (value, row) {
+            final qtd = value == null
+                ? 0
+                : (value is double
+                    ? value
+                    : double.tryParse(value.toString()) ?? 0);
+            return Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey.withOpacity(0.06),
+                ),
+                child: Text(
+                  qtd % 1 == 0
+                      ? qtd.toInt().toString()
+                      : qtd.toStringAsFixed(2),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            );
+          }),
+      DatatableHeader(
+          text: "UNIDADE",
+          value: "unidadeMedida",
+          show: true,
+          sortable: false,
+          flex: 2),
+      DatatableHeader(
+          text: "BASE",
+          value: "base",
+          show: true,
+          flex: 2,
+          sourceBuilder: (value, row) {
+            return Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  value ?? '-',
+                  softWrap: true,
+                  maxLines: 10,
+                  style: const TextStyle(
+                    fontFamily: 'Helvetica',
+                    fontSize: 14,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            );
+          }),
+      DatatableHeader(
+          text: "VEÍCULO",
+          value: "veiculo",
+          show: true,
+          flex: 2,
+          sourceBuilder: (value, row) {
+            return Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  value ?? '-',
+                  softWrap: true,
+                  maxLines: 10,
+                  style: const TextStyle(
+                    fontFamily: 'Helvetica',
+                    fontSize: 14,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            );
+          }),
     ];
 
     _initializeData();
@@ -131,168 +246,255 @@ class _estoqueTableState extends State<estoque_table_material> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: EdgeInsets.all(0),
-            constraints: BoxConstraints(
-              maxHeight: 700,
-            ),
-            child: Card(
-              elevation: 1,
-              shadowColor: Colors.black,
-              clipBehavior: Clip.none,
-              child: ResponsiveDatatable(
-                reponseScreenSizes: [ScreenSize.xs],
-                actions: [
-                  if (_isSearch)
-                    Expanded(
-                        child: TextField(
-                      decoration: InputDecoration(
-                          hintText:
-                              'Enter search term based on ${_searchKey!.replaceAll(RegExp('[\\W_]+'), ' ').toUpperCase()}',
-                          prefixIcon: IconButton(
-                              icon: Icon(Icons.cancel),
-                              onPressed: () {
-                                setState(() {
-                                  _isSearch = false;
-                                });
-                                _initializeData();
-                              }),
-                          suffixIcon: IconButton(
-                              icon: Icon(Icons.search), onPressed: () {})),
-                      onSubmitted: (value) {
-                        _filterData(value);
-                      },
-                    )),
-                  if (!_isSearch)
-                    IconButton(
-                        icon: Icon(Icons.search),
-                        onPressed: () {
-                          setState(() {
-                            _isSearch = true;
-                          });
-                        })
-                ],
-                headers: _headers,
-                source: _source,
-                selecteds: _selecteds,
-                showSelect: _showSelected,
-                autoHeight: false,
-                dropContainer: (data) {
-                  if (int.tryParse(data['id'].toString())!.isEven) {
-                    return Text("is Even");
-                  }
-                  return _DropDownContainer(data: data);
-                },
-                onChangedRow: (value, header) {},
-                onSubmittedRow: (value, header) {},
-                onTabRow: (data) {},
-                onSort: (value) {
-                  setState(() => _isLoading = true);
+    return _isLoading
+        ? SizedBox(
+            height: 700,
+            child: const Center(
+                child: CircularProgressIndicator(color: Colors.blueGrey)))
+        : LayoutBuilder(builder: (context, constraints) {
+            final screenWidth = constraints.maxWidth;
+            final bool isLargeScreen = screenWidth > 800;
 
-                  setState(() {
-                    _sortColumn = value;
-                    _sortAscending = !_sortAscending;
-                    if (_sortAscending) {
-                      _sourceFiltered.sort((a, b) =>
-                          b["$_sortColumn"].compareTo(a["$_sortColumn"]));
-                    } else {
-                      _sourceFiltered.sort((a, b) =>
-                          a["$_sortColumn"].compareTo(b["$_sortColumn"]));
-                    }
-                    var _rangeTop = _currentPerPage! < _sourceFiltered.length
-                        ? _currentPage!
-                        : _sourceFiltered.length;
-                    _source = _sourceFiltered.getRange(0, _rangeTop).toList();
-                    _searchKey = value;
+            if (isLargeScreen) {
+              final double baseColWidth = 120.0;
+              final visibleHeaders =
+                  _headers.where((h) => h.show == true).toList();
+              final double checkboxWidth = 60.0;
+              final double minWidth = visibleHeaders.fold<double>(
+                      0.0,
+                      (sum, h) =>
+                          sum + ((h.flex <= 0 ? 1 : h.flex) * baseColWidth)) +
+                  checkboxWidth;
 
-                    _isLoading = false;
-                  });
-                },
-                expanded: _expanded,
-                sortAscending: _sortAscending,
-                sortColumn: _sortColumn,
-                isLoading: _isLoading,
-                onSelect: (value, item) {
-                  if (value!) {
-                    setState(() => _selecteds =
-                        _source.map((entry) => entry).toList().cast());
-                  } else {
-                    setState(() => _selecteds.clear());
-                  }
-                },
-                footers: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Text("Rows per page"),
+              final maxTableHeight = MediaQuery.of(context).size.height;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: minWidth,
                   ),
-                  if (_perPages.isNotEmpty)
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: DropdownButton<int>(
-                        value: _currentPerPage,
-                        items: _perPages
-                            .map((e) => DropdownMenuItem<int>(
-                                  value: e,
-                                  child: Text("$e"),
-                                ))
-                            .toList(),
-                        onChanged: (dynamic value) {
-                          setState(() {
-                            _currentPerPage = value;
-                            _currentPage = 1;
-                            _resetData();
-                          });
-                        },
-                        isExpanded: false,
+                  child: SizedBox(
+                    width: minWidth,
+                    child: Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: maxTableHeight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DefaultTextStyle(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(fontSize: 12),
+                            child: ResponsiveDatatable(
+                              reponseScreenSizes: [ScreenSize.xs],
+                              actions: [
+                                if (_isSearch)
+                                  Expanded(
+                                      child: TextField(
+                                    decoration: InputDecoration(
+                                        hintText:
+                                            'Enter search term based on ${_searchKey!.replaceAll(RegExp('[\\W_]+'), ' ').toUpperCase()}',
+                                        prefixIcon: IconButton(
+                                            icon: Icon(Icons.cancel),
+                                            onPressed: () {
+                                              setState(() {
+                                                _isSearch = false;
+                                              });
+                                              _initializeData();
+                                            }),
+                                        suffixIcon: IconButton(
+                                            icon: Icon(Icons.search),
+                                            onPressed: () {})),
+                                    onSubmitted: (value) {
+                                      _filterData(value);
+                                    },
+                                  )),
+                                if (!_isSearch)
+                                  IconButton(
+                                      icon: Icon(Icons.search),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isSearch = true;
+                                        });
+                                      })
+                              ],
+                              headers: _headers,
+                              source: _source,
+                              selecteds: _selecteds,
+                              showSelect: _showSelected,
+                              autoHeight: false,
+                              onChangedRow: (value, header) {},
+                              onSubmittedRow: (value, header) {},
+                              onTabRow: (data) {},
+                              onSort: (value) {
+                                setState(() => _isLoading = true);
+
+                                setState(() {
+                                  _sortColumn = value;
+                                  _sortAscending = !_sortAscending;
+                                  if (_sortAscending) {
+                                    _sourceFiltered.sort((a, b) =>
+                                        b["$_sortColumn"]
+                                            .compareTo(a["$_sortColumn"]));
+                                  } else {
+                                    _sourceFiltered.sort((a, b) =>
+                                        a["$_sortColumn"]
+                                            .compareTo(b["$_sortColumn"]));
+                                  }
+                                  var _rangeTop =
+                                      _currentPerPage! < _sourceFiltered.length
+                                          ? _currentPage!
+                                          : _sourceFiltered.length;
+                                  _source = _sourceFiltered
+                                      .getRange(0, _rangeTop)
+                                      .toList();
+                                  _searchKey = value;
+
+                                  _isLoading = false;
+                                });
+                              },
+                              expanded: _expanded,
+                              sortAscending: _sortAscending,
+                              sortColumn: _sortColumn,
+                              isLoading: _isLoading,
+                              onSelect: (value, item) {
+                                if (value!) {
+                                  setState(() => _selecteds = _source
+                                      .map((entry) => entry)
+                                      .toList()
+                                      .cast());
+                                } else {
+                                  setState(() => _selecteds.clear());
+                                }
+                              },
+                              footers: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text("Rows per page"),
+                                ),
+                                if (_perPages.isNotEmpty)
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    child: DropdownButton<int>(
+                                      value: _currentPerPage,
+                                      items: _perPages
+                                          .map((e) => DropdownMenuItem<int>(
+                                                value: e,
+                                                child: Text("$e"),
+                                              ))
+                                          .toList(),
+                                      onChanged: (dynamic value) {
+                                        setState(() {
+                                          _currentPerPage = value;
+                                          _currentPage = 1;
+                                          _resetData();
+                                        });
+                                      },
+                                      isExpanded: false,
+                                    ),
+                                  ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text(
+                                      "$_currentPage - $_currentPerPage of $_total"),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    size: 16,
+                                  ),
+                                  onPressed: _currentPage == 1
+                                      ? null
+                                      : () {
+                                          var _nextSet =
+                                              _currentPage - _currentPerPage!;
+                                          setState(() {
+                                            _currentPage =
+                                                _nextSet > 1 ? _nextSet : 1;
+                                            _resetData(start: _currentPage - 1);
+                                          });
+                                        },
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.arrow_forward_ios, size: 16),
+                                  onPressed: _currentPage +
+                                              _currentPerPage! -
+                                              1 >
+                                          _total
+                                      ? null
+                                      : () {
+                                          var _nextSet =
+                                              _currentPage + _currentPerPage!;
+
+                                          setState(() {
+                                            _currentPage = _nextSet < _total
+                                                ? _nextSet
+                                                : _total - _currentPerPage!;
+                                            _resetData(start: _nextSet - 1);
+                                          });
+                                        },
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Text("$_currentPage - $_currentPerPage of $_total"),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      size: 16,
-                    ),
-                    onPressed: _currentPage == 1
-                        ? null
-                        : () {
-                            var _nextSet = _currentPage - _currentPerPage!;
-                            setState(() {
-                              _currentPage = _nextSet > 1 ? _nextSet : 1;
-                              _resetData(start: _currentPage - 1);
-                            });
-                          },
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: _currentPage + _currentPerPage! - 1 > _total
-                        ? null
-                        : () {
-                            var _nextSet = _currentPage + _currentPerPage!;
+                ),
+              );
+            } else {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ResponsiveDatatable(
+                    headers: _headers,
+                    source: _source,
+                    autoHeight: true,
+                    showSelect: true,
+                    isLoading: _isLoading,
+                    selecteds: _selecteds,
+                    expanded: _expanded,
+                    onSort: (value) {
+                      setState(() => _isLoading = true);
 
-                            setState(() {
-                              _currentPage = _nextSet < _total
-                                  ? _nextSet
-                                  : _total - _currentPerPage!;
-                              _resetData(start: _nextSet - 1);
-                            });
-                          },
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ]));
+                      setState(() {
+                        _sortColumn = value;
+                        _sortAscending = !_sortAscending;
+                        if (_sortAscending) {
+                          _sourceFiltered.sort((a, b) =>
+                              b["$_sortColumn"].compareTo(a["$_sortColumn"]));
+                        } else {
+                          _sourceFiltered.sort((a, b) =>
+                              a["$_sortColumn"].compareTo(b["$_sortColumn"]));
+                        }
+                        var _rangeTop =
+                            _currentPerPage! < _sourceFiltered.length
+                                ? _currentPage!
+                                : _sourceFiltered.length;
+                        _source =
+                            _sourceFiltered.getRange(0, _rangeTop).toList();
+
+                        _isLoading = false;
+                      });
+                    },
+                    footers: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Total: ${_source.length} registros'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          });
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:organiza_metro_flutter/src/page_subtitle.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/justificativa_section.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/materiais_container.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/modalidade_entrega_section.dart';
@@ -8,18 +9,43 @@ import 'package:organiza_metro_flutter/src/widgets/defalt_app_bar.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/add_material_modal.dart';
 import 'package:organiza_metro_flutter/src/widgets/forms/retirar_material/retirar_material_form2.dart';
 
-class retirarMaterialPage extends StatelessWidget {
+class retirarMaterialPage extends StatefulWidget {
+  @override
+  State<retirarMaterialPage> createState() => _RetirarMaterialPageState();
+}
+
+class _RetirarMaterialPageState extends State<retirarMaterialPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late RetirarMaterialController controller;
 
-  // Função para abrir o modal
+  @override
+  void initState() {
+    super.initState();
+    controller = RetirarMaterialController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchBasesVeiculos();
+    });
+  }
+
   void _showAddMaterialModal(BuildContext context) {
-    // Acessa o controlador sem ouvir as mudanças (read)
-    final controller = context.read<RetirarMaterialController>();
+    final controller = Provider.of<RetirarMaterialController>(
+      context,
+      listen: false,
+    );
 
+    int? baseId;
+    int? veiculoId;
+    if (controller.centroTipo == 'Bases') {
+      baseId = controller.selectedCentroId;
+    } else {
+      veiculoId = controller.selectedCentroId;
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AddMaterialModal(
+          baseId: baseId,
+          veiculoId: veiculoId,
           onMaterialsSelected: (selectedMaterials) {
             // Chama a função do controller
             controller.addMaterials(selectedMaterials);
@@ -32,16 +58,15 @@ class retirarMaterialPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🚨 Injete o controlador na árvore para que os sub-widgets possam acessá-lo
-    return ChangeNotifierProvider(
-      create: (_) => RetirarMaterialController(),
+    return ChangeNotifierProvider.value(
+      value: controller,
       child: Consumer<RetirarMaterialController>(
         builder: (context, controller, child) {
-          // Passamos o context para o submitRequest
+
           void _validateAndSubmit() {
             if (_formKey.currentState!.validate()) {
               controller
-                  .submitRequest(context); // Passa o contexto para o SnackBar
+                  .submitRequest(context); 
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -54,67 +79,74 @@ class retirarMaterialPage extends StatelessWidget {
           return Scaffold(
             appBar: const MyAppBar(),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'Requisição de material 📤',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  PageSubtitleBar(title: 'Retirar Material'),
+
+                  const SizedBox(height: 40.0),
+
+              
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        retirarMaterialForm2(
+                          controller: controller,
+                          formKey: _formKey,
+                        ),
+
+                        const SizedBox(height: 35.0),
+
+                        MaterialsContainer(
+                          materials: controller.materialsToAdd,
+                          onAddTap: () => _showAddMaterialModal(context),
+                          onClearTap: controller.clearMaterials,
+                        ),
+
+                        const SizedBox(height: 35.0),
+
+                        ModalidadeEntregaSection(controller: controller),
+
+                        const SizedBox(height: 35.0),
+
+                     
+                        JustificativaSection(controller: controller),
+
+                        const SizedBox(height: 35.0),
+                      ],
                     ),
-                    const SizedBox(height: 40.0),
-
-                    // --- ÁREA DE MATERIAIS SELECIONADOS ---
-                    MaterialsContainer(
-                      materials: controller.materialsToAdd,
-                      onAddTap: () => _showAddMaterialModal(context),
-                      onClearTap: controller.clearMaterials,
-                    ),
-
-                    const SizedBox(height: 20.0),
-
-                    // --- FORMULÁRIO DE DADOS GERAIS ---
-                    // O retirarMaterialForm2 agora recebe o controller ou usa o Provider internamente
-                    retirarMaterialForm2(
-                      controller: controller,
-                      formKey: _formKey,
-                    ),
-
-                    const SizedBox(height: 35.0),
-
-                    // --- MODALIDADE DE ENTREGA ---
-                    ModalidadeEntregaSection(controller: controller),
-
-                    const SizedBox(height: 35.0),
-
-                    // --- JUSTIFICATIVA ---
-                    JustificativaSection(controller: controller),
-
-                    const SizedBox(height: 40.0),
-
-                    // --- BOTÃO DE ENVIO FINAL ---
-                    ElevatedButton(
-                        // Desabilita se não tiver itens, modalidade ou se estiver enviando
-                        onPressed: (controller.materialsToAdd.isNotEmpty &&
-                                controller.formData.modalidadeEntrega != null &&
-                                !controller.isSubmitting)
-                            ? _validateAndSubmit
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            padding: const EdgeInsets.symmetric(vertical: 15)),
-                        child: controller.isSubmitting
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
-                            : const Text('FINALIZAR REQUISIÇÃO',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold))),
-                  ],
-                ),
+                  ),
+             
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        // height: 45,
+                        width: 300,
+                        margin: const EdgeInsets.only(
+                            bottom: 20.0, right: 10.0, left: 10.0),
+                        child: ElevatedButton(
+                            onPressed: (controller.materialsToAdd.isNotEmpty &&
+                                    controller.formData.modalidadeEntrega != null &&
+                                    !controller.isSubmitting)
+                                ? _validateAndSubmit
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                padding: const EdgeInsets.symmetric(vertical: 15)),
+                            child: controller.isSubmitting
+                                ? const CircularProgressIndicator(color: Colors.white)
+                                : const Text('FINALIZAR REQUISIÇÃO',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold))),
+                      ),
+                      const SizedBox(height: 50.0)
+                    ],
+                  ),
+                ],
               ),
             ),
           );

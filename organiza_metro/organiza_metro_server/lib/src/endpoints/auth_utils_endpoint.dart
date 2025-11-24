@@ -16,7 +16,7 @@ class AuthUtilsEndpoint extends Endpoint {
     print('userId: $userId');
 
     // Busca na sua tabela UserInfo (custom)
-    final localInfo = await UserInfo.db.findFirstRow(
+    final localInfo = await LocalUserInfo.db.findFirstRow(
       session,
       where: (t) => t.userInfoId.equals(userId),
     );
@@ -31,12 +31,7 @@ class AuthUtilsEndpoint extends Endpoint {
     final authenticationInfo = await session.authenticated;
     final userId = authenticationInfo?.userId;
 
-    print('authenticationInfo: $authenticationInfo');
-    print('userId: $userId');
-
     final info = await auth.UserInfo.db.findById(session, userId!);
-
-    print('info: $info');
 
     return info?.userName;
   }

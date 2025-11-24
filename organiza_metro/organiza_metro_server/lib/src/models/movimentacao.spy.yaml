@@ -1,0 +1,24 @@
+class: Movimentacao
+table: movimentacao
+fields:
+  usuario: module:auth:UserInfo?, relation
+    
+  material: Material?, relation(optional)
+    
+  ferramenta: Ferramenta?, relation(optional)
+  
+  quantidade: double?
+  tipoMovimentacao: String 
+  dataRequisicao: DateTime #Quando o usuario clicou pra pedir (datetime.now())
+  dataMovimentacao: DateTime #Quando o usuario enfim vai tirar o material
+  dataDevolucao: DateTime? # Para ferramentas
+  modalidadeEntrega: String?
+  observacao: String?
+
+  origemBase: Base?, relation(optional)
+    
+  destinoBase: Base?, relation(optional)
+    
+  origemVeiculo: Veiculo?, relation(optional)
+    
+  destinoVeiculo: Veiculo?, relation(optional)

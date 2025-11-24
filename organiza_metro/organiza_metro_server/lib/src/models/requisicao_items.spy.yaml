@@ -1,0 +1,6 @@
+class: RequisicaoItem
+table: requisicao_item
+fields:
+  material: Material?, relation(optional)
+  ferramenta: Ferramenta?, relation(optional)
+  quantidade: double
